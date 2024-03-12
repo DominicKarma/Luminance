@@ -27,7 +27,7 @@ namespace KarmaLibrary.Core.Sounds
             {
                 // If the sound was started but is no longer playing, restart it.
                 bool shouldBeRemoved = false;
-                if (s.HasLoopSoundBeenStarted && !s.IsBeingPlayed)
+                if (s.HasLoopSoundBeenStarted && !s.LoopIsBeingPlayed)
                     s.Restart();
 
                 // If the sound's termination condition has been activated, remove the sound.
@@ -56,20 +56,6 @@ namespace KarmaLibrary.Core.Sounds
         public static LoopedSoundInstance CreateNew(SoundStyle loopingSound, Func<bool> automaticTerminationCondition = null)
         {
             LoopedSoundInstance sound = new(loopingSound, automaticTerminationCondition ?? (() => false));
-            loopedSounds.Add(sound);
-
-            return sound;
-        }
-
-        /// <summary>
-        ///     Creates a new looping sound, with an optional, perpetually evaluated termination condition, as well as a sound that plays once before the loop plays.
-        /// </summary>
-        /// <param name="startingSound">The sound that should be played before the sound is looped.</param>
-        /// <param name="loopingSound">The sound that should be looped.</param>
-        /// <param name="automaticTerminationCondition">The condition that dictates whether the sound should terminate automatically.</param>
-        public static LoopedSoundInstance CreateNew(SoundStyle startingSound, SoundStyle loopingSound, Func<bool> automaticTerminationCondition = null)
-        {
-            LoopedSoundInstance sound = new(startingSound, loopingSound, automaticTerminationCondition ?? (() => false));
             loopedSounds.Add(sound);
 
             return sound;
