@@ -1,69 +1,109 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace KarmaLibrary.Common.Tools.Easings
+﻿namespace KarmaLibrary.Common.Tools.Easings
 {
-    // Refer to https://easings.net/ for most of the equations in the derived classes.
-    public abstract class EasingCurve
+    // Refer to https://easings.net/ for most of the equations in the curve definitions.
+    public static class EasingCurves
     {
         /// <summary>
-        /// 'In' curves start out slowly but gradually reach their end value.
-        /// <br></br>
-        /// A good analogous example of such is x^2 on values of 0-1.
+        ///     An elastic easing curves. Characterized chiefly by small bumps at extreme points.
         /// </summary>
-        public InterpolationFunction InCurve
+        public static readonly Curve Elastic = new(interpolant =>
         {
-            get;
-            protected set;
-        }
+            float sineFactor = TwoPi / 3f;
+            float exponentialTerm = -Pow(2f, interpolant * 10f - 10f);
+            float sinusoidalTerm = Sin((interpolant * 10f - 10.75f) * sineFactor);
+            return exponentialTerm * sinusoidalTerm;
+        }, interpolant =>
+        {
+            float sineFactor = TwoPi / 3f;
+            float exponentialTerm = Pow(2f, interpolant * -10f);
+            float sinusoidalTerm = Sin((interpolant * 10f - 0.75f) * sineFactor);
+            return exponentialTerm * sinusoidalTerm + 1f;
+        }, interpolant =>
+        {
+            float sineFactor = TwoPi / 4.5f;
+            float sinusoidalTerm = Sin((interpolant * 20f - 11.125f) * sineFactor) * 0.5f;
+            if (interpolant < 0.5f)
+            {
+                float exponentialTerm = -Pow(2f, interpolant * 20f - 10f);
+                return exponentialTerm * sinusoidalTerm;
+            }
+            else
+            {
+                float exponentialTerm = Pow(2f, interpolant * -20f + 10f);
+                return exponentialTerm * sinusoidalTerm + 1f;
+            }
+        });
 
         /// <summary>
-        /// 'Out' curves start out quickly but gradually slow down to reach their end value.
-        /// <br></br>
-        /// A good analogous example of such is x^0.5 on values of 0-1.
+        ///     A linear easing curve.
         /// </summary>
-        public InterpolationFunction OutCurve
-        {
-            get;
-            protected set;
-        }
+        public static readonly Curve Linear = new(interpolant => interpolant, interpolant => interpolant, interpolant => interpolant);
 
         /// <summary>
-        /// In-out curves start and end gradually, but gain a faster pace to reach their end value.
-        /// <br></br>
-        /// A good analogous example of such is 3x^2 - 2x^3, better known as the MathHelper.SmoothStep function.
+        ///     A polynomial easing curve of degree 2.
         /// </summary>
-        public InterpolationFunction InOutCurve
-        {
-            get;
-            protected set;
-        }
+        public static readonly Curve Quadratic = MakePoly(2f);
+
+        /// <summary>
+        ///     A polynomial easing curve of degree 3.
+        /// </summary>
+        public static readonly Curve Cubic = MakePoly(3f);
+
+        /// <summary>
+        ///     A polynomial easing curve of degree 4.
+        /// </summary>
+        public static readonly Curve Quartic = MakePoly(4f);
+
+        /// <summary>
+        ///     A polynomial easing curve of degree 5.
+        /// </summary>
+        public static readonly Curve Quintic = MakePoly(5f);
+
+        /// <summary>
+        ///     A polynomial easing curve of degree 6.
+        /// </summary>
+        public static readonly Curve Sextic = MakePoly(6f);
 
         public delegate float InterpolationFunction(float interpolant);
 
-        public float Evaluate(EasingType easingType, float interpolant) => Evaluate(easingType, 0f, 1f, interpolant);
+        public record class Curve(InterpolationFunction InFunction, InterpolationFunction OutFunction, InterpolationFunction InOutFunction);
 
-        public float Evaluate(EasingType easingType, float start, float end, float interpolant)
+        /// <summary>
+        ///     Creates a polynomial easing curves with an arbitrary exponent/potentially-non-integer degree.
+        /// </summary>
+        /// <param name="exponent">The exponent of the polynomial curve.</param>
+        public static Curve MakePoly(float exponent)
+        {
+            return new(interpolant =>
+            {
+                return Pow(interpolant, exponent);
+            }, interpolant =>
+            {
+                return 1f - Pow(1f - interpolant, exponent);
+            }, interpolant =>
+            {
+                if (interpolant < 0.5f)
+                    return Pow(2f, exponent - 1f) * Pow(interpolant, exponent);
+                return 1f - Pow(interpolant * -2f + 2f, exponent) * 0.5f;
+            });
+        }
+
+        public static float Evaluate(this Curve curve, EasingType easingType, float interpolant) => Evaluate(curve, easingType, 0f, 1f, interpolant);
+
+        public static float Evaluate(this Curve curve, EasingType easingType, float start, float end, float interpolant)
         {
             // Clamp the interpolant into the valid range.
             interpolant = Saturate(interpolant);
 
             float easedInterpolant = easingType switch
             {
-                EasingType.In => InCurve(interpolant),
-                EasingType.Out => OutCurve(interpolant),
-                EasingType.InOut => InOutCurve(interpolant),
+                EasingType.In => curve.InFunction(interpolant),
+                EasingType.Out => curve.OutFunction(interpolant),
+                EasingType.InOut => curve.InOutFunction(interpolant),
                 _ => start,
             };
 
             return Lerp(start, end, easedInterpolant);
-        }
-
-        // This isn't used for PiecewiseCurve instances anywhere, but it's a nice utility for more dynamic vector interpolations.
-        public Vector2 Evaluate(EasingType easingType, Vector2 start, Vector2 end, float interpolant)
-        {
-            float x = Evaluate(easingType, start.X, end.X, interpolant);
-            float y = Evaluate(easingType, start.Y, end.Y, interpolant);
-            return new(x, y);
         }
     }
 }

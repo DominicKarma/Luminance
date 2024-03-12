@@ -9,7 +9,7 @@ namespace KarmaLibrary.Common.Tools.Easings
         /// <summary>
         /// A piecewise curve that takes up a part of the domain of a <see cref="PiecewiseCurve"/>, specifying the equivalent range and curvature in said domain.
         /// </summary>
-        protected readonly struct CurveSegment(float startingHeight, float endingHeight, float animationStart, float animationEnd, EasingCurve curve, EasingType curveType)
+        protected readonly struct CurveSegment(float startingHeight, float endingHeight, float animationStart, float animationEnd, EasingCurves.Curve curve, EasingType curveType)
         {
             /// <summary>
             /// The starting output height value. This is what is outputted when the <see cref="PiecewiseCurve"/> is evaluated at <see cref="AnimationStart"/>.
@@ -34,7 +34,7 @@ namespace KarmaLibrary.Common.Tools.Easings
             /// <summary>
             /// The easing curve that dictates the how the outputs vary between <see cref="StartingHeight"/> and <see cref="EndingHeight"/>.
             /// </summary>
-            internal readonly EasingCurve Curve = curve;
+            internal readonly EasingCurves.Curve Curve = curve;
 
             /// <summary>
             /// The easing curve type from In, Out, and InOut that specifies how the <see cref="Curve"/> is sampled.
@@ -47,7 +47,7 @@ namespace KarmaLibrary.Common.Tools.Easings
         /// </summary>
         protected List<CurveSegment> segments = [];
 
-        public PiecewiseCurve Add(EasingCurve curve, EasingType curveType, float endingHeight, float animationEnd, float? startingHeight = null)
+        public PiecewiseCurve Add(EasingCurves.Curve curve, EasingType curveType, float endingHeight, float animationEnd, float? startingHeight = null)
         {
             float animationStart = segments.Any() ? segments.Last().AnimationEnd : 0f;
             startingHeight ??= segments.Any() ? segments.Last().EndingHeight : 0f;
