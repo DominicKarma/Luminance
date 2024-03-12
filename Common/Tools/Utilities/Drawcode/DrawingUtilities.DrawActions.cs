@@ -175,10 +175,11 @@ namespace KarmaLibrary.Common.Utilities
             end -= Main.screenPosition;
 
             float rotation = (end - start).ToRotation() + PiOver2;
-            Vector2 scale = new Vector2(width, Vector2.Distance(start, end)) / BloomLineTexture.Size();
-            Vector2 origin = new(BloomLineTexture.Width * 0.5f, BloomLineTexture.Height);
+            Texture2D bloomLine = BloomLineTexture.Value;
+            Vector2 scale = new Vector2(width, Vector2.Distance(start, end)) / bloomLine.Size();
+            Vector2 origin = new(bloomLine.Width * 0.5f, bloomLine.Height);
 
-            spriteBatch.Draw(BloomLineTexture, start, null, color, rotation, origin, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(bloomLine, start, null, color, rotation, origin, scale, SpriteEffects.None, 0f);
         }
     }
 }

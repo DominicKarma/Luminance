@@ -1,11 +1,11 @@
 ﻿using System.Linq;
+using KarmaLibrary.Core.Graphics.Automators;
+using KarmaLibrary.Core.Graphics.SpecificEffectManagers;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
-using KarmaLibrary.Core.Graphics.Automators;
-using KarmaLibrary.Core.Graphics.SpecificEffectManagers;
 
 namespace KarmaLibrary.Core.Graphics.Shaders.Screen
 {
@@ -72,9 +72,9 @@ namespace KarmaLibrary.Core.Graphics.Shaders.Screen
 
             // Supply the distortion target to the graphics device.
             var gd = Main.instance.GraphicsDevice;
-            gd.Textures[1] = DistortionDrawContents.IsReady ? DistortionDrawContents.GetTarget() : InvisiblePixel;
+            gd.Textures[1] = DistortionDrawContents.IsReady ? DistortionDrawContents.GetTarget() : InvisiblePixel.Value;
             gd.SamplerStates[1] = SamplerState.LinearClamp;
-            gd.Textures[2] = DistortionExclusionDrawContent.IsReady ? DistortionExclusionDrawContent.GetTarget() : InvisiblePixel;
+            gd.Textures[2] = DistortionExclusionDrawContent.IsReady ? DistortionExclusionDrawContent.GetTarget() : InvisiblePixel.Value;
             gd.SamplerStates[2] = SamplerState.LinearClamp;
             base.Apply();
         }
