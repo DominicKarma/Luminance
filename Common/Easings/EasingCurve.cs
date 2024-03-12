@@ -66,7 +66,7 @@
 
         public delegate float InterpolationFunction(float interpolant);
 
-        public record class Curve(InterpolationFunction InFunction, InterpolationFunction OutFunction, InterpolationFunction InOutFunction);
+        public record Curve(InterpolationFunction InFunction, InterpolationFunction OutFunction, InterpolationFunction InOutFunction);
 
         /// <summary>
         ///     Creates a polynomial easing curves with an arbitrary exponent/potentially-non-integer degree.
