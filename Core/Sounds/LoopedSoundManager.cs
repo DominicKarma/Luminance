@@ -52,7 +52,7 @@ namespace KarmaLibrary.Core.Sounds
         ///     Creates a new looping sound, with an optional, perpetually evaluated termination condition.
         /// </summary>
         /// <param name="loopingSound">The sound that should be looped.</param>
-        /// <param name="automaticTerminationCondition">The condition that dictates whether the sound should terminate automatically.</param>
+        /// <param name="automaticTerminationCondition">An optional condition that dictates whether the sound should terminate automatically.</param>
         public static LoopedSoundInstance CreateNew(SoundStyle loopingSound, Func<bool> automaticTerminationCondition = null)
         {
             LoopedSoundInstance sound = new(loopingSound, automaticTerminationCondition ?? (() => false));
