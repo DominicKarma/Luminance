@@ -11,14 +11,29 @@ namespace KarmaLibrary.Core.Graphics.Shaders
     [DebuggerDisplay("Shader - '{Name}'")]
     public sealed class ManagedShader
     {
+        /// <summary>
+        ///     A managed copy of all parameter data. Used to minimize excess SetValue calls, in cases where the value aren't actually being changed.
+        /// </summary>
         private readonly Dictionary<string, object> parameterCache;
 
+        /// <summary>
+        ///     The shader reference underlying this wrapper.
+        /// </summary>
         public readonly Ref<Effect> Shader;
 
+        /// <summary>
+        ///     The name of the shader.
+        /// </summary>
         public readonly string Name;
 
+        /// <summary>
+        ///     The standard parameter name prefix for texture sizes.
+        /// </summary>
         public const string TextureSizeParameterPrefix = "textureSize";
 
+        /// <summary>
+        ///     The standard pass name when autoloading shaders.
+        /// </summary>
         public const string DefaultPassName = "AutoloadPass";
 
         internal ManagedShader(string name, Ref<Effect> shader)
@@ -41,13 +56,15 @@ namespace KarmaLibrary.Core.Graphics.Shaders
         }
 
         /// <summary>
-        /// Resets the cache of parameters for this shader. Should be used in contexts where the underlying shader used by this can be changed in contexts that do not respect the cache.<br></br>
-        /// An example of this could be having this shader shared with a screen shader, which supplies its values directly and without the <see cref="TrySetParameter(string, object)"/> wrapper.
+        ///     Resets the cache of parameters for this shader. Should be used in contexts where the underlying shader used by this can be changed in contexts that do not respect the cache.
         /// </summary>
+        /// <remarks>
+        ///     An example of this being useful could when be having this shader shared with a screen shader, which supplies its values directly and without the <see cref="TrySetParameter(string, object)"/> wrapper.
+        /// </remarks>
         public void ResetCache() => parameterCache.Clear();
 
         /// <summary>
-        /// Attempts to send parameter data to the GPU for the shader to use.
+        ///     Attempts to send parameter data to the GPU for the shader to use.
         /// </summary>
         /// <param name="parameterName">The name of the parameter. This must correspond with the parameter name in the shader.</param>
         /// <param name="value">The value to supply to the parameter.</param>
@@ -70,7 +87,7 @@ namespace KarmaLibrary.Core.Graphics.Shaders
             // Store the value in the cache.
             parameterCache[parameterName] = value;
 
-            // Unfortunately, there is no simple type upon which singles, ints, matrices, etc. can be converted in order to be sent to the GPU, and there is no
+            // Unfortunately, there is no simple type upon which singles, integers, matrices, etc. can be converted in order to be sent to the GPU, and there is no
             // super easy solution for checking a parameter's expected type. FNA just messes with pointers under the hood and tosses back exceptions if that doesn't work.
             // Unless something neater arises, this conditional chain will do, I suppose.
 
@@ -182,7 +199,7 @@ namespace KarmaLibrary.Core.Graphics.Shaders
         }
 
         /// <summary>
-        /// Sets a texture at a given index for this shader to use based a the <see cref="Asset{T}"/> wrapper. Typically, index 0 is populated with whatever was passed into the <see cref="SpriteBatch"/>.Draw call.
+        ///     Sets a texture at a given index for this shader to use based a the <see cref="Asset{T}"/> wrapper. Typically, index 0 is populated with whatever was passed into a <see cref="SpriteBatch"/>.Draw call.
         /// </summary>
         /// <param name="textureAsset">The asset that contains the texture to supply.</param>
         /// <param name="textureIndex">The index to place the texture in.</param>
@@ -199,7 +216,7 @@ namespace KarmaLibrary.Core.Graphics.Shaders
         }
 
         /// <summary>
-        /// Sets a texture at a given index for this shader to use. Typically, index 0 is populated with whatever was passed into the <see cref="SpriteBatch"/>.Draw call.
+        ///     Sets a texture at a given index for this shader to use. Typically, index 0 is populated with whatever was passed into a <see cref="SpriteBatch"/>.Draw call.
         /// </summary>
         /// <param name="texture">The texture to supply.</param>
         /// <param name="textureIndex">The index to place the texture in.</param>
@@ -221,7 +238,7 @@ namespace KarmaLibrary.Core.Graphics.Shaders
         }
 
         /// <summary>
-        /// Finalizes the shader for drawing.
+        ///     Prepares the shader for drawing.
         /// </summary>
         /// <param name="passName">The pass to apply.</param>
         public void Apply(string passName = DefaultPassName)

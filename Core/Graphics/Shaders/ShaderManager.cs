@@ -12,13 +12,27 @@ namespace KarmaLibrary.Core.Graphics.Shaders
 {
     public class ShaderManager : ModSystem
     {
+        /// <summary>
+        ///     The set of all shaders handled by this manager class.
+        /// </summary>
         private static Dictionary<string, ManagedShader> shaders;
 
+        /// <summary>
+        ///     Whether this manager class has finished loading all shaders yet or not.
+        /// </summary>
+        /// <remarks>
+        ///     This primarily exists for cases where shaders may be used at mod loading times, such as on the game title screen.
+        /// </remarks>
         public static bool HasFinishedLoading
         {
             get;
             private set;
         }
+
+        /// <summary>
+        ///     The folder directory in which shaders to autoload are searched for.
+        /// </summary>
+        public const string AutoloadDirectory = "AutoloadedEffects";
 
         public override void OnModLoad()
         {
@@ -28,18 +42,17 @@ namespace KarmaLibrary.Core.Graphics.Shaders
 
             shaders = [];
 
-            // This is kind of hideous but I'm not sure how to best handle these screen shaders. Perhaps some marker in the file name or a dedicated folder?
+            // This is kind of hideous but I'm not sure how to best handle these screen shaders.
             Ref<Effect> s = new(Mod.Assets.Request<Effect>("Assets/AutoloadedEffects/ScreenDistortions/RadialScreenShoveShader", AssetRequestMode.ImmediateLoad).Value);
             Filters.Scene[RadialScreenShoveShaderData.ShaderKey] = new Filter(new RadialScreenShoveShaderData(s, ManagedShader.DefaultPassName), EffectPriority.VeryHigh);
 
             Ref<Effect> s2 = new(Mod.Assets.Request<Effect>("Assets/AutoloadedEffects/ScreenDistortions/LocalScreenDistortionShader", AssetRequestMode.ImmediateLoad).Value);
             Filters.Scene[ScreenDistortShaderData.ShaderKey] = new Filter(new ScreenDistortShaderData(s2, ManagedShader.DefaultPassName), EffectPriority.VeryHigh);
-
-            HasFinishedLoading = true;
         }
 
         public override void PostSetupContent()
         {
+            // Go through every mod and check for effects to autoload.
             foreach (Mod mod in ModLoader.Mods)
             {
                 List<string> fileNames = mod.GetFileNames();
@@ -51,7 +64,7 @@ namespace KarmaLibrary.Core.Graphics.Shaders
                     // Ignore paths inside of the compiler directory.
                     if (path?.Contains("Compiler/") ?? true)
                         continue;
-                    if (!path.Contains("AutoloadedEffects/"))
+                    if (!path.Contains($"{AutoloadDirectory}/"))
                         continue;
 
                     string shaderName = Path.GetFileNameWithoutExtension(path);
@@ -60,10 +73,25 @@ namespace KarmaLibrary.Core.Graphics.Shaders
                     SetShader(shaderName, shader);
                 }
             }
+
+            // Mark loading operations as finished.
+            HasFinishedLoading = true;
         }
 
+        /// <summary>
+        ///     Retrieves a managed shader of a given name.
+        /// </summary>
+        /// <remarks>
+        ///     In this context, the "name" must correspond with the file name of the shader, not including the path extension.
+        /// </remarks>
+        /// <param name="name">The name of the shader.</param>
         public static ManagedShader GetShader(string name) => shaders[name];
 
+        /// <summary>
+        ///     Sets a shader with a given name in the registry manually.
+        /// </summary>
+        /// <param name="name">The name of the shader.</param>
+        /// <param name="newShaderData">The shader data reference to save.</param>
         public static void SetShader(string name, Ref<Effect> newShaderData) => shaders[name] = new(name, newShaderData);
 
         public override void PostUpdateEverything()
