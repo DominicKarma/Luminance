@@ -1,0 +1,4 @@
+displayName = Karmaic Mod Library
+author = DominicKarma
+version = 1.0.0
+buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, .git\*, .github\*, LICENSE, README.md, .editorconfig, .gitignore, .gitattributes, Assets\AutoloadedEffects\Compiler\*
