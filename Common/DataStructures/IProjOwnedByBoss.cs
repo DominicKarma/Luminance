@@ -1,7 +1,7 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace KarmaLibrary.Common.Tools.DataStructures
+namespace KarmaLibrary.Common.DataStructures
 {
     public interface IProjOwnedByBoss<T> where T : ModNPC
     {

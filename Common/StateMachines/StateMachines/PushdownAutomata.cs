@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KarmaLibrary.Common.Tools.StateMachines
+namespace KarmaLibrary.Common.StateMachines
 {
     public class PushdownAutomata<StateWrapper, StateIdentifier> where StateWrapper : IState<StateIdentifier> where StateIdentifier : struct
     {

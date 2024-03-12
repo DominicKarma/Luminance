@@ -1,4 +1,4 @@
-﻿namespace KarmaLibrary.Common.Tools.Easings
+﻿namespace KarmaLibrary.Common.Easings
 {
     /// <summary>
     ///     An easing mode.

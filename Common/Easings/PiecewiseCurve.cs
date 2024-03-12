@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KarmaLibrary.Common.Tools.Easings
+namespace KarmaLibrary.Common.Easings
 {
     public class PiecewiseCurve
     {

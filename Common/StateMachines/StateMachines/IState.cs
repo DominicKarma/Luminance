@@ -1,4 +1,4 @@
-﻿namespace KarmaLibrary.Common.Tools.StateMachines
+﻿namespace KarmaLibrary.Common.StateMachines
 {
     public interface IState<T> where T : struct
     {
