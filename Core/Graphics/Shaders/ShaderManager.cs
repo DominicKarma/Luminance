@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Luminance.Core.Graphics.Shaders.Screen;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -41,13 +39,6 @@ namespace Luminance.Core.Graphics.Shaders
                 return;
 
             shaders = [];
-
-            // This is kind of hideous but I'm not sure how to best handle these screen shaders.
-            Ref<Effect> s = new(Mod.Assets.Request<Effect>("Assets/AutoloadedEffects/ScreenDistortions/RadialScreenShoveShader", AssetRequestMode.ImmediateLoad).Value);
-            Filters.Scene[RadialScreenShoveShaderData.ShaderKey] = new Filter(new RadialScreenShoveShaderData(s, ManagedShader.DefaultPassName), EffectPriority.VeryHigh);
-
-            Ref<Effect> s2 = new(Mod.Assets.Request<Effect>("Assets/AutoloadedEffects/ScreenDistortions/LocalScreenDistortionShader", AssetRequestMode.ImmediateLoad).Value);
-            Filters.Scene[ScreenDistortShaderData.ShaderKey] = new Filter(new ScreenDistortShaderData(s2, ManagedShader.DefaultPassName), EffectPriority.VeryHigh);
         }
 
         public override void PostSetupContent()
@@ -93,11 +84,5 @@ namespace Luminance.Core.Graphics.Shaders
         /// <param name="name">The name of the shader.</param>
         /// <param name="newShaderData">The shader data reference to save.</param>
         public static void SetShader(string name, Ref<Effect> newShaderData) => shaders[name] = new(name, newShaderData);
-
-        public override void PostUpdateEverything()
-        {
-            RadialScreenShoveShaderData.ToggleActivityIfNecessary();
-            ScreenDistortShaderData.ToggleActivityIfNecessary();
-        }
     }
 }
