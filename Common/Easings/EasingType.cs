@@ -1,4 +1,4 @@
-﻿namespace KarmaLibrary.Common.Easings
+﻿namespace Luminance.Common.Easings
 {
     /// <summary>
     ///     An easing mode.

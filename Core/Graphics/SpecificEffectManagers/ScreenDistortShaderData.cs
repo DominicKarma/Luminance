@@ -1,17 +1,17 @@
 ﻿using System.Linq;
-using KarmaLibrary.Core.Graphics.Automators;
-using KarmaLibrary.Core.Graphics.SpecificEffectManagers;
+using Luminance.Core.Graphics.Automators;
+using Luminance.Core.Graphics.SpecificEffectManagers;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 
-namespace KarmaLibrary.Core.Graphics.Shaders.Screen
+namespace Luminance.Core.Graphics.Shaders.Screen
 {
     public class ScreenDistortShaderData(Ref<Effect> shader, string passName) : ScreenShaderData(shader, passName)
     {
-        public const string ShaderKey = "KarmaLibrary:LocalScreenDistortion";
+        public const string ShaderKey = "Luminance:LocalScreenDistortion";
 
         /// <summary>
         /// The render target that holds all distortion render data.

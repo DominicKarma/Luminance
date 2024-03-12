@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using KarmaLibrary.Core.Graphics.Shaders.Screen;
+using Luminance.Core.Graphics.Shaders.Screen;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
@@ -8,7 +8,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace KarmaLibrary.Core.Graphics.Shaders
+namespace Luminance.Core.Graphics.Shaders
 {
     public class ShaderManager : ModSystem
     {

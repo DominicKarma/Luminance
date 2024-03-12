@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
-using KarmaLibrary.Core.Graphics.Shaders.Screen;
+using Luminance.Core.Graphics.Shaders.Screen;
 
-namespace KarmaLibrary.Core.Graphics.SpecificEffectManagers
+namespace Luminance.Core.Graphics.SpecificEffectManagers
 {
     public class RadialScreenShoveScene : ModSceneEffect
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace KarmaLibrary.Core.Graphics.Automators
+namespace Luminance.Core.Graphics.Automators
 {
     public interface IDrawAdditive
     {

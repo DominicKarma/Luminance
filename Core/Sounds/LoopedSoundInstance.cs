@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using ReLogic.Utilities;
 using Terraria.Audio;
 
-namespace KarmaLibrary.Core.Sounds
+namespace Luminance.Core.Sounds
 {
     public class LoopedSoundInstance
     {

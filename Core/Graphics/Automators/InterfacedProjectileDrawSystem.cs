@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace KarmaLibrary.Core.Graphics.Automators
+namespace Luminance.Core.Graphics.Automators
 {
     [Autoload(Side = ModSide.Client)]
     public class InterfacedProjectileDrawSystem : ModSystem

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KarmaLibrary.Common.Easings
+namespace Luminance.Common.Easings
 {
     public class PiecewiseCurve
     {

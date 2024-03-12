@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ModLoader;
 
-namespace KarmaLibrary.Core.Sounds
+namespace Luminance.Core.Sounds
 {
     public class LoopedSoundManager : ModSystem
     {

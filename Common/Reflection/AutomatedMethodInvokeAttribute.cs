@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace KarmaLibrary.Common.Reflection
+namespace Luminance.Common.Reflection
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public sealed class AutomatedMethodInvokeAttribute : Attribute

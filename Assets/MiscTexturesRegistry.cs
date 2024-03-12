@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace KarmaLibrary.Assets
+namespace Luminance.Assets
 {
     public class MiscTexturesRegistry : ModSystem
     {
@@ -14,11 +14,11 @@ namespace KarmaLibrary.Assets
 
         public const string InvisiblePixelPath = $"{ExtraTexturesPath}/InvisiblePixel";
 
-        public const string ExtraTexturesPath = "KarmaLibrary/Assets/ExtraTextures";
+        public const string ExtraTexturesPath = "Luminance/Assets/ExtraTextures";
 
-        public const string GreyscaleTexturesPath = "KarmaLibrary/Assets/ExtraTextures/GreyscaleTextures";
+        public const string GreyscaleTexturesPath = "Luminance/Assets/ExtraTextures/GreyscaleTextures";
 
-        public const string NoiseTexturesPath = "KarmaLibrary/Assets/ExtraTextures/Noise";
+        public const string NoiseTexturesPath = "Luminance/Assets/ExtraTextures/Noise";
 
         public const string ChromaticBurstPath = $"{GreyscaleTexturesPath}/ChromaticBurst";
 

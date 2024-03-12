@@ -1,4 +1,4 @@
-﻿namespace KarmaLibrary.Common.StateMachines
+﻿namespace Luminance.Common.StateMachines
 {
     public class BossAIState<T>(T identifier) : IState<T> where T : struct
     {

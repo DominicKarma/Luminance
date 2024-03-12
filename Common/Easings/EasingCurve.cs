@@ -1,4 +1,4 @@
-﻿namespace KarmaLibrary.Common.Easings
+﻿namespace Luminance.Common.Easings
 {
     // Refer to https://easings.net/ for most of the equations in the curve definitions.
     public static class EasingCurves

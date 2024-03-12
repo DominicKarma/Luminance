@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 
-namespace KarmaLibrary.Common.Easings
+namespace Luminance.Common.Easings
 {
     public class PiecewiseRotation
     {

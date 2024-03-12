@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria.GameContent.RGB;
 
-namespace KarmaLibrary.Common.Utilities
+namespace Luminance.Common.Utilities
 {
     public static partial class Utilities
     {

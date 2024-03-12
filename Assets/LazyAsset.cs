@@ -2,7 +2,7 @@
 using ReLogic.Content;
 using Terraria.ModLoader;
 
-namespace KarmaLibrary.Assets
+namespace Luminance.Assets
 {
     /// <summary>
     ///     <see cref="Asset{T}"/> wrapper that facilitates lazy-loading.

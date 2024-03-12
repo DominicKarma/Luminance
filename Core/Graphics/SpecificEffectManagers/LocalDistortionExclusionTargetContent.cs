@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using KarmaLibrary.Core.Graphics.Automators;
+using Luminance.Core.Graphics.Automators;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
 
-namespace KarmaLibrary.Core.Graphics.SpecificEffectManagers
+namespace Luminance.Core.Graphics.SpecificEffectManagers
 {
     public class LocalDistortionExclusionTargetContent : ARenderTargetContentByRequest
     {

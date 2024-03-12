@@ -2,7 +2,7 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace KarmaLibrary.Common.Utilities
+namespace Luminance.Common.Utilities
 {
     public static partial class Utilities
     {

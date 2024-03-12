@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace KarmaLibrary.Core.Graphics.Automators
+namespace Luminance.Core.Graphics.Automators
 {
     public class RenderTargetManager : ModSystem
     {

@@ -5,7 +5,7 @@ using Terraria.Chat;
 using Terraria.ID;
 using Terraria.Localization;
 
-namespace KarmaLibrary.Common.Utilities
+namespace Luminance.Common.Utilities
 {
     public static partial class Utilities
     {

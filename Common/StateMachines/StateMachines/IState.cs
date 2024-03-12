@@ -1,4 +1,4 @@
-﻿namespace KarmaLibrary.Common.StateMachines
+﻿namespace Luminance.Common.StateMachines
 {
     public interface IState<T> where T : struct
     {

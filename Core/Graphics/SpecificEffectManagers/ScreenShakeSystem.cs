@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace KarmaLibrary.Core.Graphics.SpecificEffectManagers
+namespace Luminance.Core.Graphics.SpecificEffectManagers
 {
     public class ScreenShakeSystem : ModSystem
     {

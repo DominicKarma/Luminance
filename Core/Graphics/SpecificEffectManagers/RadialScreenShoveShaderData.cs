@@ -3,13 +3,13 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
-using KarmaLibrary.Core.Graphics.SpecificEffectManagers;
+using Luminance.Core.Graphics.SpecificEffectManagers;
 
-namespace KarmaLibrary.Core.Graphics.Shaders.Screen
+namespace Luminance.Core.Graphics.Shaders.Screen
 {
     public class RadialScreenShoveShaderData(Ref<Effect> shader, string passName) : ScreenShaderData(shader, passName)
     {
-        public const string ShaderKey = "KarmaLibrary:RadialScreenShove";
+        public const string ShaderKey = "Luminance:RadialScreenShove";
 
         public static void ToggleActivityIfNecessary()
         {

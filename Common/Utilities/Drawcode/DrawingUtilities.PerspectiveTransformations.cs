@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
-namespace KarmaLibrary.Common.Utilities
+namespace Luminance.Common.Utilities
 {
     public static partial class Utilities
     {
