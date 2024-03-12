@@ -8,6 +8,6 @@
             protected set;
         }
 
-        public void OnPoppedFromStack();
+        public void OnPopped();
     }
 }

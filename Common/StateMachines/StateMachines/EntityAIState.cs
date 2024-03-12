@@ -1,6 +1,6 @@
 ﻿namespace Luminance.Common.StateMachines
 {
-    public class BossAIState<T>(T identifier) : IState<T> where T : struct
+    public class EntityAIState<T>(T identifier) : IState<T> where T : struct
     {
         public T Identifier
         {
@@ -10,7 +10,7 @@
 
         public int Time;
 
-        public void OnPoppedFromStack()
+        public void OnPopped()
         {
             Time = 0;
         }

@@ -7,47 +7,15 @@ namespace Luminance.Common.StateMachines
     public class PushdownAutomata<StateWrapper, StateIdentifier> where StateWrapper : IState<StateIdentifier> where StateIdentifier : struct
     {
         /// <summary>
-        /// Represents a framework for hijacking a transition's final state selection.
-        /// This is useful for allowing states to transition to something customized when its default transition condition has been triggered, without having to duplicate conditions many times.
+        ///     Represents a framework for hijacking a transition's final state selection.
+        ///     This is useful for allowing states to transition to something customized when its default transition condition has been triggered, without having to duplicate conditions many times.
         /// </summary>
-        public class TransitionHijack(Func<StateIdentifier?, StateIdentifier?> selectionHijackFunction, Action<StateIdentifier?> action)
-        {
-            /// <summary>
-            /// What should be done when a hijack is successfully performed.
-            /// </summary>
-            public Action<StateIdentifier?> HijackAction = action;
-
-            /// <summary>
-            /// The selection function. Should return the input argument if nothing is being performed.
-            /// </summary>
-            public Func<StateIdentifier?, StateIdentifier?> SelectionHijackFunction = selectionHijackFunction;
-        }
+        public record TransitionHijack(Func<StateIdentifier?, StateIdentifier?> SelectionHijackFunction, Action<StateIdentifier?> HijackAction);
 
         /// <summary>
-        /// Represents a framework for a state transition's information.
+        ///     Represents a framework for a state transition's information.
         /// </summary>
-        public class TransitionInfo(StateIdentifier? newState, bool rememberPreviousState, Func<bool> transitionCondition, Action transitionCallback = null)
-        {
-            /// <summary>
-            /// The state to transition to.
-            /// </summary>
-            public StateIdentifier? NewState = newState;
-
-            /// <summary>
-            /// Whether the previous state should be retained when the transition happens. If true, this ensures that the previous state is not popped from the stack.
-            /// </summary>
-            public bool RememberPreviousState = rememberPreviousState;
-
-            /// <summary>
-            /// An action that determines any special things that happen after a transition.
-            /// </summary>
-            public Action TransitionCallback = transitionCallback;
-
-            /// <summary>
-            /// Whether the transition is ready to happen.
-            /// </summary>
-            public Func<bool> TransitionCondition = transitionCondition;
-        }
+        public record TransitionInfo(StateIdentifier? NewState, bool RememberPreviousState, Func<bool> TransitionCondition, Action TransitionCallback = null);
 
         public PushdownAutomata(StateWrapper initialState)
         {
@@ -56,34 +24,40 @@ namespace Luminance.Common.StateMachines
         }
 
         /// <summary>
-        /// A collection of custom states that should be performed when a state is ongoing.
+        ///     A collection of custom states that should be performed when a state is ongoing.
         /// </summary>
         public readonly Dictionary<StateIdentifier, Action> StateBehaviors = [];
 
         /// <summary>
-        /// A list of hijack actions to perform during a state transition.
+        ///     A list of hijack actions to perform during a state transition.
         /// </summary>
         public List<TransitionHijack> HijackActions = [];
 
         /// <summary>
-        /// A generalized registry of states with individualized data.
+        ///     A generalized registry of states with individualized data.
         /// </summary>
         public Dictionary<StateIdentifier, StateWrapper> StateRegistry = [];
 
         /// <summary>
-        /// The state stack for the automaton.
+        ///     The state stack for the automaton.
         /// </summary>
         public Stack<StateWrapper> StateStack = new();
 
         protected Dictionary<StateIdentifier, List<TransitionInfo>> transitionTable = [];
 
         /// <summary>
-        /// The current state of the automaton.
+        ///     The current state of the automaton.
         /// </summary>
         public StateWrapper CurrentState => StateStack.Peek();
 
+        /// <summary>
+        ///     The set of actions that should occur when a state is popped.
+        /// </summary>
         public event Action<StateWrapper> OnStatePop;
 
+        /// <summary>
+        ///     The set of actions that should occur when a state transition occurs.
+        /// </summary>
         public event Action<bool> OnStateTransition;
 
         public void AddTransitionStateHijack(Func<StateIdentifier?, StateIdentifier?> hijackSelection, Action<StateIdentifier?> hijackAction = null)
@@ -114,7 +88,7 @@ namespace Luminance.Common.StateMachines
             if (!transition.RememberPreviousState && StateStack.TryPop(out var oldState))
             {
                 OnStatePop?.Invoke(oldState);
-                oldState.OnPoppedFromStack();
+                oldState.OnPopped();
             }
 
             // Perform the transition. If there's no state to transition to, simply work down the stack.
