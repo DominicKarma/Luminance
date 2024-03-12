@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -8,14 +7,29 @@ namespace KarmaLibrary.Core.Graphics.Automators
 {
     public class RenderTargetManager : ModSystem
     {
+        /// <summary>
+        ///     The set of all managed render targets.
+        /// </summary>
         internal static List<ManagedRenderTarget> ManagedTargets = [];
+
+        /// <summary>
+        ///     The event responsible for updating all render targets.
+        /// </summary>
+        /// <remarks>
+        ///     Should be subscribed for the purpose of rendering into render targets, to ensure that their contents are defined in a way that does not interfere with other parts of the game's rendering loop.
+        /// </remarks>
+        public static event RenderTargetUpdateDelegate RenderTargetUpdateLoopEvent;
+
+        /// <summary>
+        ///     How long standard render targets can go, in frames, before they are subject to automatic disposal.
+        /// </summary>
+        public static readonly int TimeUntilUntilUnusedTargetsAreDisposed = SecondsToFrames(10f);
 
         public delegate void RenderTargetUpdateDelegate();
 
-        public static event RenderTargetUpdateDelegate RenderTargetUpdateLoopEvent;
-
-        public static readonly int TimeUntilUntilUnusedTargetsAreDisposed = SecondsToFrames(5f);
-
+        /// <summary>
+        ///     Causes all managed render targets to become disposed, freeing their unmanaged resources.
+        /// </summary>
         internal static void DisposeOfTargets()
         {
             if (ManagedTargets is null)
@@ -28,9 +42,6 @@ namespace KarmaLibrary.Core.Graphics.Automators
                 ManagedTargets.Clear();
             });
         }
-
-        // For some reason, adding more arguments to this constructor causes really low end pcs to crash. I cannot find out why, so do not use them.
-        public static RenderTarget2D CreateScreenSizedTarget(int screenWidth, int screenHeight) => new(Main.instance.GraphicsDevice, screenWidth, screenHeight, false, SurfaceFormat.Bgra4444, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
 
         public override void OnModLoad()
         {
@@ -51,7 +62,7 @@ namespace KarmaLibrary.Core.Graphics.Automators
         }
 
         /// <summary>
-        /// Evaluates all active render targets, checking if they need to be reset or disposed of.
+        ///     Evaluates all active render targets, checking if they need to be reset or disposed of.
         /// </summary>
         private void HandleTargetUpdateLoop(GameTime obj)
         {
@@ -79,7 +90,7 @@ namespace KarmaLibrary.Core.Graphics.Automators
         }
 
         /// <summary>
-        /// Checks a render target for whether it needs to be reset for any reason. If so, the reset is scheduled on the main thread for the next frame.
+        ///     Checks a render target for whether it needs to be reset for any reason. If so, the reset is scheduled on the main thread for the next frame.
         /// </summary>
         /// <param name="target">The render target to check.</param>
         private static void PerformTargetResetCheck(ManagedRenderTarget target)
