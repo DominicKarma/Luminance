@@ -8,28 +8,72 @@ namespace KarmaLibrary.Core.Graphics.SpecificEffectManagers
     [Autoload(Side = ModSide.Client)]
     public class CameraPanSystem : ModSystem
     {
-        public static Vector2 CameraFocusPoint
+        /// <summary>
+        ///     The position the camera should focus on.
+        /// </summary>
+        internal static Vector2 CameraFocusPoint
         {
             get;
             set;
         }
 
         /// <summary>
-        /// Where the <see cref="Main.screenPosition"/> would be without modifications.
+        ///     The 0-1 interpolant that dictates how much the camera position should move.
         /// </summary>
-        public static Vector2 UnmodifiedCameraPosition =>
-            Main.LocalPlayer.TopLeft + new Vector2(Main.LocalPlayer.width * 0.5f, Main.LocalPlayer.height - 21f) - Main.ScreenSize.ToVector2() * 0.5f + Vector2.UnitY * Main.LocalPlayer.gfxOffY;
-
-        public static float CameraPanInterpolant
+        internal static float CameraPanInterpolant
         {
             get;
             set;
         }
 
-        public static float Zoom
+        /// <summary>
+        ///     How much the camera should zoom in. Accepts negative values up -1 for zoom-out effects.
+        /// </summary>
+        internal static float Zoom
         {
             get;
             set;
+        }
+
+        /// <summary>
+        ///     Causes the camera to pan towards a given point, with a given 0-1 interpolant.
+        /// </summary>
+        /// <param name="panDestination">The point at which the camera should focus on.</param>
+        /// <param name="panInterpolant">How much the screen position should pan towards the destination.</param>
+        public static void PanTowards(Vector2 panDestination, float panInterpolant)
+        {
+            CameraFocusPoint = panDestination;
+            CameraPanInterpolant = panInterpolant;
+        }
+
+        /// <summary>
+        ///     Zooms the camera in by a given factor. Does not work with negative values.
+        /// </summary>
+        /// <remarks>
+        ///     A value of 0 means no zoom-in, a value of 1 means 2x the zoom in, a value of 2 means 3x, and so on.
+        /// </remarks>
+        /// <param name="zoom">The amount to zoom in by.</param>
+        public static void ZoomIn(float zoom)
+        {
+            if (zoom < 0f)
+                zoom = 0f;
+
+            Zoom = zoom;
+        }
+
+        /// <summary>
+        ///     Zooms the camera out by a given factor. Does not work with negative values.
+        /// </summary>
+        /// <remarks>
+        ///     A value of 0 means no zoom-in, a value of 1 means 0.5x the zoom, a value of 2 means 0.333x, and so on.
+        /// </remarks>
+        /// <param name="zoom">The amount to zoom out by.</param>
+        public static void ZoomOut(float zoom)
+        {
+            if (zoom < 0f)
+                zoom = 0f;
+
+            Zoom = 1f / (zoom + 1f) - 1f;
         }
 
         public override void ModifyScreenPosition()
@@ -62,9 +106,9 @@ namespace KarmaLibrary.Core.Graphics.SpecificEffectManagers
             }
         }
 
-        public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
+        public override void ModifyTransformMatrix(ref SpriteViewMatrix transform)
         {
-            Transform.Zoom *= 1f + Zoom;
+            transform.Zoom *= 1f + Zoom;
         }
     }
 }
