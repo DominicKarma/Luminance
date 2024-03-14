@@ -10,38 +10,7 @@ namespace Luminance.Common.Easings
         /// <summary>
         /// A piecewise rotation curve that takes up a part of the domain of a <see cref="PiecewiseCurve"/>, specifying the equivalent range and curvature in said domain.
         /// </summary>
-        protected readonly struct CurveSegment(Quaternion startingRotation, Quaternion endingRotation, float animationStart, float animationEnd, EasingCurves.Curve curve, EasingType curveType)
-        {
-            /// <summary>
-            /// The starting output rotation value. This is what is outputted when the <see cref="PiecewiseCurve"/> is evaluated at <see cref="AnimationStart"/>.
-            /// </summary>
-            internal readonly Quaternion StartingRotation = startingRotation;
-
-            /// <summary>
-            /// The ending output rotation value. This is what is outputted when the <see cref="PiecewiseCurve"/> is evaluated at <see cref="AnimationEnd"/>.
-            /// </summary>
-            internal readonly Quaternion EndingRotation = endingRotation;
-
-            /// <summary>
-            /// The start of this curve segment's domain relative to the <see cref="PiecewiseCurve"/>.
-            /// </summary>
-            internal readonly float AnimationStart = animationStart;
-
-            /// <summary>
-            /// The ending of this curve segment's domain relative to the <see cref="PiecewiseCurve"/>.
-            /// </summary>
-            internal readonly float AnimationEnd = animationEnd;
-
-            /// <summary>
-            /// The easing curve that dictates the how the outputs vary between <see cref="StartingRotation"/> and <see cref="EndingRotation"/>.
-            /// </summary>
-            internal readonly EasingCurves.Curve Curve = curve;
-
-            /// <summary>
-            /// The easing curve type from In, Out, and InOut that specifies how the <see cref="Curve"/> is sampled.
-            /// </summary>
-            internal readonly EasingType CurveType = curveType;
-        }
+        public record CurveSegment(Quaternion StartingRotation, Quaternion EndingRotation, float AnimationStart, float AnimationEnd, EasingCurves.Curve Curve, EasingType CurveType);
 
         /// <summary>
         /// The list of <see cref="CurveSegment"/> that encompass the entire 0-1 domain of this function.
