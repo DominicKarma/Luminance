@@ -130,7 +130,7 @@ namespace Luminance.Core.Graphics
             if (MainSettings.Pixelate)
                 CalcuatePixelatedPerspectiveMatrices(out view, out projection);
             else
-                CalculatePrimitivePerspectiveMatricies(out view, out projection);
+                CalculatePrimitiveMatrices(out view, out projection);
 
             var shaderToUse = MainSettings.Shader ?? GameShaders.Misc["CalamityMod:StandardPrimitiveShader"];
             shaderToUse.Shader.Parameters["uWorldViewProjection"].SetValue(view * projection);

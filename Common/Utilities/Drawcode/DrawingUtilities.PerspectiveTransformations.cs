@@ -7,11 +7,11 @@ namespace Luminance.Common.Utilities
     public static partial class Utilities
     {
         /// <summary>
-        /// Calculates perspective matrices for usage by vertex shaders, notably in the context of primitive meshes.
+        ///     Calculates matrices for usage by vertex shaders, notably in the context of primitive meshes.
         /// </summary>
         /// <param name="viewMatrix">The view matrix.</param>
         /// <param name="projectionMatrix">The projection matrix.</param>
-        public static void CalculatePrimitivePerspectiveMatricies(out Matrix viewMatrix, out Matrix projectionMatrix, bool ui = false)
+        public static void CalculatePrimitiveMatrices(out Matrix viewMatrix, out Matrix projectionMatrix, bool ui = false)
         {
             Vector2 zoom = Main.GameViewMatrix.Zoom;
             if (ui)
@@ -43,7 +43,7 @@ namespace Luminance.Common.Utilities
         }
 
         /// <summary>
-        /// Calculates a <see cref="Matrix"/> for the purpose of <see cref="SpriteBatch"/> resets in the context of background/sky drawing.
+        ///     Calculates a <see cref="Matrix"/> for the purpose of <see cref="SpriteBatch"/> resets in the context of background/sky drawing.
         /// </summary>
         public static Matrix GetCustomSkyBackgroundMatrix()
         {
@@ -55,12 +55,11 @@ namespace Luminance.Common.Utilities
         }
 
         /// <summary>
-        /// Converts world positions to 0-1 UV values relative to the screen. This is incredibly useful when supplying position data to screen shaders.
+        ///     Converts world positions to 0-1 UV values relative to the screen. This is incredibly useful when supplying position data to screen shaders.
         /// </summary>
         /// <param name="worldPosition">The world position.</param>
         public static Vector2 WorldSpaceToScreenUV(Vector2 worldPosition)
         {
-            // Calculate the coordinates relative to the raw screen size. This does not yet account for things like zoom.
             Vector2 baseUV = (worldPosition - Main.screenPosition) / Main.ScreenSize.ToVector2();
 
             // Once the above normalized coordinates are calculated, apply the game view matrix to the result to ensure that zoom is incorporated into the result.

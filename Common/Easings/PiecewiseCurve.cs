@@ -23,23 +23,18 @@ namespace Luminance.Common.Easings
             if (animationEnd <= 0f || animationEnd > 1f)
                 throw new InvalidOperationException("A piecewise animation curve segment cannot have a domain outside of 0-1.");
 
-            // Add the new segment.
             segments.Add(new(startingHeight.Value, endingHeight, animationStart, animationEnd, curve, curveType));
 
-            // Return the piecewise curve that called this method to allow method chaining.
             return this;
         }
 
         public float Evaluate(float interpolant)
         {
-            // Clamp the interpolant into the valid range.
             interpolant = Saturate(interpolant);
 
-            // Calculate the local interpolant relative to the segment that the base interpolant fits into.
             CurveSegment segmentToUse = segments.Find(s => interpolant >= s.AnimationStart && interpolant <= s.AnimationEnd);
             float curveLocalInterpolant = InverseLerp(segmentToUse.AnimationStart, segmentToUse.AnimationEnd, interpolant);
 
-            // Calculate the segment value based on the local interpolant.
             return segmentToUse.Curve.Evaluate(segmentToUse.CurveType, segmentToUse.StartingHeight, segmentToUse.EndingHeight, curveLocalInterpolant);
         }
     }

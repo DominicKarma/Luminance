@@ -92,7 +92,6 @@
 
         public static float Evaluate(this Curve curve, EasingType easingType, float start, float end, float interpolant)
         {
-            // Clamp the interpolant into the valid range.
             interpolant = Saturate(interpolant);
 
             float easedInterpolant = easingType switch
