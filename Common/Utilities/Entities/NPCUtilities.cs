@@ -36,13 +36,25 @@ namespace Luminance.Common.Utilities
         }
 
         /// <summary>
-        /// A simple utility that gets an <see cref="NPC"/>'s <see cref="NPC.ModNPC"/> instance as a specific type without having to do clunky casting.
+        ///     A simple utility that gracefully gets a <see cref="NPC"/>'s <see cref="NPC.ModNPC"/> instance as a specific type without having to do clunky casting.
         /// </summary>
+        /// <remarks>
+        ///     In the case of casting errors, this will create a log message that informs the user of the failed cast and fall back on a dummy instance.
+        /// </remarks>
         /// <typeparam name="T">The ModNPC type to convert to.</typeparam>
-        /// <param name="npc">The NPC to access the ModNPC from.</param>
-        public static T As<T>(this NPC npc) where T : ModNPC
+        /// <param name="n">The NPC to access the ModNPC from.</param>
+        public static T As<T>(this NPC n) where T : ModNPC
         {
-            return npc.ModNPC as T;
+            if (n.ModNPC is T castedNPC)
+                return castedNPC;
+
+            bool vanillaNPC = n.ModNPC is null;
+            if (vanillaNPC)
+                Luminance.Instance.Logger.Warn($"A vanilla NPC of ID {n.type} was erroneously casted to a mod NPC of type {nameof(T)}.");
+            else
+                Luminance.Instance.Logger.Warn($"A NPC of type {n.ModNPC.Name} was erroneously casted to a mod NPC of type {nameof(T)}.");
+
+            return ModContent.GetInstance<T>();
         }
 
         /// <summary>

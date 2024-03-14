@@ -113,13 +113,25 @@ namespace Luminance.Common.Utilities
         }
 
         /// <summary>
-        /// A simple utility that gets an <see cref="Projectile"/>'s <see cref="Projectile.ModProjectile"/> instance as a specific type without having to do clunky casting.
+        ///     A simple utility that gracefully gets a <see cref="Projectile"/>'s <see cref="Projectile.ModProjectile"/> instance as a specific type without having to do clunky casting.
         /// </summary>
+        /// <remarks>
+        ///     In the case of casting errors, this will create a log message that informs the user of the failed cast and fall back on a dummy instance.
+        /// </remarks>
         /// <typeparam name="T">The ModProjectile type to convert to.</typeparam>
         /// <param name="p">The Projectile to access the ModProjectile from.</param>
         public static T As<T>(this Projectile p) where T : ModProjectile
         {
-            return p.ModProjectile as T;
+            if (p.ModProjectile is T castedProjectile)
+                return castedProjectile;
+
+            bool vanillaProjectile = p.ModProjectile is null;
+            if (vanillaProjectile)
+                Luminance.Instance.Logger.Warn($"A vanilla projectile of ID {p.type} was erroneously casted to a mod projectile of type {nameof(T)}.");
+            else
+                Luminance.Instance.Logger.Warn($"A projectile of type {p.ModProjectile.Name} was erroneously casted to a mod projectile of type {nameof(T)}.");
+
+            return ModContent.GetInstance<T>();
         }
     }
 }
