@@ -9,38 +9,7 @@ namespace Luminance.Common.Easings
         /// <summary>
         /// A piecewise curve that takes up a part of the domain of a <see cref="PiecewiseCurve"/>, specifying the equivalent range and curvature in said domain.
         /// </summary>
-        protected readonly struct CurveSegment(float startingHeight, float endingHeight, float animationStart, float animationEnd, EasingCurves.Curve curve, EasingType curveType)
-        {
-            /// <summary>
-            /// The starting output height value. This is what is outputted when the <see cref="PiecewiseCurve"/> is evaluated at <see cref="AnimationStart"/>.
-            /// </summary>
-            internal readonly float StartingHeight = startingHeight;
-
-            /// <summary>
-            /// The ending output height value. This is what is outputted when the <see cref="PiecewiseCurve"/> is evaluated at <see cref="AnimationEnd"/>.
-            /// </summary>
-            internal readonly float EndingHeight = endingHeight;
-
-            /// <summary>
-            /// The start of this curve segment's domain relative to the <see cref="PiecewiseCurve"/>.
-            /// </summary>
-            internal readonly float AnimationStart = animationStart;
-
-            /// <summary>
-            /// The ending of this curve segment's domain relative to the <see cref="PiecewiseCurve"/>.
-            /// </summary>
-            internal readonly float AnimationEnd = animationEnd;
-
-            /// <summary>
-            /// The easing curve that dictates the how the outputs vary between <see cref="StartingHeight"/> and <see cref="EndingHeight"/>.
-            /// </summary>
-            internal readonly EasingCurves.Curve Curve = curve;
-
-            /// <summary>
-            /// The easing curve type from In, Out, and InOut that specifies how the <see cref="Curve"/> is sampled.
-            /// </summary>
-            internal readonly EasingType CurveType = curveType;
-        }
+        public record CurveSegment(float StartingHeight, float EndingHeight, float AnimationStart, float AnimationEnd, EasingCurves.Curve Curve, EasingType CurveType);
 
         /// <summary>
         /// The list of <see cref="CurveSegment"/> that encompass the entire 0-1 domain of this function.
