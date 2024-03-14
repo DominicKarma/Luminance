@@ -8,7 +8,7 @@ namespace Luminance.Common.Utilities
         /// <summary>
         /// Enables toggled tile states on the X frame based on whether a wire signal is flowing through the tile.
         /// <br></br>
-        /// This applies for multiframed tiles.
+        /// This works for multi-framed tiles, checking the top-left-most tile.
         /// </summary>
         /// <param name="type">The tile's ID.</param>
         /// <param name="x">The X position of the tile.</param>
@@ -35,7 +35,7 @@ namespace Luminance.Common.Utilities
                 }
             }
 
-            // A wire signal was processed. That means it doesn't need to happen again for all the subtiles.
+            // A wire signal was processed. That means it doesn't need to happen again for all the sub-tiles.
             // Use SkipWire to prevent this.
             if (Wiring.running)
             {
@@ -48,7 +48,7 @@ namespace Luminance.Common.Utilities
         }
 
         /// <summary>
-        /// Performs an index-safe tile retrieval. If this mistakenly attempts to access a tile outside of the world, it returns a default, empty tile rather than throwing an <see cref="IndexOutOfRangeException"/>.
+        ///     Performs an index-safe tile retrieval. If this mistakenly attempts to access a tile outside of the world, it returns a default, empty tile rather than throwing an <see cref="IndexOutOfRangeException"/>.
         /// </summary>
         /// <param name="x">The X position of the tile.</param>
         /// <param name="y">The Y position of the tile.</param>

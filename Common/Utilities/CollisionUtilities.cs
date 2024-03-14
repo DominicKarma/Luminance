@@ -6,7 +6,7 @@ namespace Luminance.Common.Utilities
     public static partial class Utilities
     {
         /// <summary>
-        /// Shifts a point until it reaches level ground.
+        ///     Shifts a point until it reaches level ground.
         /// </summary>
         /// <param name="p">The original point.</param>
         public static Point FindGroundVertical(Point p)
@@ -29,7 +29,7 @@ namespace Luminance.Common.Utilities
         }
 
         /// <summary>
-        /// Shifts a point until it reaches level ground.
+        ///     Shifts a point until it reaches level ground.
         /// </summary>
         /// <param name="p">The original point.</param>
         /// <param name="direction">The direction to search in.</param>

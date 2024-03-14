@@ -7,7 +7,7 @@ namespace Luminance.Common.Utilities
     public static partial class Utilities
     {
         /// <summary>
-        /// Defines a given <see cref="NPC"/>'s HP based on the current difficulty mode.
+        ///     Defines a given <see cref="NPC"/>'s HP based on the current difficulty mode.
         /// </summary>
         /// <param name="npc">The NPC to set the HP for.</param>
         /// <param name="normalModeHP">HP value for normal mode</param>
@@ -23,7 +23,7 @@ namespace Luminance.Common.Utilities
         }
 
         /// <summary>
-        /// Excludes a given <see cref="NPC"/> from the bestiary completely.
+        ///     Excludes a given <see cref="NPC"/> from the bestiary completely.
         /// </summary>
         /// <param name="npc">The NPC to apply the bestiary deletion to.</param>
         public static void ExcludeFromBestiary(this ModNPC npc)
@@ -57,8 +57,9 @@ namespace Luminance.Common.Utilities
             return ModContent.GetInstance<T>();
         }
 
+        // TODO -- Perhaps make this something that's cached every frame for performance?
         /// <summary>
-        /// Checks if any bosses are present.
+        ///     Checks if any bosses are present.
         /// </summary>
         public static bool AnyBosses()
         {

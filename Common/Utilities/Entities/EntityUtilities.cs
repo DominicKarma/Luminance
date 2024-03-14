@@ -6,7 +6,7 @@ namespace Luminance.Common.Utilities
     public static partial class Utilities
     {
         /// <summary>
-        /// Determine whether a given destination point is right of a given entity.
+        ///     Determine whether a given destination point is right of a given entity.
         /// </summary>
         /// <param name="entity">The entity to check relative to.</param>
         /// <param name="destination">The point to check.</param>
@@ -14,7 +14,7 @@ namespace Luminance.Common.Utilities
             entity.Center.X >= destination.X;
 
         /// <summary>
-        /// Determine whether a given destination point is right of a given entity.
+        ///     Determine whether a given destination point is right of a given entity.
         /// </summary>
         /// <param name="entity">The entity to check relative to.</param>
         /// <param name="other">The other entity whose center point should be checked.</param>

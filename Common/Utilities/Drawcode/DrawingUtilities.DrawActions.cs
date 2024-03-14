@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace Luminance.Common.Utilities
 {
     public static partial class Utilities
     {
+        // TODO -- This method is heavily based on Calamity's, but it's a utility method. Does it need to be rewritten?
+
         /// <summary>
-        /// Draws a projectile as a series of afterimages. The first of these afterimages is centered on the center of the projectile's hitbox.<br />
-        /// This function is guaranteed to draw the projectile itself, even if it has no afterimages and/or the Afterimages config option is turned off.
+        ///     Draws a projectile as a series of afterimages. The first of these afterimages is centered on the center of the projectile's hitbox.<br />
+        ///     This function is guaranteed to draw the projectile itself, even if it has no afterimages and/or the Afterimages config option is turned off.
         /// </summary>
         /// <param name="proj">The projectile to be drawn.</param>
         /// <param name="mode">The type of afterimage drawing code to use. Vanilla Terraria has three options: 0, 1, and 2.</param>
@@ -111,47 +110,6 @@ namespace Luminance.Common.Utilities
             {
                 Vector2 startPos = drawCentered ? proj.Center : proj.position;
                 Main.spriteBatch.Draw(texture, startPos - Main.screenPosition + new Vector2(0f, proj.gfxOffY), rectangle, proj.GetAlpha(lightColor), rotation, origin, proj.scale, spriteEffects, 0f);
-            }
-        }
-
-        /// <summary>
-        /// Generates special tooltip text for an item when they're holding the <see cref="Keys.LeftShift"/> button. Notably used for lore items.
-        /// </summary>
-        /// <param name="tooltips">The original tooltips.</param>
-        /// <param name="holdShiftTooltips">The tooltips to display when holding shift.</param>
-        /// <param name="hideNormalTooltip">Whether the original tooltips should be hidden when holding shift. Defaults to false.</param>
-        public static void DrawHeldShiftTooltip(List<TooltipLine> tooltips, TooltipLine[] holdShiftTooltips, bool hideNormalTooltip = false)
-        {
-            // Do not override anything if the Left Shift key is not being held.
-            if (!Main.keyState.IsKeyDown(Keys.LeftShift))
-                return;
-
-            // Acquire base tooltip data.
-            int firstTooltipIndex = -1;
-            int lastTooltipIndex = -1;
-            int standardTooltipCount = 0;
-            for (int i = 0; i < tooltips.Count; i++)
-            {
-                if (tooltips[i].Name.StartsWith("Tooltip"))
-                {
-                    if (firstTooltipIndex == -1)
-                    {
-                        firstTooltipIndex = i;
-                    }
-                    lastTooltipIndex = i;
-                    standardTooltipCount++;
-                }
-            }
-
-            // Replace tooltips.
-            if (firstTooltipIndex != -1)
-            {
-                if (hideNormalTooltip)
-                {
-                    tooltips.RemoveRange(firstTooltipIndex, standardTooltipCount);
-                    lastTooltipIndex -= standardTooltipCount;
-                }
-                tooltips.InsertRange(lastTooltipIndex + 1, holdShiftTooltips);
             }
         }
 

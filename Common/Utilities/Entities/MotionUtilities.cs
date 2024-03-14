@@ -6,18 +6,17 @@ namespace Luminance.Common.Utilities
     public static partial class Utilities
     {
         /// <summary>
-        /// Calculates the direction to a given position from an entity with safely performed underlying normalization.
+        ///     Calculates the direction to a given position from an entity with safely performed underlying normalization.
         /// </summary>
         /// <param name="entity">The entity to perform the calculations relative to.</param>
         /// <param name="destination">The position to get the direction towards.</param>
-        public static Vector2 DirectionToSafe(this Entity entity, Vector2 destination)
+        public static Vector2 SafeDirectionTo(this Entity entity, Vector2 destination)
         {
-            // I would prefer the name SafeDirectionTo but that name is already taken by Calamity's utility and having the exact same name could lead to ambiguity issues.
             return (destination - entity.Center).SafeNormalize(Vector2.Zero);
         }
 
         /// <summary>
-        /// Calculates the X direction to a given position from an entity.
+        ///     Calculates the X direction to a given position from an entity.
         /// </summary>
         /// <param name="entity">The entity to perform the calculations relative to.</param>
         /// <param name="destination">The position to get the direction towards.</param>
@@ -52,7 +51,7 @@ namespace Luminance.Common.Utilities
             // Determine the ideal speed based on the distance to the slowdown radius rather than the destination itself.
             // This math is functionally equivalent to the idealVelocity vector in SmoothFlyNear, barring that quirk.
             float idealSpeed = distanceToSlowdownRadius * Clamp(movementSharpnessInterpolant, 0.0001f, 1f);
-            Vector2 idealVelocity = entity.DirectionToSafe(destination) * idealSpeed;
+            Vector2 idealVelocity = entity.SafeDirectionTo(destination) * idealSpeed;
 
             // Same velocity interpolation behavior as SmoothFlyNear.
             entity.velocity = Vector2.Lerp(entity.velocity, idealVelocity, Clamp(1f - movementSmoothnessInterpolant, 0.0001f, 1f));
