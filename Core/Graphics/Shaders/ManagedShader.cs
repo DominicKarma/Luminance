@@ -6,7 +6,7 @@ using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
 
-namespace Luminance.Core.Graphics.Shaders
+namespace Luminance.Core.Graphics
 {
     [DebuggerDisplay("Shader - '{Name}'")]
     public sealed class ManagedShader
