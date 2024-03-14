@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.Graphics;
 using Terraria.ModLoader;
 
-namespace Luminance.Core.Graphics.SpecificEffectManagers
+namespace Luminance.Core.Graphics
 {
     [Autoload(Side = ModSide.Client)]
     public class CameraPanSystem : ModSystem

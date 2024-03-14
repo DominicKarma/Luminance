@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
-namespace Luminance.Core.Graphics.Automators
+namespace Luminance.Core.Graphics
 {
     [DebuggerDisplay("Width: {target?.Width ?? 0}, Height: {target?.Height ?? 0}, Uninitialized: {IsUninitialized}, Time since last usage: {TimeSinceLastUsage} frame(s)")]
     public class ManagedRenderTarget : IDisposable

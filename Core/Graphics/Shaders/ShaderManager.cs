@@ -6,7 +6,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace Luminance.Core.Graphics.Shaders
+namespace Luminance.Core.Graphics
 {
     public class ShaderManager : ModSystem
     {

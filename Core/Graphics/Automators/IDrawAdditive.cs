@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-namespace Luminance.Core.Graphics.Automators
+namespace Luminance.Core.Graphics
 {
     public interface IDrawAdditive
     {
