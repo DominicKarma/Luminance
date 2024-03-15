@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 
 namespace Luminance.Core.Graphics
@@ -128,12 +127,12 @@ namespace Luminance.Core.Graphics
             Matrix view;
             Matrix projection;
             if (MainSettings.Pixelate)
-                CalcuatePixelatedPerspectiveMatrices(out view, out projection);
+                CalculatePixelatedMatrices(out view, out projection);
             else
                 CalculatePrimitiveMatrices(out view, out projection);
 
-            var shaderToUse = MainSettings.Shader ?? GameShaders.Misc["CalamityMod:StandardPrimitiveShader"];
-            shaderToUse.Shader.Parameters["uWorldViewProjection"].SetValue(view * projection);
+            var shaderToUse = MainSettings.Shader ?? ShaderManager.GetShader("StandardPrimitiveShader");
+            shaderToUse.TrySetParameter("uWorldViewProjection", view * projection);
             shaderToUse.Apply();
 
             VertexBuffer.SetData(MainVertices, 0, VerticesIndex, SetDataOptions.Discard);
@@ -304,10 +303,10 @@ namespace Luminance.Core.Graphics
             }
         }
 
-        private static void CalcuatePixelatedPerspectiveMatrices(out Matrix viewMatrix, out Matrix projectionMatrix)
+        private static void CalculatePixelatedMatrices(out Matrix viewMatrix, out Matrix projectionMatrix)
         {
-            // Due to the scaling, the normal transformation calcuations do not work with pixelated primitives.
-            projectionMatrix = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+            // Due to the scaling, the normal transformation calculations do not work with pixelated primitives.
+            projectionMatrix = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0f, -1f, 1f);
             viewMatrix = Matrix.Identity;
         }
         #endregion
