@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Luminance.Core.Graphics.Automators;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace Luminance.Core.Graphics
 {
