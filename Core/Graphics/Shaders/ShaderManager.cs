@@ -79,6 +79,16 @@ namespace Luminance.Core.Graphics
         public static ManagedShader GetShader(string name) => shaders[name];
 
         /// <summary>
+        ///     Safely retrieves a managed shader of a given name.
+        /// </summary>
+        /// <remarks>
+        ///     In this context, the "name" must correspond with the file name of the shader, not including the path extension.
+        /// </remarks>
+        /// <param name="name">The name of the shader.</param>
+        /// <param name="shader">The shader output.</param>
+        public static bool TryGetShader(string name, out ManagedShader shader) => shaders.TryGetValue(name, out shader);
+
+        /// <summary>
         ///     Sets a shader with a given name in the registry manually.
         /// </summary>
         /// <param name="name">The name of the shader.</param>

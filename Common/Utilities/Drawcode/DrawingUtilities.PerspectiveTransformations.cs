@@ -9,19 +9,17 @@ namespace Luminance.Common.Utilities
         /// <summary>
         ///     Calculates matrices for usage by vertex shaders, notably in the context of primitive meshes.
         /// </summary>
+        /// <param name="width">The width of the overall view.</param>
+        /// <param name="height">The height of the overall view.</param>
         /// <param name="viewMatrix">The view matrix.</param>
         /// <param name="projectionMatrix">The projection matrix.</param>
-        public static void CalculatePrimitiveMatrices(out Matrix viewMatrix, out Matrix projectionMatrix, bool ui = false)
+        public static void CalculatePrimitiveMatrices(int width, int height, out Matrix viewMatrix, out Matrix projectionMatrix, bool ui = false)
         {
             Vector2 zoom = Main.GameViewMatrix.Zoom;
             if (ui)
                 zoom = Vector2.One;
 
             Matrix zoomScaleMatrix = Matrix.CreateScale(zoom.X, zoom.Y, 1f);
-
-            // Calculate screen bounds.
-            int width = Main.screenWidth;
-            int height = Main.screenHeight;
 
             // Get a matrix that aims towards the Z axis (these calculations are relative to a 2D world).
             viewMatrix = Matrix.CreateLookAt(Vector3.Zero, Vector3.UnitZ, Vector3.Up);

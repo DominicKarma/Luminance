@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Chat;
 using Terraria.ID;
@@ -53,6 +54,38 @@ namespace Luminance.Common.Utilities
                 A = color.A
             };
             return rgb;
+        }
+
+        /// <summary>
+        ///     Flips an origin around a <see cref="Texture2D"/> in accordance with a <see cref="SpriteEffects"/> direction.
+        /// </summary>
+        /// <param name="texture">The texture to flip based on.</param>
+        /// <param name="origin">The unmodified origin.</param>
+        /// <param name="flipDirection">The direction to use as a basis for flipping.</param>
+        public static Vector2 FlipOriginByDirection(Vector2 origin, Texture2D texture, SpriteEffects flipDirection)
+        {
+            if (flipDirection.HasFlag(SpriteEffects.FlipHorizontally))
+                origin.X = texture.Width - origin.X;
+            if (flipDirection.HasFlag(SpriteEffects.FlipVertically))
+                origin.Y = texture.Height - origin.Y;
+
+            return origin;
+        }
+
+        /// <summary>
+        ///     Flips an origin around a <see cref="Rectangle"/> frame in accordance with a <see cref="SpriteEffects"/> direction.
+        /// </summary>
+        /// <param name="frame">The frame to flip based on.</param>
+        /// <param name="origin">The unmodified origin.</param>
+        /// <param name="flipDirection">The direction to use as a basis for flipping.</param>
+        public static Vector2 FlipOriginByDirection(Vector2 origin, Rectangle frame, SpriteEffects flipDirection)
+        {
+            if (flipDirection.HasFlag(SpriteEffects.FlipHorizontally))
+                origin.X = frame.Width - origin.X;
+            if (flipDirection.HasFlag(SpriteEffects.FlipVertically))
+                origin.Y = frame.Height - origin.Y;
+
+            return origin;
         }
 
         /// <summary>

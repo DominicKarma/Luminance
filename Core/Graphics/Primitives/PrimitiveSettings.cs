@@ -3,7 +3,8 @@ using static Luminance.Core.Graphics.PrimitiveSettings;
 
 namespace Luminance.Core.Graphics
 {
-    public record PrimitiveSettings(VertexWidthFunction WidthFunction, VertexColorFunction ColorFunction, VertexOffsetFunction OffsetFunction = null, bool Smoothen = true, bool Pixelate = false, ManagedShader Shader = null, (Vector2 Left, Vector2 Right)? InitialVertexPositionsOverride = null)
+    public record PrimitiveSettings(VertexWidthFunction WidthFunction, VertexColorFunction ColorFunction, VertexOffsetFunction OffsetFunction = null, bool Smoothen = true, bool Pixelate = false,
+        ManagedShader Shader = null, int? ProjectionAreaWidth = null, int? ProjectionAreaHeight = null, bool UseUnscaledMatrix = false, (Vector2 Left, Vector2 Right)? InitialVertexPositionsOverride = null)
     {
         /// <summary>
         /// A delegate to dynamically determine the width of the trail at each position.

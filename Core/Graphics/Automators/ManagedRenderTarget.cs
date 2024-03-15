@@ -148,8 +148,24 @@ namespace Luminance.Core.Graphics
             target = InitializationAction(screenWidth, screenHeight);
         }
 
-        // These extension methods don't apply to ManagedRenderTarget instances, even with the implicit conversion operator. As such, it is implemented manually.
+        // These extension methods don't apply to ManagedRenderTarget instances, even with the implicit conversion operator. As such, they are implemented manually.
         public Vector2 Size() => Target.Size();
+
+        public void SwapToRenderTarget(Color? flushColor = null) => Target.SwapToRenderTarget(flushColor);
+
+        public void CopyContentsFrom(RenderTarget2D from)
+        {
+            Main.instance.GraphicsDevice.SetRenderTarget(Target);
+            Main.instance.GraphicsDevice.Clear(Color.Transparent);
+
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Matrix.Identity);
+            Main.spriteBatch.Draw(from, Vector2.Zero, null, Color.White);
+            Main.spriteBatch.End();
+
+            Main.instance.GraphicsDevice.SetRenderTarget(from);
+            Main.instance.GraphicsDevice.Clear(Color.Transparent);
+            Main.instance.GraphicsDevice.SetRenderTarget(null);
+        }
 
         // This allows for easy shorthand conversions from ManagedRenderTarget to RenderTarget2D without having to manually type out ManagedTarget.Target all the time.
         // This is functionally equivalent to accessing the getter manually and will activate all of the relevant checks within said getter.

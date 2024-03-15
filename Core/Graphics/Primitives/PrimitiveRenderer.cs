@@ -126,10 +126,12 @@ namespace Luminance.Core.Graphics
 
             Matrix view;
             Matrix projection;
-            if (MainSettings.Pixelate)
-                CalculatePixelatedMatrices(out view, out projection);
+            int width = MainSettings.ProjectionAreaWidth ?? Main.screenWidth;
+            int height = MainSettings.ProjectionAreaHeight ?? Main.screenHeight;
+            if (MainSettings.Pixelate || MainSettings.UseUnscaledMatrix)
+                CalculateUnscaledMatrices(width, height, out view, out projection);
             else
-                CalculatePrimitiveMatrices(out view, out projection);
+                CalculatePrimitiveMatrices(width, height, out view, out projection);
 
             var shaderToUse = MainSettings.Shader ?? ShaderManager.GetShader("StandardPrimitiveShader");
             shaderToUse.TrySetParameter("uWorldViewProjection", view * projection);
@@ -303,10 +305,10 @@ namespace Luminance.Core.Graphics
             }
         }
 
-        private static void CalculatePixelatedMatrices(out Matrix viewMatrix, out Matrix projectionMatrix)
+        private static void CalculateUnscaledMatrices(int width, int height, out Matrix viewMatrix, out Matrix projectionMatrix)
         {
             // Due to the scaling, the normal transformation calculations do not work with pixelated primitives.
-            projectionMatrix = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0f, -1f, 1f);
+            projectionMatrix = Matrix.CreateOrthographicOffCenter(0, width, height, 0f, -1f, 1f);
             viewMatrix = Matrix.Identity;
         }
         #endregion

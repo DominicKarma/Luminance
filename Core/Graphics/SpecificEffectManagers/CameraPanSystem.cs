@@ -29,7 +29,7 @@ namespace Luminance.Core.Graphics
         /// <summary>
         ///     How much the camera should zoom in. Accepts negative values up -1 for zoom-out effects.
         /// </summary>
-        internal static float Zoom
+        public static float Zoom
         {
             get;
             set;
