@@ -1,5 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Luminance.Core.Graphics;
+using System;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Microsoft.Xna.Framework;
 
 namespace Luminance.Common.Utilities
 {
@@ -138,6 +141,32 @@ namespace Luminance.Common.Utilities
             // Apply the screen culling.
             Main.instance.GraphicsDevice.ScissorRectangle = new(-2, -2, Main.screenWidth + 4, Main.screenHeight + 4);
             return DefaultRasterizerScreenCull;
+        }
+
+        /// <summary>
+        /// Draws an atlas texture to the screen.
+        /// </summary>
+        public static void Draw(this SpriteBatch spriteBatch, AtlasTexture atlasTexture, Vector2 position, Rectangle? frame, Color color, float rotation = 0f, Vector2? origin = null, Vector2? scale = null, SpriteEffects spriteEffects = SpriteEffects.None)
+        {
+            // Initialize default values where necessary.
+            frame ??= atlasTexture.Frame;
+            scale ??= Vector2.One;
+
+            // Clamp the framing to the atlas element. It should NOT go outside of its bounds on the atlas.
+            float xValue = Clamp(frame.Value.X, atlasTexture.Frame.X, atlasTexture.Frame.X + atlasTexture.Frame.Width);
+            float yValue = Clamp(frame.Value.Y, atlasTexture.Frame.Y, atlasTexture.Frame.Y + atlasTexture.Frame.Height);
+            float width = MathF.Min(atlasTexture.Frame.Width - frame.Value.X + atlasTexture.Frame.X, Clamp(frame.Value.Width, 0f, atlasTexture.Frame.Width));
+            float height = MathF.Min(atlasTexture.Frame.Height - frame.Value.Y + atlasTexture.Frame.Y, Clamp(frame.Value.Height, 0f, atlasTexture.Frame.Height));
+            Rectangle finalFrame = new((int)xValue, (int)yValue, (int)width, (int)height);
+
+            // The origin must be moved to the appropriate atlas position if user defined.
+            if (origin != null)
+                origin += new Vector2(atlasTexture.Frame.X, atlasTexture.Frame.Y);
+            // Else, initialize it to the center of the atlas texture frame.
+            else
+                origin ??= finalFrame.Size() * 0.5f;
+
+            spriteBatch.Draw(atlasTexture.Atlas.Texture.Value, position, finalFrame, color, rotation, origin.Value, scale.Value, spriteEffects, 0f);
         }
     }
 }
