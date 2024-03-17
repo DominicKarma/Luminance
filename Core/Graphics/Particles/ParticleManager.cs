@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Threading;
 using Terraria.ModLoader;
@@ -14,11 +10,18 @@ namespace Luminance.Core.Graphics
     {
         internal static readonly List<Particle> ActiveParticles = new();
 
-        private static readonly Dictionary<BlendState, HashSet<Particle>> DrawLists = new();
+        private static readonly Dictionary<BlendState, HashSet<Particle>> DrawCollectionsByBlendState = new();
 
         public override void Load() => On_Main.DrawDust += DrawParticles;
 
         public override void Unload() => On_Main.DrawDust -= DrawParticles;
+
+        public override void OnWorldUnload()
+        {
+            ActiveParticles.Clear();
+            foreach (var collection in DrawCollectionsByBlendState.Values)
+                collection.Clear();
+        }
 
         public override void PostUpdateDusts()
         {
@@ -48,7 +51,7 @@ namespace Luminance.Core.Graphics
         {
             orig(self);
 
-            foreach (var keyValuePair in  DrawLists)
+            foreach (var keyValuePair in DrawCollectionsByBlendState)
             {
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, keyValuePair.Key, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
@@ -65,9 +68,9 @@ namespace Luminance.Core.Graphics
 
         private static HashSet<Particle> GetCorrectDrawCollection(BlendState blendState)
         {
-            if (!DrawLists.ContainsKey(blendState))
-                DrawLists[blendState] = new();
-            return DrawLists[blendState];
+            if (!DrawCollectionsByBlendState.ContainsKey(blendState))
+                DrawCollectionsByBlendState[blendState] = new();
+            return DrawCollectionsByBlendState[blendState];
         }
     }
 }

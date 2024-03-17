@@ -75,17 +75,27 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// The maximum lifetime of the particle, in seconds.
         /// </summary>
-        public float Lifetime;
+        public int Lifetime;
+
+        /// <summary>
+        /// The direction of the particle.
+        /// </summary>
+        public int Direction;
 
         /// <summary>
         /// A 0-1 interlopant of how far along its lifetime the particle is.
         /// </summary>
-        public float LifetimeRatio => Time / Lifetime;
+        public float LifetimeRatio => Time / (float)Lifetime;
 
         /// <summary>
         /// The blend state to draw the particle with. Defaults to <see cref="BlendState.AlphaBlend"/>.
         /// </summary>
         public virtual BlendState BlendState => BlendState.AlphaBlend;
+
+        /// <summary>
+        /// How many frames this particle has in its standard texture. Defaults to 1.
+        /// </summary>
+        public virtual int FrameCount => 1;
 
         /// <summary>
         /// Spawns the particle into the world.
@@ -100,12 +110,16 @@ namespace Luminance.Core.Graphics
                 ParticleManager.ActiveParticles.Remove(ParticleManager.ActiveParticles.First());
 
             ParticleManager.ActiveParticles.Add(this);
-
             ParticleManager.AddToDrawList(this);
 
             Texture = AtlasManager.GetTexture(AtlasTextureName);
             return this;
         }
+
+        /// <summary>
+        /// Immediately destroys this particle next update.
+        /// </summary>
+        public void Kill() => Time = Lifetime;
 
         /// <summary>
         /// Override to run custom update code for the particle. Does nothing by default.
@@ -119,10 +133,7 @@ namespace Luminance.Core.Graphics
         /// Override to run custom drawcode for the particle. Draws the particle texture to the screen by default.
         /// </summary>
         /// <param name="drawBatch"></param>
-        public virtual void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(Texture, Position - Main.screenPosition, null, DrawColor, Rotation, null, Scale, SpriteEffects.None);
-        }
+        public virtual void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(Texture, Position - Main.screenPosition, Frame, DrawColor, Rotation, null, Scale, Direction.ToSpriteDirection());
         #endregion
     }
 }
