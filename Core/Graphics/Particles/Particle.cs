@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -107,7 +103,7 @@ namespace Luminance.Core.Graphics
             Time = new();
 
             if (ParticleManager.ActiveParticles.Count > ModContent.GetInstance<Config>().MaxParticles)
-                ParticleManager.ActiveParticles.Remove(ParticleManager.ActiveParticles.First());
+                ParticleManager.ActiveParticles.First().Kill();
 
             ParticleManager.ActiveParticles.Add(this);
             ParticleManager.AddToDrawList(this);
