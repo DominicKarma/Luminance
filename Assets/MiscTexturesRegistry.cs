@@ -14,11 +14,11 @@ namespace Luminance.Assets
 
         public const string InvisiblePixelPath = $"{ExtraTexturesPath}/InvisiblePixel";
 
-        public const string ExtraTexturesPath = "Luminance/Assets/ExtraTextures";
+        public const string ExtraTexturesPath = "Luminance/Assets";
 
-        public const string GreyscaleTexturesPath = "Luminance/Assets/ExtraTextures/GreyscaleTextures";
+        public const string GreyscaleTexturesPath = "Luminance/Assets/GreyscaleTextures";
 
-        public const string NoiseTexturesPath = "Luminance/Assets/ExtraTextures/Noise";
+        public const string NoiseTexturesPath = "Luminance/Assets/Noise";
 
         public const string ChromaticBurstPath = $"{GreyscaleTexturesPath}/ChromaticBurst";
 
