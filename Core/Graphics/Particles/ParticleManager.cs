@@ -60,6 +60,10 @@ namespace Luminance.Core.Graphics
 
                 Main.spriteBatch.End();
             }
+
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            MetaballManager.DrawMetaballTargets();
+            Main.spriteBatch.End();
         }
 
         internal static void AddToDrawList(Particle particle) => GetCorrectDrawCollection(particle.BlendState).Add(particle);
