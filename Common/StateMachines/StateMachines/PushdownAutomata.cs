@@ -102,10 +102,12 @@ namespace Luminance.Common.StateMachines
             if (newState is not null)
                 StateStack.Push(StateRegistry[newState.Value]);
 
+            // It is important this is called before the callback, as the most common use of this event is to reset commonly used variables, and that should
+            // not occur after they've potentially been set in the callback.
+            OnStateTransition?.Invoke(!transition.RememberPreviousState);
+
             // Access the callback, if one is used.
             transition.TransitionCallback?.Invoke();
-
-            OnStateTransition?.Invoke(!transition.RememberPreviousState);
 
             // Since a transition happened, recursively call Update again.
             // This allows for multiple state transitions to happen in a single frame if necessary.
