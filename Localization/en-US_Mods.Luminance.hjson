@@ -1,0 +1,15 @@
+Configs: {
+	Config: {
+		DisplayName: Config
+
+		MaxParticles: {
+			Label: Max Particles
+			Tooltip: Changes the maximum number of particles that can exist at once
+		}
+
+		ScreenshakeModifier: {
+			Label: Screenshake Modifier
+			Tooltip: Modifies the strength of screenshake effects. Set to 0 to disable screenshake entirely.
+		}
+	}
+}

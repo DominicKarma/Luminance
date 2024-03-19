@@ -10,22 +10,30 @@ namespace Luminance.Core.Graphics
     {
         public class ShakeInfo
         {
-            // This indicates the maximum amount BaseDirection can be rotated by when a shake occurs. At sufficiently high values there is effectively no shake direction and it's equivalent to NextVector2Circular.
+            /// <summary>
+            /// This indicates the maximum amount BaseDirection can be rotated by when a shake occurs. At sufficiently high values there is effectively no shake direction and it's equivalent to NextVector2Circular.
+            /// </summary>
             public float AngularVariance;
 
-            // This indicate how much, in pixels, the screen should shake.
+            /// <summary>
+            /// This indicate how much, in pixels, the screen should shake.
+            /// </summary>
             public float ShakeStrength;
 
-            // This indicates the general direction the shake should occur in.
+            /// <summary>
+            /// This indicates the general direction the shake should occur in.
+            /// </summary>
             public Vector2 BaseDirection;
 
-            // This indicates how much the shake should dissipate every frame.
+            /// <summary>
+            /// This indicates how much the shake should dissipate every frame.
+            /// </summary>
             public float ShakeStrengthDissipationIncrement;
 
             public void Apply()
             {
                 float shakeOffset = ShakeStrength;
-                Main.screenPosition += BaseDirection.RotatedByRandom(AngularVariance) * shakeOffset;
+                Main.screenPosition += BaseDirection.RotatedByRandom(AngularVariance) * shakeOffset * (ModContent.GetInstance<Config>().ScreenshakeModifier * 0.01f);
             }
         }
 
