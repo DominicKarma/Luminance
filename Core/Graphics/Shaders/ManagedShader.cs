@@ -47,11 +47,6 @@ namespace Luminance.Core.Graphics
             parameterCache = [];
         }
 
-        ~ManagedShader()
-        {
-            Dispose();
-        }
-
         internal bool ParameterIsCachedAsValue(string parameterName, object value)
         {
             // If the parameter cache has not registered this parameter yet, that means it can't have changed, because there's nothing to compare against.

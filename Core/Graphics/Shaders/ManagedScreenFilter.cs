@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 
@@ -26,11 +26,6 @@ namespace Luminance.Core.Graphics
         /// A wrapper class for <see cref="Effect"/> that is focused around screen filter effects.
         /// </summary>
         public ManagedScreenFilter(Ref<Effect> effect) => Effect = effect;
-
-        ~ManagedScreenFilter()
-        {
-            Dispose();
-        }
 
         public bool Disposed
         {
