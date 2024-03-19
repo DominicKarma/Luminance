@@ -1,55 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 
 namespace Luminance.Core.Graphics
 {
-    public sealed class ManagedShader : IDisposable
+    public class ManagedScreenFilter : IDisposable
     {
         /// <summary>
-        ///     A managed copy of all parameter data. Used to minimize excess SetValue calls, in cases where the value aren't actually being changed.
+        /// A managed copy of all parameter data. Used to minimize excess SetValue calls, in cases where the value aren't actually being changed.
         /// </summary>
         private readonly Dictionary<string, object> parameterCache;
 
-        /// <summary>
-        ///     The shader reference underlying this wrapper.
-        /// </summary>
-        public readonly Ref<Effect> Shader;
+        public Ref<Effect> Effect
+        {
+            get;
+            internal set;
+        }
+
+        public Effect WrappedEffect => Effect.Value;
 
         /// <summary>
-        /// Whether this shader is disposed.
+        /// A wrapper class for <see cref="Effect"/> that is focused around screen filter effects.
         /// </summary>
+        public ManagedScreenFilter(Ref<Effect> effect) => Effect = effect;
+
+        ~ManagedScreenFilter()
+        {
+            Dispose();
+        }
+
         public bool Disposed
         {
             get;
             private set;
         }
 
-        /// <summary>
-        ///     The standard parameter name prefix for texture sizes.
-        /// </summary>
-        public const string TextureSizeParameterPrefix = "textureSize";
-
-        /// <summary>
-        ///     The standard pass name when autoloading shaders.
-        /// </summary>
-        public const string DefaultPassName = "AutoloadPass";
-
-        internal ManagedShader(Ref<Effect> shader)
+        public bool IsActive
         {
-            Shader = shader;
-
-            // Initialize the parameter cache.
-            parameterCache = [];
+            get;
+            private set;
         }
 
-        ~ManagedShader()
+        /// <summary>
+        /// The opacity of the filter. As long as this is above 0, the filter will be applied for that frame.
+        /// </summary>
+        public float Opacity
         {
-            Dispose();
+            get;
+            private set;
+        }
+
+        public Vector2 FocusPosition
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Sets "mainColor" to the provided value, if it exists.
+        /// </summary>
+        /// <param name="color"></param>
+        public ManagedScreenFilter SetMainColor(Color color)
+        {
+            WrappedEffect.Parameters["mainColor"]?.SetValue(color.ToVector3());
+            return this;
+        }
+
+        /// <summary>
+        /// Sets "secondaryColor" to the provided value, if it exists.
+        /// </summary>
+        /// <param name="color"></param>
+        public ManagedScreenFilter SetSecondaryColor(Color color)
+        {
+            WrappedEffect.Parameters["secondaryColor"]?.SetValue(color.ToVector3());
+            return this;
+        }
+
+        public ManagedScreenFilter SetFocusPosition(Vector2 worldPosition)
+        {
+            FocusPosition = worldPosition;
+            return this;
         }
 
         internal bool ParameterIsCachedAsValue(string parameterName, object value)
@@ -63,17 +96,9 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        ///     Resets the cache of parameters for this shader. Should be used in contexts where the underlying shader used by this can be changed in contexts that do not respect the cache.
+        /// Attempts to send parameter data to the GPU for the filter to use.
         /// </summary>
-        /// <remarks>
-        ///     An example of this being useful could when be having this shader shared with a screen shader, which supplies its values directly and without the <see cref="TrySetParameter(string, object)"/> wrapper.
-        /// </remarks>
-        public void ResetCache() => parameterCache.Clear();
-
-        /// <summary>
-        ///     Attempts to send parameter data to the GPU for the shader to use.
-        /// </summary>
-        /// <param name="parameterName">The name of the parameter. This must correspond with the parameter name in the shader.</param>
+        /// <param name="parameterName">The name of the parameter. This must correspond with the parameter name in the filter.</param>
         /// <param name="value">The value to supply to the parameter.</param>
         public bool TrySetParameter(string parameterName, object value)
         {
@@ -82,7 +107,7 @@ namespace Luminance.Core.Graphics
                 return false;
 
             // Check if the parameter even exists. If it doesn't, obviously do nothing else.
-            EffectParameter parameter = Shader.Value.Parameters[parameterName];
+            EffectParameter parameter = Effect.Value.Parameters[parameterName];
             if (parameter is null)
                 return false;
 
@@ -206,58 +231,44 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        ///     Sets a texture at a given index for this shader to use based a the <see cref="Asset{T}"/> wrapper. Typically, index 0 is populated with whatever was passed into a <see cref="SpriteBatch"/>.Draw call.
+        /// Call to indicate that the filter should be active. This needs to happen each frame it should be active for.
         /// </summary>
-        /// <param name="textureAsset">The asset that contains the texture to supply.</param>
-        /// <param name="textureIndex">The index to place the texture in.</param>
-        /// <param name="samplerStateOverride">Which sampler should be used for the texture.</param>
-        public void SetTexture(Asset<Texture2D> textureAsset, int textureIndex, SamplerState samplerStateOverride = null)
-        {
-            // Shaders do not work on servers. If this method is called on one, terminate it immediately.
-            if (Main.netMode == NetmodeID.Server)
-                return;
+        public void Activate() => IsActive = true;
 
-            // Collect the texture.
-            Texture2D texture = textureAsset.Value;
-            SetTexture(texture, textureIndex, samplerStateOverride);
+        /// <summary>
+        /// Automatically called at the end of each update, after updating the filter.
+        /// </summary>
+        public void Deactivate() => IsActive = false;
+
+        public void Update()
+        {
+            if (IsActive)
+                Opacity = Clamp(Opacity + 0.015f, 0f, 1f);
+            else
+                Opacity = Clamp(Opacity - 0.015f, 0f, 1f);
         }
 
         /// <summary>
-        ///     Sets a texture at a given index for this shader to use. Typically, index 0 is populated with whatever was passed into a <see cref="SpriteBatch"/>.Draw call.
+        /// Apply the filter.
         /// </summary>
-        /// <param name="texture">The texture to supply.</param>
-        /// <param name="textureIndex">The index to place the texture in.</param>
-        /// <param name="samplerStateOverride">Which sampler should be used for the texture.</param>
-        public void SetTexture(Texture2D texture, int textureIndex, SamplerState samplerStateOverride = null)
+        /// <param name="setCommonParams"> By default, it will set the "time" and "uWorldViewProjection" parameter if it exists.</param>
+        /// <param name="pass">Specify a specific pass to use, if the shader has multiple.</param>
+        public void Apply(bool setCommonParams = true, string pass = null)
         {
-            // Shaders do not work on servers. If this method is called on one, terminate it immediately.
-            if (Main.netMode == NetmodeID.Server)
-                return;
+            // Apply commonly used parameters.
+            if (setCommonParams)
+                ApplyParams();
 
-            // Try to send texture sizes as parameters. Such parameters are optional, and no penalty is incurred if a shader decides that it doesn't need that data.
-            TrySetParameter($"{TextureSizeParameterPrefix}{textureIndex}", texture.Size());
-
-            // Grab the graphics device and send the texture to it.
-            var gd = Main.instance.GraphicsDevice;
-            gd.Textures[textureIndex] = texture;
-            if (samplerStateOverride is not null)
-                gd.SamplerStates[textureIndex] = samplerStateOverride;
+            WrappedEffect.CurrentTechnique.Passes[pass ?? ManagedShader.DefaultPassName].Apply();
         }
 
-        /// <summary>
-        ///     Prepares the shader for drawing.
-        /// </summary>
-        /// <param name="passName">The pass to apply.</param>
-        public void Apply(string passName = DefaultPassName)
+        private void ApplyParams()
         {
-            // Shaders do not work on servers. If this method is called on one, terminate it immediately.
-            if (Main.netMode == NetmodeID.Server || Disposed)
-                return;
-
-            // Try to send the global time as a parameter. It is optional, and no penalty is incurred if a shader decides that it doesn't need that data for some reason.
-            TrySetParameter("globalTime", Main.GlobalTimeWrappedHourly);
-
-            Shader.Value.CurrentTechnique.Passes[passName].Apply();
+            WrappedEffect.Parameters["time"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            WrappedEffect.Parameters["opacity"]?.SetValue(Opacity);
+            WrappedEffect.Parameters["focusPosition"]?.SetValue(FocusPosition);
+            WrappedEffect.Parameters["screenPosition"]?.SetValue(Main.screenPosition);
+            WrappedEffect.Parameters["screenSize"]?.SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
         }
 
         public void Dispose()
@@ -266,7 +277,7 @@ namespace Luminance.Core.Graphics
                 return;
 
             Disposed = true;
-            Shader.Value.Dispose();
+            Effect.Value.Dispose();
             parameterCache.Clear();
             GC.SuppressFinalize(this);
         }
