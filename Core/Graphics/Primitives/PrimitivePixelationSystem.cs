@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,6 +19,8 @@ namespace Luminance.Core.Graphics
         private static ManagedRenderTarget PixelationTarget_BeforeProjectiles;
 
         private static ManagedRenderTarget PixelationTarget_AfterProjectiles;
+
+        private static readonly Dictionary<PixelationPrimitiveLayer, Queue<Action>> CustomDrawActionsByLayer = new();
 
         private static RenderTarget2D CreatePixelTarget(int width, int height) => new(Main.instance.GraphicsDevice, width / 2, height / 2);
 
@@ -52,6 +55,15 @@ namespace Luminance.Core.Graphics
         #endregion
 
         #region Drawing To Targets
+
+        private static Queue<Action> SafeGetDrawActionLayer(PixelationPrimitiveLayer layer)
+        {
+            if (!CustomDrawActionsByLayer.ContainsKey(layer))
+                CustomDrawActionsByLayer[layer] = new();
+
+            return CustomDrawActionsByLayer[layer];
+        }
+
         private void DrawToTargets(On_Main.orig_CheckMonoliths orig)
         {
             if (Main.gameMenu)
@@ -105,10 +117,10 @@ namespace Luminance.Core.Graphics
 
             CurrentlyRendering = true;
 
-            DrawPrimsToRenderTarget(PixelationTarget_BeforeNPCs, beforeNPCs);
-            DrawPrimsToRenderTarget(PixelationTarget_AfterNPCs, afterNPCs);
-            DrawPrimsToRenderTarget(PixelationTarget_BeforeProjectiles, beforeProjectiles);
-            DrawPrimsToRenderTarget(PixelationTarget_AfterProjectiles, afterProjectiles);
+            DrawPrimsToRenderTarget(PixelationTarget_BeforeNPCs, beforeNPCs, SafeGetDrawActionLayer(PixelationPrimitiveLayer.BeforeNPCs));
+            DrawPrimsToRenderTarget(PixelationTarget_AfterNPCs, afterNPCs, SafeGetDrawActionLayer(PixelationPrimitiveLayer.AfterNPCs));
+            DrawPrimsToRenderTarget(PixelationTarget_BeforeProjectiles, beforeProjectiles, SafeGetDrawActionLayer(PixelationPrimitiveLayer.BeforeProjectiles));
+            DrawPrimsToRenderTarget(PixelationTarget_AfterProjectiles, afterProjectiles, SafeGetDrawActionLayer(PixelationPrimitiveLayer.AfterProjectiles));
 
             Main.instance.GraphicsDevice.SetRenderTarget(null);
 
@@ -116,20 +128,37 @@ namespace Luminance.Core.Graphics
             orig();
         }
 
-        private static void DrawPrimsToRenderTarget(RenderTarget2D renderTarget, List<IPixelatedPrimitiveRenderer> pixelPrimitives)
+        private static void DrawPrimsToRenderTarget(RenderTarget2D renderTarget, List<IPixelatedPrimitiveRenderer> pixelPrimitives, Queue<Action> manualDrawActions)
         {
             // Swap to the target regardless, in order to clear any leftover content from last frame. Not doing this results in the final frame lingering once it stops rendering.
             renderTarget.SwapToRenderTarget();
 
-            if (pixelPrimitives.Any())
+            if (pixelPrimitives.Any() || manualDrawActions.Any())
             {
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null);
 
                 foreach (var pixelPrimitiveDrawer in pixelPrimitives)
                     pixelPrimitiveDrawer.RenderPixelatedPrimitives(Main.spriteBatch);
+                while (manualDrawActions.TryDequeue(out Action drawAction))
+                    drawAction();
 
                 Main.spriteBatch.End();
             }
+        }
+
+        /// <summary>
+        /// Prepares a draw action for rendering to the pixelation target on the next frame.
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// <i>This should only be used when absolutely necessary.</i> If possible, you should use <see cref="IPixelatedPrimitiveRenderer"/> instead.
+        /// </remarks>
+        /// 
+        /// <param name="renderAction">The render action to perform.</param>
+        /// <param name="layer">The layer to draw to.</param>
+        public static void RenderToPrimsNextFrame(Action renderAction, PixelationPrimitiveLayer layer)
+        {
+            CustomDrawActionsByLayer[layer].Enqueue(renderAction);
         }
         #endregion
 
