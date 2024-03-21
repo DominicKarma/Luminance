@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using ReLogic.Threading;
 using Terraria;
 using Terraria.ID;
@@ -15,6 +14,8 @@ namespace Luminance.Core.Graphics
         internal List<ManagedRenderTarget> LayerTargets = new();
 
         internal List<MetaballInstance> Particles = new();
+
+        public int ActiveParticleCount => Particles.Count;
         #endregion
 
         #region Abstract/Virtual Fields/Properties
@@ -23,7 +24,8 @@ namespace Luminance.Core.Graphics
             get;
         }
 
-        public abstract Asset<Texture2D>[] LayerTextures
+        // This uses a Texture2D rather than an Asset to allow for the usage of render targets when working with metaballs.
+        public abstract Texture2D[] LayerTextures
         {
             get;
         }
@@ -37,7 +39,7 @@ namespace Luminance.Core.Graphics
         #endregion
 
         #region Instance Methods
-        public void CreateParticle(Vector2 spawnPosition, Vector2 velocity, float size, float extraInfo0 = 0f, float extraInfo1 = 0, float extraInfo2 = 0, float extraInfo3 = 0) =>
+        public void CreateParticle(Vector2 spawnPosition, Vector2 velocity, float size, float extraInfo0 = 0f, float extraInfo1 = 0f, float extraInfo2 = 0f, float extraInfo3 = 0f) =>
             Particles.Add(new(spawnPosition, velocity, size, extraInfo0, extraInfo1, extraInfo2, extraInfo3));
 
         public void ClearInstances() => Particles.Clear();
@@ -54,6 +56,8 @@ namespace Luminance.Core.Graphics
                     p.Center += p.Velocity;
                 }
             });
+
+            Particles.RemoveAll(ShouldKillParticle);
         }
 
         public void DrawInstances()
@@ -90,6 +94,18 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
+        /// Renders the contents
+        /// </summary>
+        public void RenderLayerWithShader()
+        {
+            for (int i = 0; i < LayerTargets.Count; i++)
+            {
+                PrepareShaderForTarget(i);
+                Main.spriteBatch.Draw(LayerTargets[i], Main.screenLastPosition - Main.screenPosition, Color.White);
+            }
+        }
+
+        /// <summary>
         /// Disposes of all unmanaged GPU resources used up by the <see cref="LayerTargets"/>. This is called automatically on mod unload.<br></br>
         /// <i>It is your responsibility to recreate layer targets later if you call this method manually.</i>
         /// </summary>
@@ -101,6 +117,13 @@ namespace Luminance.Core.Graphics
         #endregion
 
         #region Virtual Methods
+
+        // This is needed for Wrath of the Gods.
+        /// <summary>
+        /// Whether this metaball should be drawn manually.
+        /// </summary>
+        public virtual bool DrawnManually => false;
+
         /// <summary>
         /// Whether the layer overlay contents at the provided index should be fixed to the screen.<br/>
         /// When true, the texture will be statically drawn to the screen with no respect for world position.
@@ -122,6 +145,12 @@ namespace Luminance.Core.Graphics
         public virtual bool PerformCustomSpritebatchBegin(SpriteBatch spriteBatch) => false;
 
         /// <summary>
+        /// Whether a given particle in the <see cref="Particles"/> list should be killed or not.
+        /// </summary>
+        /// <param name="particle">The particle to determine the kill state of.</param>
+        public virtual bool ShouldKillParticle(MetaballInstance particle) => false;
+
+        /// <summary>
         /// Optionally overridable method that defines for preparations for the render target. Defaults to using the typical texture overlay behavior.
         /// </summary>
         /// <param name="layerIndex">The layer index that should be prepared for.</param>
@@ -130,8 +159,8 @@ namespace Luminance.Core.Graphics
             // Store the in an easy to use local variables.
             var metaballShader = ShaderManager.GetShader("MetaballEdgeShader");
 
-            // Fetch the layer texture. This is the texture that will be overlayed over the greyscale contents on the screen.
-            Texture2D layerTexture = LayerTextures[layerIndex].Value;
+            // Fetch the layer texture. This is the texture that will be overlaid over the greyscale contents on the screen.
+            Texture2D layerTexture = LayerTextures[layerIndex];
 
             // Calculate the layer scroll offset. This is used to ensure that the texture contents of the given metaball have parallax, rather than being static over the screen
             // regardless of world position.
@@ -164,7 +193,7 @@ namespace Luminance.Core.Graphics
         #region Abstract Methods
         /// <summary>
         /// Update things such as velocity, size, and any optional things here. The center will be automatically updated by velocity after this method has ran.<br/>
-        /// Be aware that this method is called in parallel, so should not modify anything other than the particle instance provided.
+        /// Be aware that this method is called in parallel, and as such should not modify anything other than the particle instance provided.
         /// </summary>
         public abstract void UpdateParticle(MetaballInstance particle);
         #endregion

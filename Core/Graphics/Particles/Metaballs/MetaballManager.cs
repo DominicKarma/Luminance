@@ -67,11 +67,8 @@ namespace Luminance.Core.Graphics
             foreach (var type in MetaballTypes.Where(type => type.ShouldRender))
             {
                 // TODO: Same as above, this does not seem very optimal.
-                for (int i = 0; i < type.LayerTargets.Count; i++)
-                {
-                    type.PrepareShaderForTarget(i);
-                    Main.spriteBatch.Draw(type.LayerTargets[i], Main.screenLastPosition - Main.screenPosition, Color.White);
-                }
+                if (!type.DrawnManually)
+                    type.RenderLayerWithShader();
             }
         }
     }
