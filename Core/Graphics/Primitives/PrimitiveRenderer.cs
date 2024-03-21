@@ -139,6 +139,7 @@ namespace Luminance.Core.Graphics
         private static bool AssignPointsRectangleTrail(IEnumerable<Vector2> positions, PrimitiveSettings settings, int pointsToCreate)
         {
             // Don't smoothen the points unless explicitly told do so.
+            int positionsCount = positions.Count();
             if (!settings.Smoothen)
             {
                 PositionsIndex = 0;
@@ -146,17 +147,17 @@ namespace Luminance.Core.Graphics
                 // Would like to remove this, but unsure how else to properly ensure that none are zero.
                 positions = positions.Where(originalPosition => originalPosition != Vector2.Zero);
 
-                if (positions.Count() <= 2)
+                if (positionsCount <= 2)
                     return false;
 
                 // Remap the original positions across a certain length.
                 for (int i = 0; i < pointsToCreate; i++)
                 {
                     float completionRatio = i / (float)(pointsToCreate - 1f);
-                    int currentIndex = (int)(completionRatio * (positions.Count() - 1));
+                    int currentIndex = (int)(completionRatio * (positionsCount - 1));
                     Vector2 currentPoint = positions.ElementAt(currentIndex);
-                    Vector2 nextPoint = positions.ElementAt((currentIndex + 1) % positions.Count());
-                    MainPositions[PositionsIndex] = Vector2.Lerp(currentPoint, nextPoint, completionRatio * (positions.Count() - 1) % 0.99999f) - Main.screenPosition;
+                    Vector2 nextPoint = positions.ElementAt((currentIndex + 1) % positionsCount);
+                    MainPositions[PositionsIndex] = Vector2.Lerp(currentPoint, nextPoint, completionRatio * (positionsCount - 1) % 0.99999f) - Main.screenPosition;
                     PositionsIndex++;
                 }
                 return true;
@@ -168,7 +169,6 @@ namespace Luminance.Core.Graphics
             // Create the control points for the spline.
             List<Vector2> controlPoints = new();
             int index = 0;
-            float count = positions.Count();
             foreach (var position in positions)
             {
                 // Don't incorporate points that are zeroed out.
@@ -176,7 +176,7 @@ namespace Luminance.Core.Graphics
                 if (position == Vector2.Zero)
                     continue;
 
-                float completionRatio = index / count;
+                float completionRatio = index / (float)positionsCount;
                 Vector2 offset = -Main.screenPosition;
                 if (settings.OffsetFunction != null)
                     offset += settings.OffsetFunction(completionRatio);
