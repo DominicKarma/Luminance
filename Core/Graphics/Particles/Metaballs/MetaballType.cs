@@ -65,7 +65,7 @@ namespace Luminance.Core.Graphics
             var texture = AtlasManager.GetTexture(MetaballAtlasTextureToUse);
 
             foreach (var particle in Particles)
-                Main.spriteBatch.Draw(texture, particle.Center - Main.screenPosition, null, Color.White, 0f, texture.Frame.Size() * 0.5f, new Vector2(particle.Size) / texture.Frame.Size(), SpriteEffects.None);
+                Main.spriteBatch.Draw(texture, particle.Center - Main.screenPosition, null, Color.White, 0f, null, new Vector2(particle.Size) / texture.Frame.Size(), SpriteEffects.None);
 
             ExtraDrawing();
         }
