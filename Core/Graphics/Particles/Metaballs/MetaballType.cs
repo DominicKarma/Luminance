@@ -11,11 +11,11 @@ namespace Luminance.Core.Graphics
     public abstract class MetaballType : ModType
     {
         #region Fields/Properties
-        internal List<ManagedRenderTarget> LayerTargets = new();
-
         internal List<MetaballInstance> Particles = new();
 
         public int ActiveParticleCount => Particles.Count;
+
+        public readonly List<ManagedRenderTarget> LayerTargets = new();
         #endregion
 
         #region Abstract/Virtual Fields/Properties
@@ -94,7 +94,7 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        /// Renders the contents
+        /// Renders the contents of this metaball.
         /// </summary>
         public void RenderLayerWithShader()
         {
