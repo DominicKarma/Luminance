@@ -12,7 +12,7 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// A managed copy of all parameter data. Used to minimize excess SetValue calls, in cases where the value aren't actually being changed.
         /// </summary>
-        private readonly Dictionary<string, object> parameterCache;
+        private readonly Dictionary<string, object> parameterCache = new();
 
         public Ref<Effect> Effect
         {
