@@ -30,7 +30,7 @@ namespace Luminance.Core.Graphics
         public static bool HasFinishedLoading
         {
             get;
-            private set;
+            internal set;
         }
 
         public static ManagedRenderTarget MainTarget
@@ -68,41 +68,34 @@ namespace Luminance.Core.Graphics
             filters = [];
         }
 
-        public override void PostSetupContent()
+        internal static void LoadShaders(Mod mod)
         {
-            // Go through every mod and check for effects to autoload.
-            foreach (Mod mod in ModLoader.Mods)
+            List<string> fileNames = mod.GetFileNames();
+            if (fileNames is null)
+                return;
+
+            foreach (var path in fileNames)
             {
-                List<string> fileNames = mod.GetFileNames();
-                if (fileNames is null)
+                // Ignore paths inside of the compiler directory.
+                if (path?.Contains("Compiler/") ?? true)
                     continue;
 
-                foreach (var path in fileNames)
+                if (path.Contains(AutoloadDirectoryShaders))
                 {
-                    // Ignore paths inside of the compiler directory.
-                    if (path?.Contains("Compiler/") ?? true)
-                        continue;
+                    string shaderName = Path.GetFileNameWithoutExtension(path);
+                    string clearedPath = Path.Combine(Path.GetDirectoryName(path), shaderName).Replace(@"\", @"/");
+                    Ref<Effect> shader = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
+                    SetShader(shaderName, shader);
+                }
+                else if (path.Contains(AutoloadDirectoryFilters))
+                {
+                    string filterName = Path.GetFileNameWithoutExtension(path);
+                    string clearedPath = Path.Combine(Path.GetDirectoryName(path), filterName).Replace(@"\", @"/");
 
-                    if (path.Contains(AutoloadDirectoryShaders))
-                    {
-                        string shaderName = Path.GetFileNameWithoutExtension(path);
-                        string clearedPath = Path.Combine(Path.GetDirectoryName(path), shaderName).Replace(@"\", @"/");
-                        Ref<Effect> shader = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
-                        SetShader(shaderName, shader);
-                    }
-                    else if (path.Contains(AutoloadDirectoryFilters))
-                    {
-                        string filterName = Path.GetFileNameWithoutExtension(path);
-                        string clearedPath = Path.Combine(Path.GetDirectoryName(path), filterName).Replace(@"\", @"/");
-
-                        Ref<Effect> filter = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
-                        SetFilter(filterName, filter);
-                    }
+                    Ref<Effect> filter = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
+                    SetFilter(filterName, filter);
                 }
             }
-
-            // Mark loading operations as finished.
-            HasFinishedLoading = true;
         }
 
         public override void Unload()

@@ -40,6 +40,25 @@
         public static readonly Curve Linear = new(interpolant => interpolant, interpolant => interpolant, interpolant => interpolant);
 
         /// <summary>
+        ///     A sine easing curve.
+        /// </summary>
+        public static readonly Curve Sine = new(interpolant => 1f - Cos(interpolant * Pi / 2f), interpolant => Sin(interpolant * Pi / 2f), interpolant => -(Cos(interpolant * Pi) - 1f) / 2f);
+
+        /// <summary>
+        ///     An exponential easing curve.
+        /// </summary>
+        public static readonly Curve Exp = new(interpolant => interpolant == 0f ? 0f : Pow(2f, 10f * interpolant - 10f),
+            interpolant => interpolant == 1f ? 1f : 1f - Pow(2f, -10f * interpolant),
+            interpolant => interpolant == 0f ? 0f : interpolant == 1f ? 1f : interpolant < 0.5f ? Pow(2f, 20f * interpolant - 10f) / 2f : (2f - Pow(2f, -20f * interpolant - 10f)) / 2f);
+
+        /// <summary>
+        /// A circular easing curve.
+        /// </summary>
+        public static readonly Curve Circ = new(interpolant => 1f - Sqrt(1f - Pow(interpolant, 2f)),
+            interpolant => Sqrt(1f - Pow(interpolant - 1f, 2f)),
+            interpolant => interpolant < 0.5 ? 1f - Sqrt(1f - Pow(2f * interpolant, 2f)) / 2f : (Sqrt(1f - Pow(-2f * interpolant - 2f, 2f)) + 1f) / 2f);
+
+        /// <summary>
         ///     A polynomial easing curve of degree 2.
         /// </summary>
         public static readonly Curve Quadratic = MakePoly(2f);
