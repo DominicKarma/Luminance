@@ -57,12 +57,18 @@ namespace Luminance.Common.Utilities
             return ModContent.GetInstance<T>();
         }
 
-        // TODO -- Perhaps make this something that's cached every frame for performance?
+        private static bool? BossIsActiveThisFrame;
+
+        internal static void UpdateBossCache() => BossIsActiveThisFrame = null;
+
         /// <summary>
-        ///     Checks if any bosses are present.
+        ///     Checks if any bosses are present this frame.
         /// </summary>
         public static bool AnyBosses()
         {
+            if (BossIsActiveThisFrame.HasValue)
+                return BossIsActiveThisFrame.Value;
+
             for (int i = 0; i < Main.maxNPCs; i++)
             {
                 if (Main.npc[i] is null || !Main.npc[i].active)
@@ -71,10 +77,13 @@ namespace Luminance.Common.Utilities
                 NPC npc = Main.npc[i];
                 bool isEaterOfWorlds = npc.type == NPCID.EaterofWorldsBody || npc.type == NPCID.EaterofWorldsHead || npc.type == NPCID.EaterofWorldsTail;
                 if (npc.boss || isEaterOfWorlds)
-                    return true;
+                {
+                    BossIsActiveThisFrame = true;
+                    return BossIsActiveThisFrame.Value;
+                }
             }
-
-            return false;
+            BossIsActiveThisFrame = false;
+            return BossIsActiveThisFrame.Value;
         }
     }
 }

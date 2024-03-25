@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Terraria.ModLoader;
 
 namespace Luminance.Common.Utilities
 {
     public static partial class Utilities
     {
+        /// <summary>
+        ///     Binding flags that account for all access/local membership status.
+        /// </summary>
+        public static readonly BindingFlags UniversalBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+        
         /// <summary>
         ///     Loads all instances of a given mod type (such as <see cref="ModNPC"/>) that have a specific interface attribute (such as <see cref="IBossChecklistSupport"/>).<br></br>
         ///     This method is useful for handling autoloading on multi-attributed pieces of content.

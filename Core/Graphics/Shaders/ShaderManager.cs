@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -29,7 +30,7 @@ namespace Luminance.Core.Graphics
         public static bool HasFinishedLoading
         {
             get;
-            private set;
+            internal set;
         }
 
         public static ManagedRenderTarget MainTarget
@@ -63,26 +64,21 @@ namespace Luminance.Core.Graphics
             MainTarget = new ManagedRenderTarget(true, ManagedRenderTarget.CreateScreenSizedTarget, true);
             AuxilaryTarget = new ManagedRenderTarget(true, ManagedRenderTarget.CreateScreenSizedTarget, true);
 
-            On_FilterManager.EndCapture += ApplyScreenFilters;
-
             shaders = [];
             filters = [];
         }
 
-        public override void PostSetupContent()
+        internal static void LoadShaders(Mod mod)
         {
-            // Go through every mod and check for effects to autoload.
-            foreach (Mod mod in ModLoader.Mods)
-            {
-                List<string> fileNames = mod.GetFileNames();
-                if (fileNames is null)
-                    continue;
+            List<string> fileNames = mod.GetFileNames();
+            if (fileNames is null)
+                return;
 
-                foreach (var path in fileNames)
-                {
-                    // Ignore paths inside of the compiler directory.
-                    if (path?.Contains("Compiler/") ?? true)
-                        continue;
+            foreach (var path in fileNames)
+            {
+                // Ignore paths inside of the compiler directory.
+                if (path?.Contains("Compiler/") ?? true)
+                    continue;
 
                     if (path.Contains(AutoloadDirectoryShaders))
                     {
@@ -96,22 +92,16 @@ namespace Luminance.Core.Graphics
                         string filterName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
                         string clearedPath = Path.Combine(Path.GetDirectoryName(path), filterName).Replace(@"\", @"/");
 
-                        Ref<Effect> filter = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
-                        SetFilter(filterName, filter);
-                    }
+                    Ref<Effect> filter = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
+                    SetFilter(filterName, filter);
                 }
             }
-
-            // Mark loading operations as finished.
-            HasFinishedLoading = true;
         }
 
         public override void Unload()
         {
             if (Main.netMode == NetmodeID.Server)
                 return;
-
-            On_FilterManager.EndCapture -= ApplyScreenFilters;
 
             foreach (var shader in shaders.Values)
                 shader.Dispose();
@@ -123,7 +113,7 @@ namespace Luminance.Core.Graphics
             filters = null;
         }
 
-        private void ApplyScreenFilters(On_FilterManager.orig_EndCapture orig, FilterManager self, RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
+        internal static void ApplyScreenFilters(RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
         {
             RenderTarget2D target1 = null;
             RenderTarget2D target2 = screenTarget1;
@@ -158,8 +148,6 @@ namespace Luminance.Core.Graphics
                 Main.spriteBatch.Draw(target1, Vector2.Zero, Color.White);
                 Main.spriteBatch.End();
             }
-
-            orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
         }
 
         public override void PostUpdateEverything()

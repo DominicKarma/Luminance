@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Threading;
@@ -25,7 +26,7 @@ namespace Luminance.Core.Graphics
         }
 
         // This uses a Texture2D rather than an Asset to allow for the usage of render targets when working with metaballs.
-        public abstract Texture2D[] LayerTextures
+        public abstract Func<Texture2D>[] LayerTextures
         {
             get;
         }
@@ -148,7 +149,7 @@ namespace Luminance.Core.Graphics
         /// Whether a given particle in the <see cref="Particles"/> list should be killed or not.
         /// </summary>
         /// <param name="particle">The particle to determine the kill state of.</param>
-        public virtual bool ShouldKillParticle(MetaballInstance particle) => false;
+        public abstract bool ShouldKillParticle(MetaballInstance particle);
 
         /// <summary>
         /// Optionally overridable method that defines for preparations for the render target. Defaults to using the typical texture overlay behavior.
@@ -160,7 +161,7 @@ namespace Luminance.Core.Graphics
             var metaballShader = ShaderManager.GetShader("Luminance.MetaballEdgeShader");
 
             // Fetch the layer texture. This is the texture that will be overlaid over the greyscale contents on the screen.
-            Texture2D layerTexture = LayerTextures[layerIndex];
+            Texture2D layerTexture = LayerTextures[layerIndex]();
 
             // Calculate the layer scroll offset. This is used to ensure that the texture contents of the given metaball have parallax, rather than being static over the screen
             // regardless of world position.
