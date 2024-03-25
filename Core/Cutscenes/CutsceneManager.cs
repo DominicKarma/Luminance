@@ -23,6 +23,11 @@ namespace Luminance.Core.Cutscenes
         }
 
         /// <summary>
+        /// Whether any cutscenes are active.
+        /// </summary>
+        public static bool AnyActive => ActiveCutscene != null;
+
+        /// <summary>
         /// Queues a cutscene to be played.
         /// </summary>
         /// <param name="cutscene"></param>
