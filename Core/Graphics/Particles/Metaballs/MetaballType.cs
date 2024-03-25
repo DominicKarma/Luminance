@@ -158,7 +158,7 @@ namespace Luminance.Core.Graphics
         public virtual void PrepareShaderForTarget(int layerIndex)
         {
             // Store the in an easy to use local variables.
-            var metaballShader = ShaderManager.GetShader("MetaballEdgeShader");
+            var metaballShader = ShaderManager.GetShader("Luminance.MetaballEdgeShader");
 
             // Fetch the layer texture. This is the texture that will be overlaid over the greyscale contents on the screen.
             Texture2D layerTexture = LayerTextures[layerIndex]();
