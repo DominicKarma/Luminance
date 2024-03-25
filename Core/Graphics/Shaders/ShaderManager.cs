@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -17,9 +15,12 @@ namespace Luminance.Core.Graphics
         /// <summary>
         ///     The set of all shaders handled by this manager class.
         /// </summary>
-        private static Dictionary<string, ManagedShader> shaders;
+        internal static Dictionary<string, ManagedShader> shaders;
 
-        private static Dictionary<string, ManagedScreenFilter> filters;
+        /// <summary>
+        ///     The set of all filters handled by this manager class.
+        /// </summary>
+        internal static Dictionary<string, ManagedScreenFilter> filters;
 
         /// <summary>
         ///     Whether this manager class has finished loading all shaders yet or not.
@@ -80,17 +81,17 @@ namespace Luminance.Core.Graphics
                 if (path?.Contains("Compiler/") ?? true)
                     continue;
 
-                    if (path.Contains(AutoloadDirectoryShaders))
-                    {
-                        string shaderName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
-                        string clearedPath = Path.Combine(Path.GetDirectoryName(path), shaderName).Replace(@"\", @"/");
-                        Ref<Effect> shader = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
-                        SetShader(shaderName, shader);
-                    }
-                    else if (path.Contains(AutoloadDirectoryFilters))
-                    {
-                        string filterName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
-                        string clearedPath = Path.Combine(Path.GetDirectoryName(path), filterName).Replace(@"\", @"/");
+                if (path.Contains(AutoloadDirectoryShaders))
+                {
+                    string shaderName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
+                    string clearedPath = Path.Combine(Path.GetDirectoryName(path), shaderName).Replace(@"\", @"/").Replace($"{mod.Name}.", string.Empty);
+                    Ref<Effect> shader = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
+                    SetShader(shaderName, shader);
+                }
+                else if (path.Contains(AutoloadDirectoryFilters))
+                {
+                    string filterName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
+                    string clearedPath = Path.Combine(Path.GetDirectoryName(path), filterName).Replace(@"\", @"/").Replace($"{mod.Name}.", string.Empty);
 
                     Ref<Effect> filter = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
                     SetFilter(filterName, filter);
@@ -134,7 +135,7 @@ namespace Luminance.Core.Graphics
                 target1 = (target2 != MainTarget.Target) ? MainTarget : AuxilaryTarget;
                 Main.instance.GraphicsDevice.SetRenderTarget(target1);
                 Main.instance.GraphicsDevice.Clear(clearColor);
-                Main.spriteBatch.Begin((SpriteSortMode)1, BlendState.AlphaBlend);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
                 filter.Apply();
                 Main.spriteBatch.Draw(target2, Vector2.Zero, Main.ColorOfTheSkies);
                 Main.spriteBatch.End();
