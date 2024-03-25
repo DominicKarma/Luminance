@@ -115,7 +115,12 @@ namespace Luminance.Core.Graphics
         internal static void InitializeModAtlases(Mod mod)
         {
             // A variable path *could* be used here, but its easier to enforce mods using the hardcoded path (and encourages usage of a proper assets directory).
-            foreach (string path in mod.GetFileNames().Where(p => p.Contains("Assets/Atlases")))
+            List<string> modFileNames = mod.GetFileNames();
+            if (modFileNames is null)
+                return;
+
+            var atlases = modFileNames.Where(p => p?.Contains("Assets/Atlases") ?? false);
+            foreach (string path in atlases)
             {
                 string assetFilepath = $"{mod.Name}/" + path;
                 string filename = Path.GetFileNameWithoutExtension(assetFilepath);
