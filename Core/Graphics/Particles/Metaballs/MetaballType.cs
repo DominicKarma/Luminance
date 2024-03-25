@@ -149,7 +149,7 @@ namespace Luminance.Core.Graphics
         /// Whether a given particle in the <see cref="Particles"/> list should be killed or not.
         /// </summary>
         /// <param name="particle">The particle to determine the kill state of.</param>
-        public virtual bool ShouldKillParticle(MetaballInstance particle) => false;
+        public abstract bool ShouldKillParticle(MetaballInstance particle);
 
         /// <summary>
         /// Optionally overridable method that defines for preparations for the render target. Defaults to using the typical texture overlay behavior.
