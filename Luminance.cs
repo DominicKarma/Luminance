@@ -23,13 +23,17 @@ namespace Luminance
 
         public override void Unload() => ManagedILEdit.UnloadEdits();
 
-        /// <summary>
-        /// Performs initialization on the provided mod with all of the librarys features.
-        /// </summary>
-        /// <param name="mod"></param>
-        public static void InitializeMod(Mod mod)
+        public override void PostSetupContent()
         {
-            AtlasManager.InitializeModAtlases(mod);
+            // Go through every mod and check for effects to autoload.
+            foreach (Mod mod in ModLoader.Mods)
+            {
+                ShaderManager.LoadShaders(mod);
+                AtlasManager.InitializeModAtlases(mod);
+            }
+
+            // Mark loading operations as finished.
+            ShaderManager.HasFinishedLoading = true;
         }
     }
 }
