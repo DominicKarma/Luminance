@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -63,8 +64,6 @@ namespace Luminance.Core.Graphics
             MainTarget = new ManagedRenderTarget(true, ManagedRenderTarget.CreateScreenSizedTarget, true);
             AuxilaryTarget = new ManagedRenderTarget(true, ManagedRenderTarget.CreateScreenSizedTarget, true);
 
-            On_FilterManager.EndCapture += ApplyScreenFilters;
-
             shaders = [];
             filters = [];
         }
@@ -111,8 +110,6 @@ namespace Luminance.Core.Graphics
             if (Main.netMode == NetmodeID.Server)
                 return;
 
-            On_FilterManager.EndCapture -= ApplyScreenFilters;
-
             foreach (var shader in shaders.Values)
                 shader.Dispose();
 
@@ -123,7 +120,7 @@ namespace Luminance.Core.Graphics
             filters = null;
         }
 
-        private void ApplyScreenFilters(On_FilterManager.orig_EndCapture orig, FilterManager self, RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
+        internal static void ApplyScreenFilters(RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
         {
             RenderTarget2D target1 = null;
             RenderTarget2D target2 = screenTarget1;
@@ -158,8 +155,6 @@ namespace Luminance.Core.Graphics
                 Main.spriteBatch.Draw(target1, Vector2.Zero, Color.White);
                 Main.spriteBatch.End();
             }
-
-            orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
         }
 
         public override void PostUpdateEverything()
