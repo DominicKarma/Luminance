@@ -12,6 +12,8 @@ namespace Luminance.Core.Graphics
         public record BlockCondition(bool BlockInputs, bool BlockUI, Func<bool> BlockIsInEffect)
         {
             public bool IsntDoingAnything => !BlockInputs && !BlockUI;
+
+            public static BlockCondition None => new(false, false, () => false);
         }
 
         private static readonly List<BlockCondition> blockerConditions = [];
