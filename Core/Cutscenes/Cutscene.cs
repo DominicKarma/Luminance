@@ -32,7 +32,7 @@ namespace Luminance.Core.Cutscenes
         public bool EndAbruptly
         {
             get;
-            internal set;
+            protected internal set;
         }
 
         /// <summary>
