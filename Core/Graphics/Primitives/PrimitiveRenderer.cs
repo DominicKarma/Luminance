@@ -76,28 +76,19 @@ namespace Luminance.Core.Graphics
         /// <param name="positions">The list of positions to use. Keep in mind that these are expected to be in <b>world position</b>, and <see cref="Main.screenPosition"/> is automatically subtracted from them all.<br/>At least 4 points are required to use smoothing.</param>
         /// <param name="settings">The primitive draw settings to use.</param>
         /// <param name="pointsToCreate">The amount of points to use. More is higher detailed, but less performant. By default, is the number of positions provided. <b>Going above 100 is NOT recommended.</b></param>
-        public static void RenderTrail(List<Vector2> positions, PrimitiveSettings settings, int? pointsToCreate = null) => RenderTrail(positions.ToArray(), settings, pointsToCreate);
-
-        /// <summary>
-        /// Renders a primitive trail.
-        /// </summary>
-        /// <param name="positions">The list of positions to use. Keep in mind that these are expected to be in <b>world position</b>, and <see cref="Main.screenPosition"/> is automatically subtracted from them all.<br/>At least 4 points are required to use smoothing.</param>
-        /// <param name="settings">The primitive draw settings to use.</param>
-        /// <param name="pointsToCreate">The amount of points to use. More is higher detailed, but less performant. By default, is the number of positions provided. <b>Going above 100 is NOT recommended.</b></param>
-        public static void RenderTrail(Vector2[] positions, PrimitiveSettings settings, int? pointsToCreate = null)
+        public static void RenderTrail(IEnumerable<Vector2> positions, PrimitiveSettings settings, int? pointsToCreate = null)
         {
             PerformPixelationSafetyChecks(settings);
 
-            // Return if not enough to draw anything.
-            if (positions.Length <= 2)
+            int count = positions.Count();
+            if (count <= 2)
                 return;
 
-            // Return if too many to draw anything,
-            if (positions.Length >= MaxPositions)
+            if (count >= MaxPositions)
                 return;
 
             // IF this is false, a correct position trail could not be made and rendering should not continue.
-            if (!AssignPointsRectangleTrail(positions, settings, pointsToCreate ?? positions.Length))
+            if (!AssignPointsRectangleTrail(positions, settings, pointsToCreate ?? count))
                 return;
 
             // A trail with only one point or less has nothing to connect to, and therefore, can't make a trail.
@@ -109,9 +100,7 @@ namespace Luminance.Core.Graphics
             AssignVerticesRectangleTrail();
             AssignIndicesRectangleTrail();
 
-            // Else render without wasting resources creating a set.
             PrivateRender();
-            return;
         }
 
         private static void PrivateRender()
@@ -147,27 +136,28 @@ namespace Luminance.Core.Graphics
         #endregion
 
         #region Set Preperation
-        private static bool AssignPointsRectangleTrail(Vector2[] positions, PrimitiveSettings settings, int pointsToCreate)
+        private static bool AssignPointsRectangleTrail(IEnumerable<Vector2> positions, PrimitiveSettings settings, int pointsToCreate)
         {
             // Don't smoothen the points unless explicitly told do so.
+            int positionsCount = positions.Count();
             if (!settings.Smoothen)
             {
                 PositionsIndex = 0;
 
                 // Would like to remove this, but unsure how else to properly ensure that none are zero.
-                positions = positions.Where(originalPosition => originalPosition != Vector2.Zero).ToArray();
+                positions = positions.Where(originalPosition => originalPosition != Vector2.Zero);
 
-                if (positions.Length <= 2)
+                if (positionsCount <= 2)
                     return false;
 
                 // Remap the original positions across a certain length.
                 for (int i = 0; i < pointsToCreate; i++)
                 {
                     float completionRatio = i / (float)(pointsToCreate - 1f);
-                    int currentIndex = (int)(completionRatio * (positions.Length - 1));
-                    Vector2 currentPoint = positions[currentIndex];
-                    Vector2 nextPoint = positions[(currentIndex + 1) % positions.Length];
-                    MainPositions[PositionsIndex] = Vector2.Lerp(currentPoint, nextPoint, completionRatio * (positions.Length - 1) % 0.99999f) - Main.screenPosition;
+                    int currentIndex = (int)(completionRatio * (positionsCount - 1));
+                    Vector2 currentPoint = positions.ElementAt(currentIndex);
+                    Vector2 nextPoint = positions.ElementAt((currentIndex + 1) % positionsCount);
+                    MainPositions[PositionsIndex] = Vector2.Lerp(currentPoint, nextPoint, completionRatio * (positionsCount - 1) % 0.99999f) - Main.screenPosition;
                     PositionsIndex++;
                 }
                 return true;
@@ -178,18 +168,20 @@ namespace Luminance.Core.Graphics
 
             // Create the control points for the spline.
             List<Vector2> controlPoints = new();
-            for (int i = 0; i < positions.Length; i++)
+            int index = 0;
+            foreach (var position in positions)
             {
                 // Don't incorporate points that are zeroed out.
                 // They are almost certainly a result of incomplete oldPos arrays.
-                if (positions[i] == Vector2.Zero)
+                if (position == Vector2.Zero)
                     continue;
 
-                float completionRatio = i / (float)positions.Length;
+                float completionRatio = index / (float)positionsCount;
                 Vector2 offset = -Main.screenPosition;
                 if (settings.OffsetFunction != null)
                     offset += settings.OffsetFunction(completionRatio);
-                controlPoints.Add(positions[i] + offset);
+                controlPoints.Add(position + offset);
+                index++;
             }
 
             // Avoid stupid index errors.

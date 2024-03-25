@@ -11,11 +11,11 @@ namespace Luminance.Core.Graphics
     public abstract class MetaballType : ModType
     {
         #region Fields/Properties
-        internal List<ManagedRenderTarget> LayerTargets = new();
-
         internal List<MetaballInstance> Particles = new();
 
         public int ActiveParticleCount => Particles.Count;
+
+        public readonly List<ManagedRenderTarget> LayerTargets = new();
         #endregion
 
         #region Abstract/Virtual Fields/Properties
@@ -65,7 +65,7 @@ namespace Luminance.Core.Graphics
             var texture = AtlasManager.GetTexture(MetaballAtlasTextureToUse);
 
             foreach (var particle in Particles)
-                Main.spriteBatch.Draw(texture, particle.Center - Main.screenPosition, null, Color.White, 0f, texture.Frame.Size() * 0.5f, new Vector2(particle.Size) / texture.Frame.Size(), SpriteEffects.None);
+                Main.spriteBatch.Draw(texture, particle.Center - Main.screenPosition, null, Color.White, 0f, null, new Vector2(particle.Size) / texture.Frame.Size(), SpriteEffects.None);
 
             ExtraDrawing();
         }
@@ -94,7 +94,7 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        /// Renders the contents
+        /// Renders the contents of this metaball.
         /// </summary>
         public void RenderLayerWithShader()
         {
