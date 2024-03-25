@@ -27,12 +27,12 @@ namespace Luminance.Core.Graphics
         /// </summary>
         public float[] ExtraInfo;
 
-        internal MetaballInstance(Vector2 center, Vector2 velocity, float size, float extraInfo0 = 0f, float extraInfo1 = 0, float extraInfo2 = 0, float extraInfo3 = 0)
+        public MetaballInstance(Vector2 center, Vector2 velocity, float size, float extraInfo0 = 0f, float extraInfo1 = 0, float extraInfo2 = 0, float extraInfo3 = 0)
         {
             Center = center;
             Velocity = velocity;
             Size = size;
-            ExtraInfo = new float[4] { extraInfo0, extraInfo1, extraInfo2, extraInfo3 };
+            ExtraInfo = [extraInfo0, extraInfo1, extraInfo2, extraInfo3];
         }
     }
 }

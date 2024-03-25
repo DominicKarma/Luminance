@@ -43,6 +43,10 @@ namespace Luminance.Core.Graphics
         public void CreateParticle(Vector2 spawnPosition, Vector2 velocity, float size, float extraInfo0 = 0f, float extraInfo1 = 0f, float extraInfo2 = 0f, float extraInfo3 = 0f) =>
             Particles.Add(new(spawnPosition, velocity, size, extraInfo0, extraInfo1, extraInfo2, extraInfo3));
 
+        public void CreateParticle(MetaballInstance particle) => Particles.Add(particle);
+
+        public void CreateParticle(IEnumerable<MetaballInstance> particles) => Particles.AddRange(particles);
+
         public void ClearInstances() => Particles.Clear();
 
         public void Update()
