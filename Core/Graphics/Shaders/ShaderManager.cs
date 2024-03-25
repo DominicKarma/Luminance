@@ -86,14 +86,14 @@ namespace Luminance.Core.Graphics
 
                     if (path.Contains(AutoloadDirectoryShaders))
                     {
-                        string shaderName = Path.GetFileNameWithoutExtension(path);
+                        string shaderName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
                         string clearedPath = Path.Combine(Path.GetDirectoryName(path), shaderName).Replace(@"\", @"/");
                         Ref<Effect> shader = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
                         SetShader(shaderName, shader);
                     }
                     else if (path.Contains(AutoloadDirectoryFilters))
                     {
-                        string filterName = Path.GetFileNameWithoutExtension(path);
+                        string filterName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
                         string clearedPath = Path.Combine(Path.GetDirectoryName(path), filterName).Replace(@"\", @"/");
 
                         Ref<Effect> filter = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);

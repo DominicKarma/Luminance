@@ -122,7 +122,7 @@ namespace Luminance.Core.Graphics
             else
                 CalculatePrimitiveMatrices(width, height, out view, out projection);
 
-            var shaderToUse = MainSettings.Shader ?? ShaderManager.GetShader("StandardPrimitiveShader");
+            var shaderToUse = MainSettings.Shader ?? ShaderManager.GetShader("Luminance.StandardPrimitiveShader");
             shaderToUse.TrySetParameter("uWorldViewProjection", view * projection);
             shaderToUse.Apply();
 
