@@ -54,6 +54,7 @@ namespace Luminance.Core.Graphics
         /// <param name="blendState">The blend state to draw with.</param>
         public static void DrawAllParticlesOfType<ParticleType>(BlendState blendState)
         {
+            Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, blendState, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
             foreach (var particle in ActiveParticles)
@@ -64,7 +65,7 @@ namespace Luminance.Core.Graphics
                 particle.Draw(Main.spriteBatch);
             }
 
-            Main.spriteBatch.End();
+            Main.spriteBatch.ResetToDefault();
         }
 
         private void DrawParticles(On_Main.orig_DrawDust orig, Main self)
