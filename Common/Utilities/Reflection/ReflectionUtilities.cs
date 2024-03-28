@@ -14,7 +14,7 @@ namespace Luminance.Common.Utilities
         public static readonly BindingFlags UniversalBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
         
         /// <summary>
-        ///     Loads all instances of a given mod type (such as <see cref="ModNPC"/>) that have a specific interface attribute (such as <see cref="IBossChecklistSupport"/>).<br></br>
+        ///     Loads all instances of a given mod type (such as <see cref="ModNPC"/>) that have a specific interface attribute.<br></br>
         ///     This method is useful for handling autoloading on multi-attributed pieces of content.
         /// </summary>
         /// <param name="mod">The mod to search in.</param>

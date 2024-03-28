@@ -36,6 +36,7 @@ namespace Luminance.Common.Utilities
         /// <param name="targetTopLeft">The top left coordinates of the target to check.</param>
         /// <param name="targetHitboxDimensions">The hitbox size of the target to check.</param>
         /// <param name="directionOverride">An optional direction override</param>
+        /// <param name="scale">The scale of the hitbox.</param>
         public static bool RotatingHitboxCollision(this Entity entity, Vector2 targetTopLeft, Vector2 targetHitboxDimensions, Vector2? directionOverride = null, float scale = 1f)
         {
             Vector2 lineDirection = directionOverride ?? entity.velocity;
@@ -54,6 +55,7 @@ namespace Luminance.Common.Utilities
         /// </summary>
         /// <param name="startingPoint">The point to check from.</param>
         /// <param name="checkDirection">The direction in which tiles are checked. Will always be a unit vector.</param>
+        /// <param name="giveUpLimit">How many times to repeat a step and check for collision before giving up and returning.</param>
         public static float? DistanceToTileCollisionHit(Vector2 startingPoint, Vector2 checkDirection, int giveUpLimit = 500)
         {
             // Ensure that the check direction is normalized.

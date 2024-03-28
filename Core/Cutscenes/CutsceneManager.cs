@@ -105,7 +105,7 @@ namespace Luminance.Core.Cutscenes
             ActiveCutscene?.DrawToWorld(Main.spriteBatch);
         }
 
-        internal static void DrawWorld(RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor) => ActiveCutscene?.DrawWorld(Main.spriteBatch, screenTarget1);
+        internal static void DrawWorld(RenderTarget2D _, RenderTarget2D screenTarget1, RenderTarget2D _2, Color _3) => ActiveCutscene?.DrawWorld(Main.spriteBatch, screenTarget1);
 
         private void PostDraw(GameTime obj) => ActiveCutscene?.PostDraw(Main.spriteBatch);
     }

@@ -89,7 +89,6 @@ namespace Luminance.Core.Cutscenes
         /// <summary>
         /// Use to modify the transform matrix.
         /// </summary>
-        /// <param name="Transform"></param>
         public virtual void ModifyTransformMatrix(ref SpriteViewMatrix transform)
         {
 
@@ -98,7 +97,6 @@ namespace Luminance.Core.Cutscenes
         /// <summary>
         /// Called after NPC drawing.
         /// </summary>
-        /// <param name="spriteBatch"></param>
         public virtual void DrawToWorld(SpriteBatch spriteBatch)
         {
 
@@ -107,9 +105,6 @@ namespace Luminance.Core.Cutscenes
         /// <summary>
         /// Called in <see cref="ScreenModifierManager"/> at layer <see cref="ScreenModifierManager.CutsceneLayer"/> (125). Draw to <paramref name="screen"/> last.
         /// </summary>
-        /// <param name="spriteBatch"></param>
-        /// <param name="screen"></param>
-        /// <returns></returns>
         public virtual void DrawWorld(SpriteBatch spriteBatch, RenderTarget2D screen)
         {
 
@@ -118,7 +113,6 @@ namespace Luminance.Core.Cutscenes
         /// <summary>
         /// Called during PostDraw.
         /// </summary>
-        /// <param name="spriteBatch"></param>
         public virtual void PostDraw(SpriteBatch spriteBatch)
         {
 

@@ -136,7 +136,6 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// Override to run custom drawcode for the particle. Draws the particle texture to the screen by default.
         /// </summary>
-        /// <param name="drawBatch"></param>
         public virtual void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(Texture, Position - Main.screenPosition, Frame, DrawColor, Rotation, null, Scale, Direction.ToSpriteDirection());
         #endregion
     }

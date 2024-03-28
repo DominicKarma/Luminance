@@ -19,6 +19,7 @@ namespace Luminance.Common.Utilities
         /// <param name="mode">The type of afterimage drawing code to use. Vanilla Terraria has three options: 0, 1, and 2.</param>
         /// <param name="lightColor">The light color to use for the afterimages.</param>
         /// <param name="typeOneIncrement">If mode 1 is used, this controls the loop increment. Set it to more than 1 to skip afterimages.</param>
+        /// <param name="afterimageCountOverride">An optional override to set the amount of afterimages that are drawn.</param>
         /// <param name="minScale">The minimum scaling factor across the afterimages. Defaults to 1, but values below that allow for afterimages to "shrink" as they get smaller.</param>
         /// <param name="positionClumpInterpolant">An interpolant that determines how clumped afterimages are to the original position via Vector2.Lerp(afterimagePosition, Projectile.Center, positionClumpInterpolant).</param>
         /// <param name="texture">The texture to draw. Set to <b>null</b> to draw the projectile's own loaded texture.</param>
