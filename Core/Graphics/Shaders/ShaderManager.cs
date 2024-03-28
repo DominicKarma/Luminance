@@ -114,7 +114,7 @@ namespace Luminance.Core.Graphics
             filters = null;
         }
 
-        internal static void ApplyScreenFilters(RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
+        internal static void ApplyScreenFilters(RenderTarget2D _, RenderTarget2D screenTarget1, RenderTarget2D _2, Color clearColor)
         {
             RenderTarget2D target1 = null;
             RenderTarget2D target2 = screenTarget1;

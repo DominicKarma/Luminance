@@ -24,6 +24,11 @@ namespace Luminance.Core.Graphics
         public abstract string AtlasTextureName { get; }
 
         /// <summary>
+        /// Whether the particle is manually drawn.
+        /// </summary>
+        internal bool ManuallyDrawn;
+
+        /// <summary>
         /// The position of the particle.
         /// </summary>
         public Vector2 Position;
@@ -104,6 +109,9 @@ namespace Luminance.Core.Graphics
 
             if (ParticleManager.ActiveParticles.Count > ModContent.GetInstance<Config>().MaxParticles)
                 ParticleManager.ActiveParticles.First().Kill();
+
+            if (ParticleManager.ManualRenderers.ContainsKey(GetType()))
+                ManuallyDrawn = true;
 
             ParticleManager.ActiveParticles.Add(this);
             ParticleManager.AddToDrawList(this);

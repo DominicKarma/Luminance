@@ -30,6 +30,7 @@ namespace Luminance
             {
                 ShaderManager.LoadShaders(mod);
                 AtlasManager.InitializeModAtlases(mod);
+                ParticleManager.InitializeManualRenderers(mod);
             }
 
             // Mark loading operations as finished.
