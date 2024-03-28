@@ -12,9 +12,9 @@ namespace Luminance.Core.Graphics
     {
         internal static readonly List<Particle> ActiveParticles = [];
 
-        private static readonly Dictionary<BlendState, HashSet<Particle>> DrawCollectionsByBlendState = [];
+        private static readonly Dictionary<BlendState, List<Particle>> DrawCollectionsByBlendState = [];
 
-        internal static readonly Dictionary<Type, HashSet<Particle>> ManualDrawCollections = [];
+        internal static readonly Dictionary<Type, List<Particle>> ManualDrawCollections = [];
 
         internal static readonly Dictionary<Type, IManualParticleRenderer> ManualRenderers = [];
 
@@ -90,16 +90,9 @@ namespace Luminance.Core.Graphics
 
         internal static void AddToDrawList(Particle particle)
         {
+            // Guarenteed to be registered here unless manually drawn is set by reflection or smth (do not do that).
             if (particle.ManuallyDrawn)
-            {
-                if (!ManualRenderers.TryGetValue(particle.GetType(), out var renderer))
-                {
-                    ModContent.GetInstance<Luminance>().Logger.Error($"Particle {particle.GetType()} is marked as manually drawn, but no renderer was found! Defaulting to automated drawing.");
-                    GetCorrectDrawCollection(particle).Add(particle);
-                }
-                else
-                    renderer.AddParticle(particle);
-            }
+                ManualRenderers[particle.GetType()].AddParticle(particle);
             else
                 GetCorrectDrawCollection(particle).Add(particle);
         }
@@ -107,20 +100,12 @@ namespace Luminance.Core.Graphics
         private static void RemoveFromDrawList(Particle particle)
         {
             if (particle.ManuallyDrawn)
-            {
-                if (!ManualRenderers.TryGetValue(particle.GetType(), out var renderer))
-                {
-                    ModContent.GetInstance<Luminance>().Logger.Error($"Particle {particle.GetType()} is marked as manually drawn, but no renderer was found! Defaulting to automated drawing.");
-                    GetCorrectDrawCollection(particle).Remove(particle);
-                }
-                else
-                    renderer.RemoveParticle(particle);
-            }
+                ManualRenderers[particle.GetType()].RemoveParticle(particle);
             else
                 GetCorrectDrawCollection(particle).Remove(particle);
         }
 
-        private static HashSet<Particle> GetCorrectDrawCollection(Particle particle)
+        private static List<Particle> GetCorrectDrawCollection(Particle particle)
         {
             if (!particle.ManuallyDrawn)
             {
@@ -134,18 +119,6 @@ namespace Luminance.Core.Graphics
                     ManualDrawCollections[particle.GetType()] = [];
                 return ManualDrawCollections[particle.GetType()];
             }
-        }
-        
-        /// <summary>
-        /// Returns a list of active particles to be drawn manually. Try to do this optimally.
-        /// </summary>
-        /// <typeparam name="TParticleType"></typeparam>
-        /// <returns></returns>
-        public static HashSet<Particle> GetManualDrawingParticles<TParticleType>() where TParticleType : Particle
-        {
-            if (ManualDrawCollections.TryGetValue(typeof(TParticleType), out var collection))
-                return collection;
-            return [];
         }
     }
 }

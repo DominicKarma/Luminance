@@ -26,7 +26,7 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// Whether the particle is manually drawn.
         /// </summary>
-        public virtual bool ManuallyDrawn => false;
+        internal bool ManuallyDrawn;
 
         /// <summary>
         /// The position of the particle.
@@ -109,6 +109,9 @@ namespace Luminance.Core.Graphics
 
             if (ParticleManager.ActiveParticles.Count > ModContent.GetInstance<Config>().MaxParticles)
                 ParticleManager.ActiveParticles.First().Kill();
+
+            if (ParticleManager.ManualRenderers.ContainsKey(GetType()))
+                ManuallyDrawn = true;
 
             ParticleManager.ActiveParticles.Add(this);
             ParticleManager.AddToDrawList(this);

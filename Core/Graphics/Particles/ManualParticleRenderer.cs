@@ -15,12 +15,15 @@ namespace Luminance.Core.Graphics
     }
 
     /// <summary>
-    /// Provides direct access to the assosiated particle collection, allowing for more control about how they are rendered.
+    /// Provides direct access to the assosiated particle's draw collection, allowing for more control about how they are rendered.
     /// </summary>
-    /// <typeparam name="TParticleType">The particle type that is assosiated with this renderer. This particle should set <see cref="Particle.ManuallyDrawn"/> to true.</typeparam>
+    /// <remarks>
+    /// Particles using this will not be automatically renderered.
+    /// </remarks>
+    /// <typeparam name="TParticleType">The particle type that is assosiated with this renderer.</typeparam>
     public abstract class ManualParticleRenderer<TParticleType> : ModType, IManualParticleRenderer where TParticleType : Particle
     {
-        protected HashSet<TParticleType> Particles = [];
+        protected List<TParticleType> Particles = [];
 
         protected sealed override void Register() => ModTypeLookup<ManualParticleRenderer<TParticleType>>.Register(this);
 
