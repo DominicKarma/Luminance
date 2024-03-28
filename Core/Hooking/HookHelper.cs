@@ -51,7 +51,7 @@ namespace Luminance.Core.Hooking
         }
 
         /// <summary>
-        /// Does nothing, but is required for custom IL edit event implementations for unsubscribing.
+        /// Does nothing, existing solely for the purpose of unsubscription in custom IL edit event implementations that use add/remove event syntax.
         /// </summary>
         public static void ILEventRemove()
         {
