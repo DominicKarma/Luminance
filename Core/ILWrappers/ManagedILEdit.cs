@@ -9,14 +9,14 @@ namespace Luminance.Core.ILWrappers
     public delegate void ManagedILManipulator(ILContext context, ManagedILEdit edit);
 
     /// <summary>
-    /// Wrapper for ILEdits that automatically unapplies them all, and provides a useful error logging template.
+    /// Wrapper for ILEdits that automatically un-applies them all, and provides a useful error logging template.
     /// </summary>
     /// <param name="Name">The name of the edit.</param>
-    /// <param name="AssosiatedMod">The mod that owns this ILEdit.</param>
+    /// <param name="AssociatedMod">The mod that owns this ILEdit.</param>
     /// <param name="SubscriptionFunction">An action that subscribes the ILEdit.</param>
     /// <param name="UnsubscriptionFunction">An action that unsubscribes the ILEdit.</param>
-    /// <param name="EditingFunction">The delagate that contains/represents the ILEdit.</param>
-    public sealed record ManagedILEdit(string Name, Mod AssosiatedMod, Action<ManagedILEdit> SubscriptionFunction, Action<ManagedILEdit> UnsubscriptionFunction, ManagedILManipulator EditingFunction)
+    /// <param name="EditingFunction">The delegate that contains/represents the ILEdit.</param>
+    public sealed record ManagedILEdit(string Name, Mod AssociatedMod, Action<ManagedILEdit> SubscriptionFunction, Action<ManagedILEdit> UnsubscriptionFunction, ManagedILManipulator EditingFunction)
     {
         private static readonly Dictionary<string, List<ManagedILEdit>> EditsByMod = new();
 
@@ -39,7 +39,7 @@ namespace Luminance.Core.ILWrappers
                 SubscriptionFunction?.Invoke(this);
             });
 
-            CacheEdit(AssosiatedMod, this);
+            CacheEdit(AssociatedMod, this);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Luminance.Core.ILWrappers
         /// This should be used if an IL edit could not be loaded for any reason, such as a <see cref="ILCursor.TryGotoNext(MoveType, System.Func{Mono.Cecil.Cil.Instruction, bool}[])"/> failure.
         /// </summary>
         /// <param name="reason">The reason that the IL edit failed.</param>
-        public void LogFailure(string reason) => ModContent.GetInstance<Luminance>().Logger.Warn($"The IL edit of the name '{Name}' by {AssosiatedMod.DisplayName} failed to load for the following reason:\n{reason}");
+        public void LogFailure(string reason) => ModContent.GetInstance<Luminance>().Logger.Warn($"The IL edit of the name '{Name}' by {AssociatedMod.DisplayName} failed to load for the following reason:\n{reason}");
 
         private static void CacheEdit(Mod mod, ManagedILEdit edit) => GetEditListSafely(mod.Name).Add(edit);
 
