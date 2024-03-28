@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Threading;
-using Terraria.ModLoader;
 using Terraria;
 using System;
 using Luminance.Common.Utilities;
@@ -63,6 +62,27 @@ namespace Luminance.Core.Graphics
                 }
                 return false;
             });
+        }
+
+        /// <summary>
+        /// Draws all active particles of a given type with a given blend state.
+        /// </summary>
+        /// <typeparam name="ParticleType">The particle type to draw.</typeparam>
+        /// <param name="blendState">The blend state to draw with.</param>
+        public static void DrawAllParticlesOfType<ParticleType>(BlendState blendState)
+        {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, blendState, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+            foreach (var particle in ActiveParticles)
+            {
+                if (particle is not ParticleType)
+                    continue;
+
+                particle.Draw(Main.spriteBatch);
+            }
+
+            Main.spriteBatch.ResetToDefault();
         }
 
         private void DrawParticles(On_Main.orig_DrawDust orig, Main self)
