@@ -11,8 +11,14 @@ namespace Luminance.Core.Hooking
 
         void ILoadable.Unload() => Unsubscribe();
 
+        /// <summary>
+        /// Subscribe to the detour here.
+        /// </summary>
         void Subscribe();
 
+        /// <summary>
+        /// Unsubscribe to the detour here.
+        /// </summary>
         void Unsubscribe();
     }
 }

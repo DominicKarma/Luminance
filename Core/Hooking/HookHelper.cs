@@ -7,12 +7,18 @@ using MonoMod.RuntimeDetour;
 
 namespace Luminance.Core.Hooking
 {
+    /// <summary>
+    /// Provides useful methods for working with IL editing and custom detouring.
+    /// </summary>
     public static class HookHelper
     {
         private static List<Hook> detours = [];
 
         private static List<ILHook> ilHooks = [];
 
+        /// <summary>
+        /// Modifies the provided methodbase with the provided detour, and caches it. This is automatically undone on unloading.
+        /// </summary>
         public static void ModifyMethodWithDetour(MethodBase methodToModify, Delegate detourMethod)
         {
             detours ??= [];
@@ -21,6 +27,9 @@ namespace Luminance.Core.Hooking
             detours.Add(hook);
         }
 
+        /// <summary>
+        /// Modifies the provided methodbase with the provided IL manipulator, and caches it. This is automatically undone on unloading.
+        /// </summary>
         public static void ModifyMethodWithIL(MethodBase methodToModify, ILContext.Manipulator ilMethod)
         {
             ilHooks ??= [];
