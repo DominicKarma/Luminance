@@ -17,7 +17,7 @@ namespace Luminance.Core.Graphics
     }
 
     /// <summary>
-    /// Provides iterating over the active assosiated particle collection, allowing for more control about how they are rendered.
+    /// Provides direct access to the assosiated particle collection, allowing for more control about how they are rendered.
     /// </summary>
     /// <typeparam name="TParticleType">The particle type that is assosiated with this renderer. This particle should set <see cref="Particle.ManuallyDrawn"/> to true.</typeparam>
     public abstract class ManualParticleRenderer<TParticleType> : ModType, IManualParticleRenderer where TParticleType : Particle
@@ -45,7 +45,8 @@ namespace Luminance.Core.Graphics
         void IManualParticleRenderer.RenderParticles() => RenderParticles();
 
         /// <summary>
-        /// Iterate over <see cref="Particles"/> here and perform rendering logic.
+        /// Iterate over <see cref="Particles"/> here and perform rendering logic.<br/>
+        /// <b>Note that no spritebatch has been started.</b>
         /// </summary>
         public abstract void RenderParticles();
     }
