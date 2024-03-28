@@ -7,6 +7,9 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
   <ItemGroup>
     <None Remove="Assets\AutoloadedEffects\Shaders\OverlayModifiers\MetaballEdgeShader.fx" />
   </ItemGroup>
