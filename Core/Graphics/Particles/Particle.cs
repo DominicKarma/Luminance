@@ -24,6 +24,11 @@ namespace Luminance.Core.Graphics
         public abstract string AtlasTextureName { get; }
 
         /// <summary>
+        /// Whether the particle is manually drawn.
+        /// </summary>
+        public virtual bool ManuallyDrawn => false;
+
+        /// <summary>
         /// The position of the particle.
         /// </summary>
         public Vector2 Position;

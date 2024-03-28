@@ -3,14 +3,21 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Threading;
 using Terraria.ModLoader;
 using Terraria;
+using System;
+using Luminance.Common.Utilities;
+using System.Linq;
 
 namespace Luminance.Core.Graphics
 {
     public class ParticleManager : ModSystem
     {
-        internal static readonly List<Particle> ActiveParticles = new();
+        internal static readonly List<Particle> ActiveParticles = [];
 
-        private static readonly Dictionary<BlendState, HashSet<Particle>> DrawCollectionsByBlendState = new();
+        private static readonly Dictionary<BlendState, HashSet<Particle>> DrawCollectionsByBlendState = [];
+
+        internal static readonly Dictionary<Type, HashSet<Particle>> ManualDrawCollections = [];
+
+        internal static readonly Dictionary<Type, IManualParticleRenderer> ManualRenderers = [];
 
         public override void Load() => On_Main.DrawDust += DrawParticles;
 
@@ -21,6 +28,17 @@ namespace Luminance.Core.Graphics
             ActiveParticles.Clear();
             foreach (var collection in DrawCollectionsByBlendState.Values)
                 collection.Clear();
+        }
+
+        internal static void InitializeManualRenderers(Mod mod)
+        {
+            var contentInterfaces = mod.GetContent().Where(c =>
+            {
+                return c is ModType t and IManualParticleRenderer;
+            }).Select(c => c as IManualParticleRenderer);
+
+            foreach (var content in contentInterfaces)
+                content.RegisterRenderer();
         }
 
         public override void PostUpdateDusts()
@@ -61,20 +79,74 @@ namespace Luminance.Core.Graphics
                 Main.spriteBatch.End();
             }
 
+            foreach (var pair in ManualRenderers)
+                pair.Value.RenderParticles();
+
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
             MetaballManager.DrawMetaballTargets();
             Main.spriteBatch.End();
         }
 
-        internal static void AddToDrawList(Particle particle) => GetCorrectDrawCollection(particle.BlendState).Add(particle);
+        internal static void RegisterRenderer<TParticleType>(IManualParticleRenderer particleRenderer) where TParticleType : Particle => ManualRenderers[typeof(TParticleType)] = particleRenderer;
 
-        private static void RemoveFromDrawList(Particle particle) => GetCorrectDrawCollection(particle.BlendState).Remove(particle);
-
-        private static HashSet<Particle> GetCorrectDrawCollection(BlendState blendState)
+        internal static void AddToDrawList(Particle particle)
         {
-            if (!DrawCollectionsByBlendState.ContainsKey(blendState))
-                DrawCollectionsByBlendState[blendState] = new();
-            return DrawCollectionsByBlendState[blendState];
+            if (particle.ManuallyDrawn)
+            {
+                if (!ManualRenderers.TryGetValue(particle.GetType(), out var renderer))
+                {
+                    ModContent.GetInstance<Luminance>().Logger.Error($"Particle {particle.GetType()} is marked as manually drawn, but no renderer was found! Defaulting to automated drawing.");
+                    GetCorrectDrawCollection(particle).Add(particle);
+                }
+                else
+                    renderer.AddParticle(particle);
+            }
+            else
+                GetCorrectDrawCollection(particle).Add(particle);
+        }
+
+        private static void RemoveFromDrawList(Particle particle)
+        {
+            if (particle.ManuallyDrawn)
+            {
+                if (!ManualRenderers.TryGetValue(particle.GetType(), out var renderer))
+                {
+                    ModContent.GetInstance<Luminance>().Logger.Error($"Particle {particle.GetType()} is marked as manually drawn, but no renderer was found! Defaulting to automated drawing.");
+                    GetCorrectDrawCollection(particle).Remove(particle);
+                }
+                else
+                    renderer.RemoveParticle(particle);
+            }
+            else
+                GetCorrectDrawCollection(particle).Remove(particle);
+        }
+
+        private static HashSet<Particle> GetCorrectDrawCollection(Particle particle)
+        {
+            if (!particle.ManuallyDrawn)
+            {
+                if (!DrawCollectionsByBlendState.ContainsKey(particle.BlendState))
+                    DrawCollectionsByBlendState[particle.BlendState] = [];
+                return DrawCollectionsByBlendState[particle.BlendState];
+            }
+            else
+            {
+                if (!ManualDrawCollections.ContainsKey(particle.GetType()))
+                    ManualDrawCollections[particle.GetType()] = [];
+                return ManualDrawCollections[particle.GetType()];
+            }
+        }
+        
+        /// <summary>
+        /// Returns a list of active particles to be drawn manually. Try to do this optimally.
+        /// </summary>
+        /// <typeparam name="TParticleType"></typeparam>
+        /// <returns></returns>
+        public static HashSet<Particle> GetManualDrawingParticles<TParticleType>() where TParticleType : Particle
+        {
+            if (ManualDrawCollections.TryGetValue(typeof(TParticleType), out var collection))
+                return collection;
+            return [];
         }
     }
 }
