@@ -4,7 +4,7 @@ using MonoMod.Cil;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace Luminance.Core.ILWrappers
+namespace Luminance.Core.Hooking
 {
     public delegate void ManagedILManipulator(ILContext context, ManagedILEdit edit);
 
@@ -18,17 +18,21 @@ namespace Luminance.Core.ILWrappers
     /// <param name="EditingFunction">The delagate that contains/represents the ILEdit.</param>
     public sealed record ManagedILEdit(string Name, Mod AssosiatedMod, Action<ManagedILEdit> SubscriptionFunction, Action<ManagedILEdit> UnsubscriptionFunction, ManagedILManipulator EditingFunction)
     {
-        private static readonly Dictionary<string, List<ManagedILEdit>> EditsByMod = new();
+        private static readonly Dictionary<string, List<ManagedILEdit>> EditsByMod = [];
 
+        /// <summary>
+        /// Exposes the editing function directly, this should be used in <see cref="ILEditProvider.Subscribe"/> and <see cref="ILEditProvider.Unsubscribe"/>
+        /// </summary>
+        /// <param name="context"></param>
         public void SubscriptionWrapper(ILContext context) => EditingFunction(context, this);
 
         /// <summary>
         /// Applies the ILEdits <see cref="EditingFunction"/>.
         /// </summary>
         /// <param name="onMainThread"></param>
-        public void Apply(bool onMainThread = false)
+        public void Apply(bool applyOnMainThread = false)
         {
-            if (!onMainThread)
+            if (!applyOnMainThread)
             {
                 SubscriptionFunction?.Invoke(this);
                 return;
@@ -54,7 +58,7 @@ namespace Luminance.Core.ILWrappers
         private static List<ManagedILEdit> GetEditListSafely(string modName)
         {
             if (!EditsByMod.ContainsKey(modName))
-                EditsByMod[modName] = new();
+                EditsByMod[modName] = [];
             return EditsByMod[modName];
         }
 

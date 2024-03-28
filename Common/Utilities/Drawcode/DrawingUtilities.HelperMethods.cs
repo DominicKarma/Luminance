@@ -2,9 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.Chat;
-using Terraria.ID;
-using Terraria.Localization;
 
 namespace Luminance.Common.Utilities
 {
