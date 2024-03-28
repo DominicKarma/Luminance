@@ -1,4 +1,5 @@
-﻿using Terraria.ModLoader;
+﻿using Luminance.Core.Hooking;
+using Terraria.ModLoader;
 
 namespace Luminance.Core
 {
@@ -7,6 +8,11 @@ namespace Luminance.Core
         public override void PreUpdateEntities()
         {
             UpdateBossCache();
+        }
+
+        public override void Unload()
+        {
+            HookHelper.UnloadHooks();
         }
     }
 }
