@@ -18,7 +18,7 @@ namespace Luminance.Core.Graphics
     public sealed class Atlas : IDisposable
     {
         #region Fields/Properties
-        private readonly List<AtlasTexture> textures = new();
+        private readonly List<AtlasTexture> textures = [];
 
         /// <summary>
         /// The texture of the atlas.
@@ -85,9 +85,9 @@ namespace Luminance.Core.Graphics
         /// Represents a texture atlas, which is a large texture with smaller, single textures crammed into it as tightly as possible.<br/>
         /// Single textures are loaded by a data file, that contains json data for each texture. Access these via <see cref="AtlasManager.GetTexture(string)"/>.
         /// </summary>
+        /// <param name="mod">The mod this atlas belongs to.</param>
         /// <param name="name">The name of the atlas.</param>
         /// <param name="atlasPath">The file path to both the texture and data files, without the file extensions nor the quality suffix.</param>
-        /// <param name="usesTextureQuality">Whether this atlas uses texture quality, and should pick from 3 versions based on it.</param>
         public Atlas(Mod mod, string name, string atlasPath)
         {
             AtlasMod = mod;

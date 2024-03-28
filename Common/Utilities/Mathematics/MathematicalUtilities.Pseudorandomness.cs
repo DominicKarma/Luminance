@@ -15,6 +15,7 @@ namespace Luminance.Common.Utilities
         ///     Calculates an aperiodic sine. This function only achieves this if <paramref name="a"/> and <paramref name="b"/> are irrational numbers.
         /// </summary>
         /// <param name="x">The input value.</param>
+        /// <param name="dx">An optional, secondary value that works similarly to x. Unlike x, however, it serves as an input offset that is unaffected by the two coefficients.</param>
         /// <param name="a">The first irrational coefficient.</param>
         /// <param name="b">The second irrational coefficient.</param>
         public static float AperiodicSin(float x, float dx = 0f, float a = Pi, float b = MathHelper.E)
@@ -52,8 +53,8 @@ namespace Luminance.Common.Utilities
             return result;
         }
 
-        internal static readonly List<Vector2> Directions = new List<Vector2>()
-        {
+        internal static readonly List<Vector2> Directions =
+        [
             new(-1f, -1f),
             new(1f, -1f),
             new(-1f, 1f),
@@ -62,7 +63,7 @@ namespace Luminance.Common.Utilities
             new(-1f, 0f),
             new(0f, 1f),
             new(1f, 0f),
-        };
+        ];
 
         /// <summary>
         /// Computes 2-dimensional Perlin Noise, which gives "random" but continuous values.

@@ -29,7 +29,6 @@ namespace Luminance.Core.Hooking
         /// <summary>
         /// Applies the ILEdits <see cref="EditingFunction"/>.
         /// </summary>
-        /// <param name="onMainThread"></param>
         public void Apply(bool applyOnMainThread = false)
         {
             if (!applyOnMainThread)

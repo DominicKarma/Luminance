@@ -99,6 +99,7 @@ namespace Luminance.Common.Utilities
         /// </summary>
         /// <param name="spriteBatch">The sprite batch.</param>
         /// <param name="newBlendState">An optional blend state. If none is supplied, <see cref="BlendState.AlphaBlend"/> is used.</param>
+        /// <param name="ui">Whether this is for UI drawing or not. Controls what matrix is used.</param>
         public static void PrepareForShaders(this SpriteBatch spriteBatch, BlendState newBlendState = null, bool ui = false)
         {
             spriteBatch.End();
