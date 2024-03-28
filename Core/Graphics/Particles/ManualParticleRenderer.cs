@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Terraria;
+﻿using System.Collections.Generic;
 using Terraria.ModLoader;
 
 namespace Luminance.Core.Graphics
