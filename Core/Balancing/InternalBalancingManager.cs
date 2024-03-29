@@ -73,14 +73,16 @@ namespace Luminance.Core.Balancing
 
         private static void PopulateArrayIfRequired(int npcType)
         {
+            npcHitBalancingChanges ??= [];
+
             if (npcHitRulesTable[npcType] != null)
                 return;
+
+            npcHitRulesTable[npcType] = [];
 
             var rulesCollections = npcHitBalancingChanges
                 .Where(element => element.NPCType == npcType)
                 .Select(element => element.BalancingRules);
-
-            npcHitRulesTable[npcType] = [];
 
             foreach (var rules in rulesCollections)
                 foreach (var rule in rules)
@@ -90,7 +92,7 @@ namespace Luminance.Core.Balancing
         internal static int GetBalancedHP(NPC npc)
         {
             int maxHP = npc.lifeMax;
-            if (npcHitBalancingChanges == null)
+            if (npcHPBalancingChanges == null)
                 return maxHP;
 
             BalancePriority highestPriority = (BalancePriority)(-1);
