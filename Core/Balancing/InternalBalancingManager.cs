@@ -87,6 +87,9 @@ namespace Luminance.Core.Balancing
         internal static int GetBalancedHP(NPC npc)
         {
             int maxHP = npc.lifeMax;
+            if (npcHitBalancingChanges == null)
+                return maxHP;
+
             BalancePriority highestPriority = (BalancePriority)(-1);
 
             foreach (var change in npcHPBalancingChanges)
@@ -102,6 +105,9 @@ namespace Luminance.Core.Balancing
 
         internal static void BalanceItem(Item item)
         {
+            if (itemBalancingChanges == null)
+                return;
+
             BalancePriority highestPriority = (BalancePriority)(-1);
             ItemBalancingChange changeToPerform = null;
             foreach (var change in itemBalancingChanges)
