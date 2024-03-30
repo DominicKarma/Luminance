@@ -104,14 +104,17 @@ namespace Luminance.Core.Graphics
             if (Main.netMode == NetmodeID.Server)
                 return;
 
-            foreach (var shader in shaders.Values)
-                shader.Dispose();
+            Main.QueueMainThreadAction(() =>
+            {
+                foreach (var shader in shaders.Values)
+                    shader.Dispose();
 
-            foreach (var filter in filters.Values)
-                filter.Dispose();
+                foreach (var filter in filters.Values)
+                    filter.Dispose();
 
-            shaders = null;
-            filters = null;
+                shaders = null;
+                filters = null;
+            });
         }
 
         internal static void ApplyScreenFilters(RenderTarget2D _, RenderTarget2D screenTarget1, RenderTarget2D _2, Color clearColor)
