@@ -3,7 +3,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria;
 
-namespace NoxusBoss.Core.Fixes
+namespace Luminance.Core.Graphics
 {
     /* CONTEXT: 
      * Screen shaders (and by extension, this library's filters) were not built for what they have become. Terraria really only uses them for tinting effects, such as pillar color overlays.
