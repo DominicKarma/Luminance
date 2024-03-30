@@ -36,6 +36,7 @@ namespace Luminance.Common.Utilities
         /// <param name="targetTopLeft">The top left coordinates of the target to check.</param>
         /// <param name="targetHitboxDimensions">The hitbox size of the target to check.</param>
         /// <param name="directionOverride">An optional direction override</param>
+        /// <param name="scale">The scale of the hitbox.</param>
         public static bool RotatingHitboxCollision(this Entity entity, Vector2 targetTopLeft, Vector2 targetHitboxDimensions, Vector2? directionOverride = null, float scale = 1f)
         {
             Vector2 lineDirection = directionOverride ?? entity.velocity;
@@ -47,6 +48,37 @@ namespace Luminance.Common.Utilities
 
             float _ = 0f;
             return Collision.CheckAABBvLineCollision(targetTopLeft, targetHitboxDimensions, start, end, entity.width * scale, ref _);
+        }
+
+        /// <summary>
+        /// Determines the distance required before a ray in a given direction from a given starting position hits solid tiles. Gives up after a certain quantity of tiles, or when a world border is reached.
+        /// </summary>
+        /// <param name="startingPoint">The point to check from.</param>
+        /// <param name="checkDirection">The direction in which tiles are checked. Will always be a unit vector.</param>
+        /// <param name="giveUpLimit">How many times to repeat a step and check for collision before giving up and returning.</param>
+        public static float? DistanceToTileCollisionHit(Vector2 startingPoint, Vector2 checkDirection, int giveUpLimit = 500)
+        {
+            // Ensure that the check direction is normalized.
+            checkDirection = checkDirection.SafeNormalize(Vector2.Zero);
+
+            for (int i = 1; i < giveUpLimit; i++)
+            {
+                Point checkPosition = startingPoint.ToTileCoordinates();
+                checkPosition.X += (int)(checkDirection.X * i);
+                checkPosition.Y += (int)(checkDirection.Y * i);
+
+                // Don't bother checking any further if the check has left the world.
+                if (!WorldGen.InWorld(checkPosition.X, checkPosition.Y, 2))
+                    return null;
+
+                // If a solid tile is hit, return the distance.
+                // Since Terraria's tile coordinate system is discrete and does not care for more advanced concepts,
+                // the amount of tiles searched such far is a sufficient answer.
+                Tile tile = Framing.GetTileSafely(checkPosition.X, checkPosition.Y);
+                if (WorldGen.SolidTile(tile) || (checkDirection.Y >= 0f && tile.HasTile && Main.tileSolidTop[tile.TileType]))
+                    return i;
+            }
+            return null;
         }
     }
 }

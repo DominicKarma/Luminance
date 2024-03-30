@@ -3,7 +3,7 @@ global using static Luminance.Assets.MiscTexturesRegistry;
 global using static Luminance.Common.Utilities.Utilities;
 global using static Microsoft.Xna.Framework.MathHelper;
 using Luminance.Core.Graphics;
-using Luminance.Core.ILWrappers;
+using Luminance.Core.Hooking;
 using Terraria.ModLoader;
 
 namespace Luminance
@@ -23,13 +23,18 @@ namespace Luminance
 
         public override void Unload() => ManagedILEdit.UnloadEdits();
 
-        /// <summary>
-        /// Performs initialization on the provided mod with all of the librarys features.
-        /// </summary>
-        /// <param name="mod"></param>
-        public static void InitializeMod(Mod mod)
+        public override void PostSetupContent()
         {
-            AtlasManager.InitializeModAtlases(mod);
+            // Go through every mod and check for effects to autoload.
+            foreach (Mod mod in ModLoader.Mods)
+            {
+                ShaderManager.LoadShaders(mod);
+                AtlasManager.InitializeModAtlases(mod);
+                ParticleManager.InitializeManualRenderers(mod);
+            }
+
+            // Mark loading operations as finished.
+            ShaderManager.HasFinishedLoading = true;
         }
     }
 }

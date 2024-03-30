@@ -6,7 +6,7 @@ namespace Luminance.Common.Utilities
     public static partial class Utilities
     {
         /// <summary>
-        ///     Wraps an angle similar to <see cref="MathHelper.WrapAngle(float)"/>, except with a range of 0 to 2pi instead of -pi to pi.
+        ///     Wraps an angle similar to <see cref="WrapAngle(float)"/>, except with a range of 0 to 2pi instead of -pi to pi.
         /// </summary>
         /// <param name="theta">The angle to wrap.</param>
         public static float WrapAngle360(float theta)
@@ -14,6 +14,25 @@ namespace Luminance.Common.Utilities
             theta = WrapAngle(theta);
             if (theta < 0f)
                 theta += TwoPi;
+
+            return theta;
+        }
+
+        /// <summary>
+        /// Wraps an angle between -90 and 90 degrees. If an angle goes past this range it'll go back to the other end.
+        /// </summary>
+        /// <param name="theta"></param>
+        /// <returns></returns>
+        public static float WrapAngle90Degrees(float theta)
+        {
+            // Ensure that the angle starts off in the -180 to 180 degree range instead of the 0 to 360 degree range.
+            if (theta > Pi)
+                theta -= Pi;
+
+            if (theta > PiOver2)
+                theta -= Pi;
+            if (theta < -PiOver2)
+                theta += Pi;
 
             return theta;
         }

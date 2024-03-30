@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Threading;
@@ -25,7 +26,7 @@ namespace Luminance.Core.Graphics
         }
 
         // This uses a Texture2D rather than an Asset to allow for the usage of render targets when working with metaballs.
-        public abstract Texture2D[] LayerTextures
+        public abstract Func<Texture2D>[] LayerTextures
         {
             get;
         }
@@ -41,6 +42,10 @@ namespace Luminance.Core.Graphics
         #region Instance Methods
         public void CreateParticle(Vector2 spawnPosition, Vector2 velocity, float size, float extraInfo0 = 0f, float extraInfo1 = 0f, float extraInfo2 = 0f, float extraInfo3 = 0f) =>
             Particles.Add(new(spawnPosition, velocity, size, extraInfo0, extraInfo1, extraInfo2, extraInfo3));
+
+        public void CreateParticle(MetaballInstance particle) => Particles.Add(particle);
+
+        public void CreateParticle(IEnumerable<MetaballInstance> particles) => Particles.AddRange(particles);
 
         public void ClearInstances() => Particles.Clear();
 
@@ -148,7 +153,7 @@ namespace Luminance.Core.Graphics
         /// Whether a given particle in the <see cref="Particles"/> list should be killed or not.
         /// </summary>
         /// <param name="particle">The particle to determine the kill state of.</param>
-        public virtual bool ShouldKillParticle(MetaballInstance particle) => false;
+        public abstract bool ShouldKillParticle(MetaballInstance particle);
 
         /// <summary>
         /// Optionally overridable method that defines for preparations for the render target. Defaults to using the typical texture overlay behavior.
@@ -157,10 +162,10 @@ namespace Luminance.Core.Graphics
         public virtual void PrepareShaderForTarget(int layerIndex)
         {
             // Store the in an easy to use local variables.
-            var metaballShader = ShaderManager.GetShader("MetaballEdgeShader");
+            var metaballShader = ShaderManager.GetShader("Luminance.MetaballEdgeShader");
 
             // Fetch the layer texture. This is the texture that will be overlaid over the greyscale contents on the screen.
-            Texture2D layerTexture = LayerTextures[layerIndex];
+            Texture2D layerTexture = LayerTextures[layerIndex]();
 
             // Calculate the layer scroll offset. This is used to ensure that the texture contents of the given metaball have parallax, rather than being static over the screen
             // regardless of world position.

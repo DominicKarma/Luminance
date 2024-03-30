@@ -13,6 +13,7 @@ namespace Luminance.Common.Utilities
         /// <param name="height">The height of the overall view.</param>
         /// <param name="viewMatrix">The view matrix.</param>
         /// <param name="projectionMatrix">The projection matrix.</param>
+        /// <param name="ui">Whether this is for UI. Controls whether gravity screen flipping is taken into account.</param>
         public static void CalculatePrimitiveMatrices(int width, int height, out Matrix viewMatrix, out Matrix projectionMatrix, bool ui = false)
         {
             Vector2 zoom = Main.GameViewMatrix.Zoom;

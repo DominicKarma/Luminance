@@ -103,7 +103,7 @@ namespace Luminance.Core.Sounds
         ///     Performs all necessary update behaviors for sounds, evaluating whether they need to be started, updating sound positions in the world, and performing arbitrary update behaviors via <paramref name="soundUpdateStep"/>.
         /// </summary>
         /// <param name="soundPosition">The source position of the sounds.</param>
-        /// <param name="updateLoop">An optional update behavior that should be applied to the sounds.</param>
+        /// <param name="soundUpdateStep">An optional update behavior that should be applied to the sounds.</param>
         public virtual void Update(Vector2 soundPosition, Action<ActiveSound> soundUpdateStep = null)
         {
             // Start the sound if it hasn't been activated yet.

@@ -24,6 +24,11 @@ namespace Luminance.Core.Graphics
         public abstract string AtlasTextureName { get; }
 
         /// <summary>
+        /// Whether the particle is manually drawn.
+        /// </summary>
+        internal bool ManuallyDrawn;
+
+        /// <summary>
         /// The position of the particle.
         /// </summary>
         public Vector2 Position;
@@ -105,6 +110,9 @@ namespace Luminance.Core.Graphics
             if (ParticleManager.ActiveParticles.Count > ModContent.GetInstance<Config>().MaxParticles)
                 ParticleManager.ActiveParticles.First().Kill();
 
+            if (ParticleManager.ManualRenderers.ContainsKey(GetType()))
+                ManuallyDrawn = true;
+
             ParticleManager.ActiveParticles.Add(this);
             ParticleManager.AddToDrawList(this);
 
@@ -128,7 +136,6 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// Override to run custom drawcode for the particle. Draws the particle texture to the screen by default.
         /// </summary>
-        /// <param name="drawBatch"></param>
         public virtual void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(Texture, Position - Main.screenPosition, Frame, DrawColor, Rotation, null, Scale, Direction.ToSpriteDirection());
         #endregion
     }

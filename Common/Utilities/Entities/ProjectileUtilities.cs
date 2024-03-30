@@ -138,5 +138,24 @@ namespace Luminance.Common.Utilities
 
             return ModContent.GetInstance<T>();
         }
+
+        /// <summary>
+        ///     Finds the projectile with the current identity that belongs to the provided owner.
+        /// </summary>
+        /// <returns>The projectile, null if one was not found.</returns>
+        public static Projectile FindProjectileByIdentity(int identity, int ownerIndex)
+        {
+            if (Main.netMode == NetmodeID.SinglePlayer)
+                return Main.projectile[identity];
+
+            for (int i = 0; i < Main.maxProjectiles; i++)
+            {
+                if (Main.projectile[i].identity != identity || Main.projectile[i].owner != ownerIndex || !Main.projectile[i].active)
+                    continue;
+
+                return Main.projectile[i];
+            }
+            return null;
+        }
     }
 }

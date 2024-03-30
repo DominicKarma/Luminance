@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -16,9 +15,12 @@ namespace Luminance.Core.Graphics
         /// <summary>
         ///     The set of all shaders handled by this manager class.
         /// </summary>
-        private static Dictionary<string, ManagedShader> shaders;
+        internal static Dictionary<string, ManagedShader> shaders;
 
-        private static Dictionary<string, ManagedScreenFilter> filters;
+        /// <summary>
+        ///     The set of all filters handled by this manager class.
+        /// </summary>
+        internal static Dictionary<string, ManagedScreenFilter> filters;
 
         /// <summary>
         ///     Whether this manager class has finished loading all shaders yet or not.
@@ -29,7 +31,7 @@ namespace Luminance.Core.Graphics
         public static bool HasFinishedLoading
         {
             get;
-            private set;
+            internal set;
         }
 
         public static ManagedRenderTarget MainTarget
@@ -63,47 +65,38 @@ namespace Luminance.Core.Graphics
             MainTarget = new ManagedRenderTarget(true, ManagedRenderTarget.CreateScreenSizedTarget, true);
             AuxilaryTarget = new ManagedRenderTarget(true, ManagedRenderTarget.CreateScreenSizedTarget, true);
 
-            On_FilterManager.EndCapture += ApplyScreenFilters;
-
             shaders = [];
             filters = [];
         }
 
-        public override void PostSetupContent()
+        internal static void LoadShaders(Mod mod)
         {
-            // Go through every mod and check for effects to autoload.
-            foreach (Mod mod in ModLoader.Mods)
+            List<string> fileNames = mod.GetFileNames();
+            if (fileNames is null)
+                return;
+
+            foreach (var path in fileNames)
             {
-                List<string> fileNames = mod.GetFileNames();
-                if (fileNames is null)
+                // Ignore paths inside of the compiler directory.
+                if (path?.Contains("Compiler/") ?? true)
                     continue;
 
-                foreach (var path in fileNames)
+                if (path.Contains(AutoloadDirectoryShaders))
                 {
-                    // Ignore paths inside of the compiler directory.
-                    if (path?.Contains("Compiler/") ?? true)
-                        continue;
+                    string shaderName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
+                    string clearedPath = Path.Combine(Path.GetDirectoryName(path), shaderName).Replace(@"\", @"/").Replace($"{mod.Name}.", string.Empty);
+                    Ref<Effect> shader = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
+                    SetShader(shaderName, shader);
+                }
+                else if (path.Contains(AutoloadDirectoryFilters))
+                {
+                    string filterName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
+                    string clearedPath = Path.Combine(Path.GetDirectoryName(path), filterName).Replace(@"\", @"/").Replace($"{mod.Name}.", string.Empty);
 
-                    if (path.Contains(AutoloadDirectoryShaders))
-                    {
-                        string shaderName = Path.GetFileNameWithoutExtension(path);
-                        string clearedPath = Path.Combine(Path.GetDirectoryName(path), shaderName).Replace(@"\", @"/");
-                        Ref<Effect> shader = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
-                        SetShader(shaderName, shader);
-                    }
-                    else if (path.Contains(AutoloadDirectoryFilters))
-                    {
-                        string filterName = Path.GetFileNameWithoutExtension(path);
-                        string clearedPath = Path.Combine(Path.GetDirectoryName(path), filterName).Replace(@"\", @"/");
-
-                        Ref<Effect> filter = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
-                        SetFilter(filterName, filter);
-                    }
+                    Ref<Effect> filter = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
+                    SetFilter(filterName, filter);
                 }
             }
-
-            // Mark loading operations as finished.
-            HasFinishedLoading = true;
         }
 
         public override void Unload()
@@ -111,19 +104,20 @@ namespace Luminance.Core.Graphics
             if (Main.netMode == NetmodeID.Server)
                 return;
 
-            On_FilterManager.EndCapture -= ApplyScreenFilters;
+            Main.QueueMainThreadAction(() =>
+            {
+                foreach (var shader in shaders.Values)
+                    shader.Dispose();
 
-            foreach (var shader in shaders.Values)
-                shader.Dispose();
+                foreach (var filter in filters.Values)
+                    filter.Dispose();
 
-            foreach (var filter in filters.Values)
-                filter.Dispose();
-
-            shaders = null;
-            filters = null;
+                shaders = null;
+                filters = null;
+            });
         }
 
-        private void ApplyScreenFilters(On_FilterManager.orig_EndCapture orig, FilterManager self, RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
+        internal static void ApplyScreenFilters(RenderTarget2D _, RenderTarget2D screenTarget1, RenderTarget2D _2, Color clearColor)
         {
             RenderTarget2D target1 = null;
             RenderTarget2D target2 = screenTarget1;
@@ -144,7 +138,7 @@ namespace Luminance.Core.Graphics
                 target1 = (target2 != MainTarget.Target) ? MainTarget : AuxilaryTarget;
                 Main.instance.GraphicsDevice.SetRenderTarget(target1);
                 Main.instance.GraphicsDevice.Clear(clearColor);
-                Main.spriteBatch.Begin((SpriteSortMode)1, BlendState.AlphaBlend);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
                 filter.Apply();
                 Main.spriteBatch.Draw(target2, Vector2.Zero, Main.ColorOfTheSkies);
                 Main.spriteBatch.End();
@@ -158,8 +152,6 @@ namespace Luminance.Core.Graphics
                 Main.spriteBatch.Draw(target1, Vector2.Zero, Color.White);
                 Main.spriteBatch.End();
             }
-
-            orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
         }
 
         public override void PostUpdateEverything()
