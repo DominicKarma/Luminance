@@ -124,7 +124,7 @@ namespace Luminance.Core.Graphics
                 if (!file.FilePath.Contains(watcher.ModName))
                     return;
 
-                MoveFileToCompilingFolder(file, watcher, compilerDirectory);
+                MoveFileToCompilingFolder(file, compilerDirectory);
 
                 compiledFiles.Add(file);
                 CompilingFiles.Dequeue();
@@ -226,9 +226,8 @@ namespace Luminance.Core.Graphics
         /// Moves a given compiling file to the compilation directory so that EasyXNB can run on it and acquire a new compiled shader.
         /// </summary>
         /// <param name="file">The file to move.</param>
-        /// <param name="watcher">The shader watcher responsible for the file.</param>
         /// <param name="compilerDirectory">The directory that contains the compiler executable.</param>
-        private static void MoveFileToCompilingFolder(CompilingFile file, ShaderWatcher watcher, string compilerDirectory)
+        private static void MoveFileToCompilingFolder(CompilingFile file, string compilerDirectory)
         {
             string shaderPath = file.FilePath;
             string shaderPathInCompilerDirectory = compilerDirectory + Path.GetFileName(shaderPath);
