@@ -49,10 +49,11 @@ namespace Luminance.Common.Utilities
                 return castedNPC;
 
             bool vanillaNPC = n.ModNPC is null;
+            Mod mod = ModContent.GetInstance<Luminance>();
             if (vanillaNPC)
-                Luminance.Instance.Logger.Warn($"A vanilla NPC of ID {n.type} was erroneously casted to a mod NPC of type {nameof(T)}.");
+                mod.Logger.Warn($"A vanilla NPC of ID {n.type} was erroneously casted to a mod NPC of type {nameof(T)}.");
             else
-                Luminance.Instance.Logger.Warn($"A NPC of type {n.ModNPC.Name} was erroneously casted to a mod NPC of type {nameof(T)}.");
+                mod.Logger.Warn($"A NPC of type {n.ModNPC.Name} was erroneously casted to a mod NPC of type {nameof(T)}.");
 
             return ModContent.GetInstance<T>();
         }

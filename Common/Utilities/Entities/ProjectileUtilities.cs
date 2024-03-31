@@ -131,10 +131,11 @@ namespace Luminance.Common.Utilities
                 return castedProjectile;
 
             bool vanillaProjectile = p.ModProjectile is null;
+            Mod mod = ModContent.GetInstance<Luminance>();
             if (vanillaProjectile)
-                Luminance.Instance.Logger.Warn($"A vanilla projectile of ID {p.type} was erroneously casted to a mod projectile of type {nameof(T)}.");
+                mod.Logger.Warn($"A vanilla projectile of ID {p.type} was erroneously casted to a mod projectile of type {nameof(T)}.");
             else
-                Luminance.Instance.Logger.Warn($"A projectile of type {p.ModProjectile.Name} was erroneously casted to a mod projectile of type {nameof(T)}.");
+                mod.Logger.Warn($"A projectile of type {p.ModProjectile.Name} was erroneously casted to a mod projectile of type {nameof(T)}.");
 
             return ModContent.GetInstance<T>();
         }
