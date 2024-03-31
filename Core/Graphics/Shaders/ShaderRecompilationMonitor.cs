@@ -38,6 +38,31 @@ namespace Luminance.Core.Graphics
                 LoadForMod(mod);
         }
 
+        public override void PostUpdateEverything()
+        {
+            foreach (ShaderWatcher watcher in ShaderWatchers)
+                ProcessCompilationsForWatcher(watcher);
+        }
+
+        public override void OnModUnload()
+        {
+            foreach (ShaderWatcher watcher in ShaderWatchers)
+                watcher.FileWatcher?.Dispose();
+        }
+
+        /// <summary>
+        /// Attempts to load all potential shader watchers for a given mod.
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// In order for this method to do anything, the following conditions must be met:
+        /// <list type="bullet">
+        ///     <item>The mod being searched must have an Assets/AutoloadedEffects directory, as an indicator that it's using this mod.</item>
+        ///     <item>The mod being searched must have an Assets/AutoloadedEffects/Compiler directory.</item>
+        ///     <item>The user executing this method must have a relevant mod source folder that corresponds with the mod.</item>
+        /// </list>
+        /// </remarks>
+        /// <param name="mod">The mod to check for.</param>
         private static void LoadForMod(Mod mod)
         {
             // Check to see if the user has a folder that corresponds to the shaders for this mod.
@@ -59,32 +84,17 @@ namespace Luminance.Core.Graphics
             if (!Directory.Exists(compilerPath))
                 return;
 
-            // If the Assets/AutoloadedEffects directory exists, watch over it.
-            FileSystemWatcher watcher = new(effectsPath)
-            {
-                Filter = "*.fx",
-                IncludeSubdirectories = true,
-                EnableRaisingEvents = true,
-                NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.Security
-            };
-            watcher.Changed += RecompileShader;
-            ShaderWatchers.Add(new(effectsPath, compilerPath, mod.Name, watcher));
-
             string filtersPath = effectsPath.Replace("\\Shaders", "\\Filters");
-            if (Directory.Exists(filtersPath))
-            {
-                FileSystemWatcher filterWatcher = new(filtersPath)
-                {
-                    Filter = "*.fx",
-                    IncludeSubdirectories = true,
-                    EnableRaisingEvents = true,
-                    NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.Security
-                };
-                filterWatcher.Changed += RecompileShader;
-                ShaderWatchers.Add(new(filtersPath, compilerPath, mod.Name, filterWatcher));
-            }
+            TryToWatchPath(mod, effectsPath, compilerPath);
+            TryToWatchPath(mod, filtersPath, compilerPath);
         }
 
+        /// <summary>
+        /// Attempts to create a new shader watcher for a given mod over a given path.
+        /// </summary>
+        /// <param name="mod">The mod that should own the shader watcher.</param>
+        /// <param name="path">The path that the shader watcher should oversee.</param>
+        /// <param name="compilerPath">The mod's compiler path.</param>
         private static void TryToWatchPath(Mod mod, string path, string compilerPath)
         {
             if (!Directory.Exists(path))
@@ -97,116 +107,141 @@ namespace Luminance.Core.Graphics
                 EnableRaisingEvents = true,
                 NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.Security
             };
-            filterWatcher.Changed += RecompileShader;
+            filterWatcher.Changed += MarkFileAsNeedingCompilation;
             ShaderWatchers.Add(new(path, compilerPath, mod.Name, filterWatcher));
         }
 
-        private static void UpdateForModWatcher(ShaderWatcher watcher)
+        /// <summary>
+        /// Processes a given shader watcher, compiling files as they're modified.
+        /// </summary>
+        /// <param name="watcher">The shader watcher to process</param>
+        private static void ProcessCompilationsForWatcher(ShaderWatcher watcher)
         {
-            bool shaderIsCompiling = false;
             List<CompilingFile> compiledFiles = [];
             string compilerDirectory = watcher.CompilerPath + "//";
-            while (true)
+            while (CompilingFiles.TryPeek(out CompilingFile file))
             {
-                if (!CompilingFiles.TryPeek(out CompilingFile file))
-                    break;
-
-                // Take the contents of the new shader and copy them over to the compiler folder so that the XNB can be regenerated.
-                string shaderPath = file.FilePath;
-                string shaderPathInCompilerDirectory = compilerDirectory + Path.GetFileName(shaderPath);
-
-                if (!shaderPath.Contains(watcher.ModName))
+                if (!file.FilePath.Contains(watcher.ModName))
                     return;
 
-                File.Delete(shaderPathInCompilerDirectory);
-                try
-                {
-                    File.WriteAllText(shaderPathInCompilerDirectory, File.ReadAllText(shaderPath));
-                }
-                catch { }
-                shaderIsCompiling = true;
-                compiledFiles.Add(file);
+                MoveFileToCompilingFolder(file, watcher, compilerDirectory);
 
+                compiledFiles.Add(file);
                 CompilingFiles.Dequeue();
             }
 
-            if (compiledFiles.Count >= 10)
+            if (compiledFiles.Count <= 0)
                 return;
 
-            if (shaderIsCompiling)
-            {
-                // Execute EasyXNB.
-                Process easyXnb = new()
-                {
-                    StartInfo = new()
-                    {
-                        FileName = watcher.CompilerPath + "\\EasyXnb.exe",
-                        WorkingDirectory = compilerDirectory,
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true
-                    }
-                };
-                easyXnb.Start();
-                if (!easyXnb.WaitForExit(3000))
-                {
-                    Main.NewText("Shader compiler timed out. Likely error.");
-                    easyXnb.Kill();
-                    return;
-                }
-
-                easyXnb.Kill();
-            }
+            StartCompilerProcess(watcher);
 
             for (int i = 0; i < compiledFiles.Count; i++)
-            {
-                // Copy over the XNB from the compiler, and delete the copy in the Compiler folder.
-                var file = compiledFiles[i];
-                bool compileAsFilter = file.CompileAsFilter;
-                string shaderPath = file.FilePath;
-                string modName = $"{watcher.ModName}.";
-                string compiledXnbPath = watcher.CompilerPath + "\\" + Path.GetFileNameWithoutExtension(shaderPath) + ".xnb";
-                string originalXnbPath = shaderPath.Replace(".fx", ".xnb");
-
-                File.Delete(originalXnbPath);
-                try
-                {
-                    File.Copy(compiledXnbPath, originalXnbPath);
-                }
-                catch
-                {
-                    return;
-                }
-                File.Delete(compiledXnbPath);
-
-                // Finally, load the new XNB's shader data into the game's managed wrappers that reference it.
-                string shaderPathInCompilerDirectory = compilerDirectory + Path.GetFileName(shaderPath);
-                File.Delete(shaderPathInCompilerDirectory);
-                Main.QueueMainThreadAction(() =>
-                {
-                    ContentManager tempManager = new(Main.instance.Content.ServiceProvider, Path.GetDirectoryName(originalXnbPath));
-                    string assetName = Path.GetFileNameWithoutExtension(originalXnbPath);
-                    Effect recompiledEffect = tempManager.Load<Effect>(assetName);
-                    Ref<Effect> refEffect = new(recompiledEffect);
-
-                    string shaderIdentifier = Path.GetFileNameWithoutExtension(compiledXnbPath);
-                    if (compileAsFilter)
-                    {
-                        if (ShaderManager.filters.TryGetValue(shaderIdentifier, out ManagedScreenFilter oldShader))
-                            oldShader.Effect = refEffect;
-                        else
-                            ShaderManager.SetFilter(modName + shaderIdentifier, refEffect);
-                    }
-                    else
-                        ShaderManager.SetShader(modName + shaderIdentifier, refEffect);
-
-                    Main.NewText($"Shader with the file name '{Path.GetFileName(shaderPath)}' has been successfully recompiled.");
-                });
-            }
+                ProcessCompiledFile(compiledFiles[i], watcher, compilerDirectory);
         }
 
-        private static void RecompileShader(object sender, FileSystemEventArgs e)
+        /// <summary>
+        /// Starts EasyXNB.
+        /// </summary>
+        /// <param name="watcher">The watcher responsible for compilation.</param>
+        private static void StartCompilerProcess(ShaderWatcher watcher)
+        {
+            Process easyXnb = new()
+            {
+                StartInfo = new()
+                {
+                    FileName = watcher.CompilerPath + "\\EasyXnb.exe",
+                    WorkingDirectory = watcher.CompilerPath + "//",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                }
+            };
+            easyXnb.Start();
+            if (!easyXnb.WaitForExit(3000))
+            {
+                Main.NewText("Shader compiler timed out. Likely error.");
+                easyXnb.Kill();
+                return;
+            }
+
+            easyXnb.Kill();
+        }
+
+        /// <summary>
+        /// Processes a given compiled file after compilation, handling the deletion of old files and the setting of shaders in the central management system.
+        /// </summary>
+        /// <param name="file">The file to process.</param>
+        /// <param name="watcher">The shader watcher responsible for the file.</param>
+        /// <param name="compilerDirectory">The directory that contains the compiler executable.</param>
+        private static void ProcessCompiledFile(CompilingFile file, ShaderWatcher watcher, string compilerDirectory)
+        {
+            bool compileAsFilter = file.CompileAsFilter;
+            string shaderPath = file.FilePath;
+            string modName = $"{watcher.ModName}.";
+            string compiledXnbPath = watcher.CompilerPath + "\\" + Path.GetFileNameWithoutExtension(shaderPath) + ".xnb";
+            string originalXnbPath = shaderPath.Replace(".fx", ".xnb");
+            string shaderPathInCompilerDirectory = compilerDirectory + Path.GetFileName(shaderPath);
+
+            // Copy over the XNB from the compiler, and delete the copy in the Compiler folder.
+            File.Delete(originalXnbPath);
+            try
+            {
+                File.Copy(compiledXnbPath, originalXnbPath);
+            }
+            catch
+            {
+                return;
+            }
+            finally
+            {
+                File.Delete(compiledXnbPath);
+                File.Delete(shaderPathInCompilerDirectory);
+            }
+
+            // Finally, load the new XNB's shader data into the game's managed wrappers that reference it.
+            Main.QueueMainThreadAction(() =>
+            {
+                string assetName = Path.GetFileNameWithoutExtension(originalXnbPath);
+                string shaderIdentifier = modName + Path.GetFileNameWithoutExtension(compiledXnbPath);
+                ContentManager tempManager = new(Main.instance.Content.ServiceProvider, Path.GetDirectoryName(originalXnbPath));
+                Ref<Effect> refEffect = new(tempManager.Load<Effect>(assetName));
+
+                if (compileAsFilter)
+                {
+                    if (ShaderManager.filters.TryGetValue(shaderIdentifier, out ManagedScreenFilter oldShader))
+                        oldShader.Effect = refEffect;
+                    else
+                        ShaderManager.SetFilter(shaderIdentifier, refEffect);
+                }
+                else
+                    ShaderManager.SetShader(shaderIdentifier, refEffect);
+
+                string shaderName = Path.GetFileName(shaderPath);
+                Main.NewText($"Shader with the file name '{shaderName}' has been successfully recompiled.");
+            });
+        }
+
+        /// <summary>
+        /// Moves a given compiling file to the compilation directory so that EasyXNB can run on it and acquire a new compiled shader.
+        /// </summary>
+        /// <param name="file">The file to move.</param>
+        /// <param name="watcher">The shader watcher responsible for the file.</param>
+        /// <param name="compilerDirectory">The directory that contains the compiler executable.</param>
+        private static void MoveFileToCompilingFolder(CompilingFile file, ShaderWatcher watcher, string compilerDirectory)
+        {
+            string shaderPath = file.FilePath;
+            string shaderPathInCompilerDirectory = compilerDirectory + Path.GetFileName(shaderPath);
+
+            File.Delete(shaderPathInCompilerDirectory);
+            try
+            {
+                File.WriteAllText(shaderPathInCompilerDirectory, File.ReadAllText(shaderPath));
+            }
+            catch { }
+        }
+
+        private static void MarkFileAsNeedingCompilation(object sender, FileSystemEventArgs e)
         {
             // Prevent the shader watcher from looking in the compiler folder.
             if (e.FullPath.Contains("\\Compiler"))
@@ -220,18 +255,6 @@ namespace Luminance.Core.Graphics
                 return;
 
             CompilingFiles.Enqueue(new(e.FullPath, e.FullPath.Contains("\\Filters")));
-        }
-
-        public override void PostUpdateEverything()
-        {
-            foreach (ShaderWatcher watcher in ShaderWatchers)
-                UpdateForModWatcher(watcher);
-        }
-
-        public override void OnModUnload()
-        {
-            foreach (ShaderWatcher watcher in ShaderWatchers)
-                watcher.FileWatcher?.Dispose();
         }
     }
 }
