@@ -47,7 +47,7 @@ namespace Luminance.Core.Graphics
         /// <remarks>
         /// In order for this method to do anything, the following conditions must be met:
         /// <list type="bullet">
-        ///     <item>The mod being searched must have an Assets/AutoloadedEffects directory, as an indicator that it's using this mod.</item>
+        ///     <item>The mod being searched must have an Assets/AutoloadedEffects directory, as an indicator that the mod is using the Luminance library.</item>
         ///     <item>The mod being searched must have an Assets/AutoloadedEffects/Compiler directory.</item>
         ///     <item>The user executing this method must have a relevant mod source folder that corresponds with the mod.</item>
         /// </list>
