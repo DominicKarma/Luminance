@@ -4,20 +4,20 @@ using System.Linq;
 
 namespace Luminance.Common.StateMachines
 {
-    public class PushdownAutomata<StateWrapper, StateIdentifier> where StateWrapper : IState<StateIdentifier> where StateIdentifier : struct
+    public class PushdownAutomata<TStateWrapper, TStateIdentifier> where TStateWrapper : IState<TStateIdentifier> where TStateIdentifier : struct
     {
         /// <summary>
         ///     Represents a framework for hijacking a transition's final state selection.
         ///     This is useful for allowing states to transition to something customized when its default transition condition has been triggered, without having to duplicate conditions many times.
         /// </summary>
-        public record TransitionHijack(Func<StateIdentifier?, StateIdentifier?> SelectionHijackFunction, Action<StateIdentifier?> HijackAction);
+        public record TransitionHijack(Func<TStateIdentifier?, TStateIdentifier?> SelectionHijackFunction, Action<TStateIdentifier?> HijackAction);
 
         /// <summary>
         ///     Represents a framework for a state transition's information.
         /// </summary>
-        public record TransitionInfo(StateIdentifier? NewState, bool RememberPreviousState, Func<bool> TransitionCondition, Action TransitionCallback = null);
+        public record TransitionInfo(TStateIdentifier? NewState, bool RememberPreviousState, Func<bool> TransitionCondition, Action TransitionCallback = null);
 
-        public PushdownAutomata(StateWrapper initialState)
+        public PushdownAutomata(TStateWrapper initialState)
         {
             StateStack.Push(initialState);
             RegisterState(initialState);
@@ -26,7 +26,7 @@ namespace Luminance.Common.StateMachines
         /// <summary>
         ///     A collection of custom states that should be performed when a state is ongoing.
         /// </summary>
-        public readonly Dictionary<StateIdentifier, Action> StateBehaviors = [];
+        public readonly Dictionary<TStateIdentifier, Action> StateBehaviors = [];
 
         /// <summary>
         ///     A list of hijack actions to perform during a state transition.
@@ -36,31 +36,31 @@ namespace Luminance.Common.StateMachines
         /// <summary>
         ///     A generalized registry of states with individualized data.
         /// </summary>
-        public Dictionary<StateIdentifier, StateWrapper> StateRegistry = [];
+        public Dictionary<TStateIdentifier, TStateWrapper> StateRegistry = [];
 
         /// <summary>
         ///     The state stack for the automaton.
         /// </summary>
-        public Stack<StateWrapper> StateStack = new();
+        public Stack<TStateWrapper> StateStack = new();
 
-        protected Dictionary<StateIdentifier, List<TransitionInfo>> transitionTable = [];
+        protected Dictionary<TStateIdentifier, List<TransitionInfo>> transitionTable = [];
 
         /// <summary>
         ///     The current state of the automaton.
         /// </summary>
-        public StateWrapper CurrentState => StateStack.Peek();
+        public TStateWrapper CurrentState => StateStack.Peek();
 
         /// <summary>
         ///     The set of actions that should occur when a state is popped.
         /// </summary>
-        public event Action<StateWrapper> OnStatePop;
+        public event Action<TStateWrapper> OnStatePop;
 
         /// <summary>
         ///     The set of actions that should occur when a state transition occurs.
         /// </summary>
         public event Action<bool> OnStateTransition;
 
-        public void AddTransitionStateHijack(Func<StateIdentifier?, StateIdentifier?> hijackSelection, Action<StateIdentifier?> hijackAction = null)
+        public void AddTransitionStateHijack(Func<TStateIdentifier?, TStateIdentifier?> hijackSelection, Action<TStateIdentifier?> hijackAction = null)
         {
             HijackActions.Add(new(hijackSelection, hijackAction));
         }
@@ -92,7 +92,7 @@ namespace Luminance.Common.StateMachines
             }
 
             // Perform the transition. If there's no state to transition to, simply work down the stack.
-            StateIdentifier? newState = transition.NewState;
+            TStateIdentifier? newState = transition.NewState;
             var usedHijackAction = HijackActions.FirstOrDefault(h => !h.SelectionHijackFunction(newState).Equals(newState));
             if (usedHijackAction is not null)
             {
@@ -114,14 +114,14 @@ namespace Luminance.Common.StateMachines
             PerformStateTransitionCheck();
         }
 
-        public void RegisterState(StateWrapper state) => StateRegistry[state.Identifier] = state;
+        public void RegisterState(TStateWrapper state) => StateRegistry[state.Identifier] = state;
 
-        public void RegisterStateBehavior(StateIdentifier state, Action behavior)
+        public void RegisterStateBehavior(TStateIdentifier state, Action behavior)
         {
             StateBehaviors[state] = behavior;
         }
 
-        public void RegisterTransition(StateIdentifier initialState, StateIdentifier? newState, bool rememberPreviousState, Func<bool> transitionCondition, Action transitionCallback = null)
+        public void RegisterTransition(TStateIdentifier initialState, TStateIdentifier? newState, bool rememberPreviousState, Func<bool> transitionCondition, Action transitionCallback = null)
         {
             // Initialize the list of transition states for the initial state if there aren't any yet.
             if (!transitionTable.ContainsKey(initialState))

@@ -19,12 +19,12 @@ namespace Luminance.Common.Utilities
         /// </summary>
         /// <param name="mod">The mod to search in.</param>
         /// <param name="queryCondition">A secondary query condition to apply when collecting interfaces. By default this doesn't affect output results.</param>
-        public static IEnumerable<ModType> LoadInterfacesFromContent<ModType, InterfaceType>(this Mod mod, Func<ModType, bool> queryCondition = null) where ModType : class, ILoadable
+        public static IEnumerable<TModType> LoadInterfacesFromContent<TModType, TInterfaceType>(this Mod mod, Func<TModType, bool> queryCondition = null) where TModType : class, ILoadable
         {
             var contentInterfaces = mod.GetContent().Where(c =>
             {
-                return c is ModType t and InterfaceType && (queryCondition?.Invoke(t) ?? true);
-            }).Select(c => c as ModType);
+                return c is TModType t and TInterfaceType && (queryCondition?.Invoke(t) ?? true);
+            }).Select(c => c as TModType);
 
             return contentInterfaces;
         }
