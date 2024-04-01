@@ -8,17 +8,17 @@ namespace Luminance.Common.Easings
     public class PiecewiseRotation
     {
         /// <summary>
-        ///     A piecewise rotation curve that takes up a part of the domain of a <see cref="PiecewiseRotation"/>, specifying the equivalent range and curvature in said domain.
+        /// A piecewise rotation curve that takes up a part of the domain of a <see cref="PiecewiseRotation"/>, specifying the equivalent range and curvature in said domain.
         /// </summary>
         public record CurveSegment(Quaternion StartingRotation, Quaternion EndingRotation, float AnimationStart, float AnimationEnd, EasingCurves.Curve Curve, EasingType CurveType);
 
         /// <summary>
-        ///     The list of <see cref="CurveSegment"/> that encompass the entire 0-1 domain of this function.
+        /// The list of <see cref="CurveSegment"/> that encompass the entire 0-1 domain of this function.
         /// </summary>
         protected List<CurveSegment> segments = [];
 
         /// <summary>
-        ///     Adds a new interpolation step to this piecewise rotation curve, encompassing a part of the animation function's domain.
+        /// Adds a new interpolation step to this piecewise rotation curve, encompassing a part of the animation function's domain.
         /// </summary>
         /// <param name="curve">The curve.</param>
         /// <param name="curveType">The type of curve to use.</param>
@@ -40,11 +40,11 @@ namespace Luminance.Common.Easings
         }
 
         /// <summary>
-        ///     Evaluates the overall rotation curve, interpolating between configurations as necessary.
+        /// Evaluates the overall rotation curve, interpolating between configurations as necessary.
         /// </summary>
         /// <param name="animationInterpolant">The animation completion interpolant.</param>
         /// <param name="takeOptimalRoute">Whether rotations should take the optimal route in cases where the rotational difference exceeds 180 degrees. One might want this disabled for giant swings, so that the full arc is travelled.</param>
-        /// <param name="inversionDirection"></param>
+        /// <param name="inversionDirection">The direction of inversion with respect to the optimal route taking.</param>
         public Quaternion Evaluate(float animationInterpolant, bool takeOptimalRoute, int inversionDirection)
         {
             // Clamp the animation interpolant to 0-1, since all other ranges of values will result in undefined behavior.

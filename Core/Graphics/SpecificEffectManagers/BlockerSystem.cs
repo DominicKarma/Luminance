@@ -2,30 +2,55 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace Luminance.Core.Graphics
 {
     public class BlockerSystem : ModSystem
     {
+        /// <summary>
+        /// Represents a condition that dictates an input block.
+        /// </summary>
+        /// <param name="BlockInputs">Whether inputs should be blocked.</param>
+        /// <param name="BlockUI">Whether UI interactions and drawing should be blocked.</param>
+        /// <param name="BlockIsInEffect">The condition delegate that dictates whether the block is in effect.</param>
         public record BlockCondition(bool BlockInputs, bool BlockUI, Func<bool> BlockIsInEffect)
         {
+            /// <summary>
+            /// Whether this block affects nothing.
+            /// </summary>
             public bool IsntDoingAnything => !BlockInputs && !BlockUI;
 
+            /// <summary>
+            /// A default-object blocking condition that does nothing.
+            /// </summary>
             public static BlockCondition None => new(false, false, () => false);
         }
 
         private static readonly List<BlockCondition> blockerConditions = [];
 
+        /// <summary>
+        /// Whether a block of any kind was in effect lack frame or not.
+        /// </summary>
         public static bool AnythingWasBlockedLastFrame
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Starts a new block effect with a given condition.
+        /// </summary>
+        /// <param name="blockInput">Whether inputs should be blocked.</param>
+        /// <param name="blockUi">Whether UI interactions and drawing should be blocked.</param>
+        /// <param name="condition">The condition delegate that dictates whether the block is in effect.</param>
         public static void Start(bool blockInput, bool blockUi, Func<bool> condition) => Start(new(blockInput, blockUi, condition));
 
+        /// <summary>
+        /// Starts a new block effect based on a given <see cref="BlockCondition"/>.
+        /// </summary>
+        /// <param name="condition">The configuration that dictates how the black should operate.</param>
         public static void Start(BlockCondition condition) => blockerConditions.Add(condition);
 
         public override void UpdateUI(GameTime gameTime)

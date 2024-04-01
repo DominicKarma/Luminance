@@ -4,7 +4,7 @@
     public static class EasingCurves
     {
         /// <summary>
-        ///     An elastic easing curves. Characterized chiefly by small bumps at extreme points.
+        /// An elastic easing curves. Characterized chiefly by small bumps at extreme points.
         /// </summary>
         public static readonly Curve Elastic = new(interpolant =>
         {
@@ -35,17 +35,17 @@
         });
 
         /// <summary>
-        ///     A linear easing curve.
+        /// A linear easing curve.
         /// </summary>
         public static readonly Curve Linear = new(interpolant => interpolant, interpolant => interpolant, interpolant => interpolant);
 
         /// <summary>
-        ///     A sine easing curve.
+        /// A sine easing curve.
         /// </summary>
         public static readonly Curve Sine = new(interpolant => 1f - Cos(interpolant * Pi / 2f), interpolant => Sin(interpolant * Pi / 2f), interpolant => -(Cos(interpolant * Pi) - 1f) / 2f);
 
         /// <summary>
-        ///     An exponential easing curve.
+        /// An exponential easing curve.
         /// </summary>
         public static readonly Curve Exp = new(interpolant => interpolant == 0f ? 0f : Pow(2f, 10f * interpolant - 10f),
             interpolant => interpolant == 1f ? 1f : 1f - Pow(2f, -10f * interpolant),
@@ -59,27 +59,27 @@
             interpolant => interpolant < 0.5 ? 1f - Sqrt(1f - Pow(2f * interpolant, 2f)) / 2f : (Sqrt(1f - Pow(-2f * interpolant - 2f, 2f)) + 1f) / 2f);
 
         /// <summary>
-        ///     A polynomial easing curve of degree 2.
+        /// A polynomial easing curve of degree 2.
         /// </summary>
         public static readonly Curve Quadratic = MakePoly(2f);
 
         /// <summary>
-        ///     A polynomial easing curve of degree 3.
+        /// A polynomial easing curve of degree 3.
         /// </summary>
         public static readonly Curve Cubic = MakePoly(3f);
 
         /// <summary>
-        ///     A polynomial easing curve of degree 4.
+        /// A polynomial easing curve of degree 4.
         /// </summary>
         public static readonly Curve Quartic = MakePoly(4f);
 
         /// <summary>
-        ///     A polynomial easing curve of degree 5.
+        /// A polynomial easing curve of degree 5.
         /// </summary>
         public static readonly Curve Quintic = MakePoly(5f);
 
         /// <summary>
-        ///     A polynomial easing curve of degree 6.
+        /// A polynomial easing curve of degree 6.
         /// </summary>
         public static readonly Curve Sextic = MakePoly(6f);
 
@@ -88,7 +88,7 @@
         public record Curve(InterpolationFunction InFunction, InterpolationFunction OutFunction, InterpolationFunction InOutFunction);
 
         /// <summary>
-        ///     Creates a polynomial easing curves with an arbitrary exponent/potentially-non-integer degree.
+        /// Creates a polynomial easing curves with an arbitrary exponent/potentially-non-integer degree.
         /// </summary>
         /// <param name="exponent">The exponent of the polynomial curve.</param>
         public static Curve MakePoly(float exponent)
