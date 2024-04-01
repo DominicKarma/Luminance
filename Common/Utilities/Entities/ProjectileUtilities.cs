@@ -14,10 +14,10 @@ namespace Luminance.Common.Utilities
         ///     Summons a projectile of a specific type while also adjusting damage for vanilla spaghetti regarding hostile projectiles.
         /// </summary>
         /// <param name="source">The source of the projectile.</param>
-        /// <param name="spawnX">The x spawn position of the projectile.</param>
-        /// <param name="spawnY">The y spawn position of the projectile.</param>
-        /// <param name="velocityX">The x velocity of the projectile.</param>
-        /// <param name="velocityY">The y velocity of the projectile</param>
+        /// <param name="spawnX">The X spawn position of the projectile.</param>
+        /// <param name="spawnY">The Y spawn position of the projectile.</param>
+        /// <param name="velocityX">The X velocity of the projectile.</param>
+        /// <param name="velocityY">The Y velocity of the projectile</param>
         /// <param name="type">The id of the projectile type that should be spawned.</param>
         /// <param name="damage">The damage of the projectile.</param>
         /// <param name="knockback">The knockback of the projectile.</param>
@@ -29,9 +29,14 @@ namespace Luminance.Common.Utilities
         {
             if (owner == -1)
                 owner = Main.myPlayer;
-            damage = (int)(damage * 0.5);
+
+            float damageJankCorrectionFactor = 0.5f;
             if (Main.expertMode)
-                damage = (int)(damage * 0.5);
+                damageJankCorrectionFactor = 0.25f;
+            if (Main.masterMode)
+                damageJankCorrectionFactor = 0.1667f;
+            damage = (int)(damage * damageJankCorrectionFactor);
+
             int index = Projectile.NewProjectile(source, spawnX, spawnY, velocityX, velocityY, type, damage, knockback, owner, ai0, ai1, ai2);
             if (index >= 0 && index < Main.maxProjectiles)
                 Main.projectile[index].netUpdate = true;
@@ -40,7 +45,7 @@ namespace Luminance.Common.Utilities
         }
 
         /// <summary>
-        /// Summons a projectile of a specific type while also adjusting damage for vanilla spaghetti regarding hostile projectiles.
+        ///     Summons a projectile of a specific type while also adjusting damage for vanilla spaghetti regarding hostile projectiles.
         /// </summary>
         /// <param name="source">The source of the projectile.</param>
         /// <param name="center">The spawn position of the projectile.</param>
@@ -131,10 +136,11 @@ namespace Luminance.Common.Utilities
                 return castedProjectile;
 
             bool vanillaProjectile = p.ModProjectile is null;
+            Mod mod = ModContent.GetInstance<Luminance>();
             if (vanillaProjectile)
-                Luminance.Instance.Logger.Warn($"A vanilla projectile of ID {p.type} was erroneously casted to a mod projectile of type {nameof(T)}.");
+                mod.Logger.Warn($"A vanilla projectile of ID {p.type} was erroneously casted to a mod projectile of type {nameof(T)}.");
             else
-                Luminance.Instance.Logger.Warn($"A projectile of type {p.ModProjectile.Name} was erroneously casted to a mod projectile of type {nameof(T)}.");
+                mod.Logger.Warn($"A projectile of type {p.ModProjectile.Name} was erroneously casted to a mod projectile of type {nameof(T)}.");
 
             return ModContent.GetInstance<T>();
         }

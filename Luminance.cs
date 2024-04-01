@@ -10,17 +10,6 @@ namespace Luminance
 {
     public class Luminance : Mod
     {
-        /// <summary>
-        ///     The mod instance for this library.
-        /// </summary>
-        public static Mod Instance
-        {
-            get;
-            private set;
-        }
-
-        public override void Load() => Instance = this;
-
         public override void Unload() => ManagedILEdit.UnloadEdits();
 
         public override void PostSetupContent()
@@ -31,6 +20,7 @@ namespace Luminance
                 ShaderManager.LoadShaders(mod);
                 AtlasManager.InitializeModAtlases(mod);
                 ParticleManager.InitializeManualRenderers(mod);
+                ShaderRecompilationMonitor.LoadForMod(mod);
             }
 
             // Mark loading operations as finished.
