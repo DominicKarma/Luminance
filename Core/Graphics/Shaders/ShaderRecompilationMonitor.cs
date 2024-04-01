@@ -16,7 +16,7 @@ namespace Luminance.Core.Graphics
         {
             get;
             private set;
-        }
+        } = [];
 
         internal static List<ShaderWatcher> ShaderWatchers
         {
@@ -27,16 +27,6 @@ namespace Luminance.Core.Graphics
         public record ShaderWatcher(string EffectsPath, string CompilerPath, string ModName, FileSystemWatcher FileWatcher);
 
         public record CompilingFile(string FilePath, bool CompileAsFilter);
-
-        public override void OnModLoad()
-        {
-            CompilingFiles = new();
-            if (Main.netMode != NetmodeID.SinglePlayer)
-                return;
-
-            foreach (Mod mod in ModLoader.Mods)
-                LoadForMod(mod);
-        }
 
         public override void PostUpdateEverything()
         {
@@ -63,8 +53,13 @@ namespace Luminance.Core.Graphics
         /// </list>
         /// </remarks>
         /// <param name="mod">The mod to check for.</param>
-        private static void LoadForMod(Mod mod)
+        internal static void LoadForMod(Mod mod)
         {
+            // This system is completely unnecessary in multiplayer, as it is solely a client-side development tool.
+            // As such, don't load anything in multiplayer.
+            if (Main.netMode != NetmodeID.SinglePlayer)
+                return;
+
             // Check to see if the user has a folder that corresponds to the shaders for this mod.
             // If this folder is not present, that means that they are not a developer and thusly this system would be irrelevant.
             string modSourcesPath = $"{Path.Combine(Program.SavePathShared, "ModSources")}\\{mod.Name}".Replace("\\..\\tModLoader", string.Empty);
