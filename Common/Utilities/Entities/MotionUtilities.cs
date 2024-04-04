@@ -14,17 +14,7 @@ namespace Luminance.Common.Utilities
         {
             return (destination - entity.Center).SafeNormalize(Vector2.Zero);
         }
-
-        /// <summary>
-        ///     Calculates the direction to a given position from another position with safely performed underlying normalization.
-        /// </summary>
-        /// <param name="origin">The position to perform the calculations relative to.</param>
-        /// <param name="destination">The position to get the direction towards.</param>
-        public static Vector2 SafeDirectionTo(this Vector2 origin, Vector2 destination)
-        {
-            return (destination - origin).SafeNormalize(Vector2.Zero);
-        }
-
+        
         /// <summary>
         ///     Calculates the X direction to a given position from an entity.
         /// </summary>
