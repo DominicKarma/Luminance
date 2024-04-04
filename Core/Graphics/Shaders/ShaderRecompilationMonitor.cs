@@ -146,7 +146,7 @@ namespace Luminance.Core.Graphics
                 if (!file.FilePath.Contains(watcher.ModName))
                     return;
 
-                MoveFileToCompilingFolder(file, compilerDirectory);
+                MoveFileToCompilingFolder(file);
 
                 compiledFiles.Add(file);
                 CompilingFiles.Dequeue();
