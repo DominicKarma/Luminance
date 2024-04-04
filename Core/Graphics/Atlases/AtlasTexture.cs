@@ -10,5 +10,7 @@ namespace Luminance.Core.Graphics
     public record AtlasTexture(string Name, Atlas Atlas, Rectangle Frame)
     {
         public Vector2 Size => new(Frame.Width, Frame.Height);
+        public int Width => Frame.Width;
+        public int Height => Frame.Height;
     }
 }
