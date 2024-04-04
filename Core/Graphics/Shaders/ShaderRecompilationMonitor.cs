@@ -155,7 +155,7 @@ namespace Luminance.Core.Graphics
             if (compiledFiles.Count <= 0)
                 return;
 
-            StartCompilerProcess(watcher);
+            StartCompilerProcess();
 
             for (int i = 0; i < compiledFiles.Count; i++)
                 ProcessCompiledFile(compiledFiles[i], watcher, compilerDirectory);
@@ -164,8 +164,7 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// Starts EasyXNB.
         /// </summary>
-        /// <param name="watcher">The watcher responsible for compilation.</param>
-        private static void StartCompilerProcess(ShaderWatcher watcher)
+        private static void StartCompilerProcess()
         {
             Process easyXnb = new()
             {
@@ -248,8 +247,7 @@ namespace Luminance.Core.Graphics
         /// Moves a given compiling file to the compilation directory so that EasyXNB can run on it and acquire a new compiled shader.
         /// </summary>
         /// <param name="file">The file to move.</param>
-        /// <param name="compilerDirectory">The directory that contains the compiler executable.</param>
-        private static void MoveFileToCompilingFolder(CompilingFile file, string compilerDirectory)
+        private static void MoveFileToCompilingFolder(CompilingFile file)
         {
             string shaderPath = file.FilePath;
             string shaderPathInCompilerDirectory = Path.Combine(CompilerPath, Path.GetFileName(shaderPath));
