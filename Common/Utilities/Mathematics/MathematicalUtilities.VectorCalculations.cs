@@ -57,5 +57,8 @@ namespace Luminance.Common.Utilities
         {
             return Vector2.Dot(lineDirection, evaluationPoint - linePoint);
         }
+
+        public static Vector2 SafeDirectionTo(this Vector2 target, Vector2 destination) =>
+            (destination - target).SafeNormalize(Vector2.Zero);
     }
 }

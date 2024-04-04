@@ -259,7 +259,7 @@ namespace Luminance.Core.Graphics
 
         private void ApplyParams()
         {
-            WrappedEffect.Parameters["time"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            WrappedEffect.Parameters["globalTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             WrappedEffect.Parameters["opacity"]?.SetValue(Opacity);
             WrappedEffect.Parameters["focusPosition"]?.SetValue(FocusPosition);
             WrappedEffect.Parameters["screenPosition"]?.SetValue(Main.screenPosition);
