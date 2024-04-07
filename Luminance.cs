@@ -8,10 +8,19 @@ using Terraria.ModLoader;
 
 namespace Luminance
 {
-    public class Luminance : Mod
+    /// <summary>
+    /// The central mod type for the Luminance library.
+    /// </summary>
+    public sealed class Luminance : Mod
     {
+        /// <summary>
+        /// Handles all necessary manual unloading effects for the library.
+        /// </summary>
         public override void Unload() => ManagedILEdit.UnloadEdits();
 
+        /// <summary>
+        /// Handles all necessary loading effects for the library, after all mods have loaded and all dependencies have been established.
+        /// </summary>
         public override void PostSetupContent()
         {
             // Go through every mod and check for effects to autoload.
