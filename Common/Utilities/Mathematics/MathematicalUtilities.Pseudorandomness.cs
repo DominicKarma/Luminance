@@ -1,12 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.GameContent.RGB;
+using Terraria.Utilities;
 
 namespace Luminance.Common.Utilities
 {
     public static partial class Utilities
     {
+        internal static readonly List<Vector2> Directions =
+        [
+            new(-1f, -1f),
+            new(1f, -1f),
+            new(-1f, 1f),
+            new(1f, 1f),
+            new(0f, -1f),
+            new(-1f, 0f),
+            new(0f, 1f),
+            new(1f, 0f),
+        ];
+
         // When two periodic functions are summed, the resulting function is periodic if the ratio of the b/a is rational, given periodic functions f and g:
         // f(a * x) + g(b * x). However, if the ratio is irrational, then the result has no period.
         // This is desirable for somewhat random wavy fluctuations.
@@ -53,17 +67,25 @@ namespace Luminance.Common.Utilities
             return result;
         }
 
-        internal static readonly List<Vector2> Directions =
-        [
-            new(-1f, -1f),
-            new(1f, -1f),
-            new(-1f, 1f),
-            new(1f, 1f),
-            new(0f, -1f),
-            new(-1f, 0f),
-            new(0f, 1f),
-            new(1f, 0f),
-        ];
+        /// <summary>
+        /// Samples a random value from a Gaussian distribution.
+        /// </summary>
+        /// <param name="rng">The RNG to use for sampling.</param>
+        /// <param name="standardDeviation">The standard deviation of the distribution.</param>
+        /// <param name="mean">The mean of the distribution. Used for horizontally shifting the overall resulting graph.</param>
+        public static float NextGaussian(this UnifiedRandom rng, float standardDeviation = 1f, float mean = 0f)
+        {
+            // Refer to the following link for an explanation of why this works:
+            // https://blog.cupcakephysics.com/computational%20physics/2015/05/10/the-box-muller-algorithm.html
+            float randomAngle = rng.NextFloat(TwoPi);
+
+            // An incredibly tiny value of 1e-6 is used as a safe lower bound for the interpolant, as a value of exactly zero will cause the
+            // upcoming logarithm to short circuit and return an erroneous output of float.NegativeInfinity.
+            // This situation is extremely unlikely, but better safe than sorry.
+            float distributionInterpolant = rng.NextFloat(1e-6f, 1f);
+
+            return Sqrt(Log(distributionInterpolant) * -2f) * Cos(randomAngle) * standardDeviation + mean;
+        }
 
         /// <summary>
         /// Computes 2-dimensional Perlin Noise, which gives "random" but continuous values.
