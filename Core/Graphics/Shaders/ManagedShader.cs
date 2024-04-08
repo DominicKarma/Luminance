@@ -54,7 +54,7 @@ namespace Luminance.Core.Graphics
             if (!parameterCache.TryGetValue(parameterName, out object parameter))
                 return false;
 
-            return parameter.Equals(value);
+            return parameter?.Equals(value) ?? true;
         }
 
         /// <summary>
