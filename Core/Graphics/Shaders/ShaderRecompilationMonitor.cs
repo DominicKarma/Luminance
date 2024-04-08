@@ -10,7 +10,10 @@ using Terraria.ModLoader;
 
 namespace Luminance.Core.Graphics
 {
-    public class ShaderRecompilationMonitor : ModSystem
+    /// <summary>
+    /// The shader recompilation manager, which is responsible for ensuring that changes to .fx files are reflected in-game automatically.
+    /// </summary>
+    public sealed class ShaderRecompilationMonitor : ModSystem
     {
         internal static Queue<CompilingFile> CompilingFiles
         {
@@ -29,16 +32,33 @@ namespace Luminance.Core.Graphics
         /// </summary>
         public static string CompilerPath => Path.Combine(Main.SavePath, "EasyXNB");
 
+        /// <summary>
+        /// Represents a watcher that looks over a given directory with .fx files.
+        /// </summary>
+        /// <param name="EffectsPath">The path that this watcher oversees.</param>
+        /// <param name="ModName">The name of the mod responsible for this shader watcher.</param>
+        /// <param name="FileWatcher">The file watcher that fires signals when an .fx file changes.</param>
         public record ShaderWatcher(string EffectsPath, string ModName, FileSystemWatcher FileWatcher);
 
+        /// <summary>
+        /// Represents a .fx file that is being compiled.
+        /// </summary>
+        /// <param name="FilePath">The path to the associated file.</param>
+        /// <param name="CompileAsFilter">Whether the file represents a screen filter or not.</param>
         public record CompilingFile(string FilePath, bool CompileAsFilter);
 
+        /// <summary>
+        /// Processes all shader watchers, checking if anything needs to be compiled.
+        /// </summary>
         public override void PostUpdateEverything()
         {
             foreach (ShaderWatcher watcher in ShaderWatchers)
                 ProcessCompilationsForWatcher(watcher);
         }
 
+        /// <summary>
+        /// Handles on-mod-load effects for the library, ensuring that the compiler directory is unpacked.
+        /// </summary>
         public override void OnModLoad()
         {
             if (Directory.Exists(CompilerPath) || Main.netMode != NetmodeID.SinglePlayer)
@@ -47,6 +67,9 @@ namespace Luminance.Core.Graphics
             CreateCompilerDirectory();
         }
 
+        /// <summary>
+        /// Handles on-mod-unload effects for all shader watchers, disposing of unmanaged file watchers.
+        /// </summary>
         public override void OnModUnload()
         {
             foreach (ShaderWatcher watcher in ShaderWatchers)
@@ -260,6 +283,11 @@ namespace Luminance.Core.Graphics
             catch { }
         }
 
+        /// <summary>
+        /// Marks a given file as needing compilation. Called as a consequence of a file watcher event firing.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments that specify file data.</param>
         private static void MarkFileAsNeedingCompilation(object sender, FileSystemEventArgs e)
         {
             // Prevent the shader watcher from looking in the compiler folder.

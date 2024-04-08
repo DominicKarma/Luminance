@@ -57,5 +57,19 @@ namespace Luminance.Common.Utilities
         {
             return Vector2.Dot(lineDirection, evaluationPoint - linePoint);
         }
+
+        /// <summary>
+        ///     Rotates a vector's direction towards an ideal angle at a specific incremental rate.
+        /// </summary>
+        /// <param name="originalVector">The original vector to rotated from.</param>
+        /// <param name="idealAngle">The ideal direction to approach.</param>
+        /// <param name="angleIncrement">The maximum angular increment to make in the pursuit of approaching the destination.</param>
+        public static Vector2 RotateTowards(this Vector2 originalVector, float idealAngle, float angleIncrement)
+        {
+            float initialAngle = originalVector.ToRotation();
+            float newAngle = initialAngle.AngleTowards(idealAngle, angleIncrement);
+            Vector2 newDirection = newAngle.ToRotationVector2();
+            return newDirection * originalVector.Length();
+        }
     }
 }

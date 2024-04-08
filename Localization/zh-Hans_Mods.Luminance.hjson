@@ -1,0 +1,15 @@
+Configs: {
+	Config: {
+		DisplayName: 配置
+
+		MaxParticles: {
+			Label: 最大粒子数
+			Tooltip: 修改可同时存在的最大粒子数
+		}
+
+		ScreenshakeModifier: {
+			Label: 调整屏幕震动
+			Tooltip: 调整屏幕震动效果强度。设为0会完全禁用屏幕震动效果。
+		}
+	}
+}

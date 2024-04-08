@@ -48,5 +48,20 @@ namespace Luminance.Common.Utilities
 
             return result;
         }
+
+        /// <summary>
+        /// Samples a value from a Gaussian distribution.
+        /// </summary>
+        /// <param name="x">The input value.</param>
+        /// <param name="standardDeviation">The standard deviation of the distribution.</param>
+        /// <param name="mean">The mean of the distribution. Used for horizontally shifting the overall resulting graph.</param>
+        public static float GaussianDistribution(float x, float standardDeviation, float mean = 0f)
+        {
+            const float sqrt2Pi = 2.5066283f;
+
+            float correctionCoefficient = 1f / (standardDeviation * sqrt2Pi);
+            float exponent = ((x - mean) / standardDeviation).Squared() * -0.5f;
+            return correctionCoefficient * Exp(exponent);
+        }
     }
 }
