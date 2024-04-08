@@ -12,20 +12,15 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// A managed copy of all parameter data. Used to minimize excess SetValue calls, in cases where the value aren't actually being changed.
         /// </summary>
-        private readonly Dictionary<string, object> parameterCache = new();
+        private readonly Dictionary<string, object> parameterCache;
 
-        public Ref<Effect> Effect
+        public Ref<Effect> Shader
         {
             get;
             internal set;
         }
 
-        public Effect WrappedEffect => Effect.Value;
-
-        /// <summary>
-        /// A wrapper class for <see cref="Effect"/> that is focused around screen filter effects.
-        /// </summary>
-        public ManagedScreenFilter(Ref<Effect> effect) => Effect = effect;
+        public Effect WrappedEffect => Shader.Value;
 
         public bool Disposed
         {
@@ -52,6 +47,17 @@ namespace Luminance.Core.Graphics
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// A wrapper class for <see cref="Effect"/> that is focused around screen filter effects.
+        /// </summary>
+        internal ManagedScreenFilter(Ref<Effect> shader)
+        {
+            Shader = shader;
+
+            // Initialize the parameter cache.
+            parameterCache = [];
         }
 
         /// <summary>
@@ -102,7 +108,7 @@ namespace Luminance.Core.Graphics
                 return false;
 
             // Check if the parameter even exists. If it doesn't, obviously do nothing else.
-            EffectParameter parameter = Effect.Value.Parameters[parameterName];
+            EffectParameter parameter = Shader.Value.Parameters[parameterName];
             if (parameter is null)
                 return false;
 
@@ -259,7 +265,7 @@ namespace Luminance.Core.Graphics
 
         private void ApplyParams()
         {
-            WrappedEffect.Parameters["time"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            WrappedEffect.Parameters["globalTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             WrappedEffect.Parameters["opacity"]?.SetValue(Opacity);
             WrappedEffect.Parameters["focusPosition"]?.SetValue(FocusPosition);
             WrappedEffect.Parameters["screenPosition"]?.SetValue(Main.screenPosition);
@@ -272,7 +278,7 @@ namespace Luminance.Core.Graphics
                 return;
 
             Disposed = true;
-            Effect.Value.Dispose();
+            Shader.Value.Dispose();
             parameterCache.Clear();
             GC.SuppressFinalize(this);
         }

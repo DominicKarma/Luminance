@@ -128,21 +128,21 @@ namespace Luminance.Common.Utilities
         /// <remarks>
         ///     In the case of casting errors, this will create a log message that informs the user of the failed cast and fall back on a dummy instance.
         /// </remarks>
-        /// <typeparam name="T">The ModProjectile type to convert to.</typeparam>
+        /// <typeparam name="TProjectile">The ModProjectile type to convert to.</typeparam>
         /// <param name="p">The Projectile to access the ModProjectile from.</param>
-        public static T As<T>(this Projectile p) where T : ModProjectile
+        public static TProjectile As<TProjectile>(this Projectile p) where TProjectile : ModProjectile
         {
-            if (p.ModProjectile is T castedProjectile)
+            if (p.ModProjectile is TProjectile castedProjectile)
                 return castedProjectile;
 
             bool vanillaProjectile = p.ModProjectile is null;
             Mod mod = ModContent.GetInstance<Luminance>();
             if (vanillaProjectile)
-                mod.Logger.Warn($"A vanilla projectile of ID {p.type} was erroneously casted to a mod projectile of type {nameof(T)}.");
+                mod.Logger.Warn($"A vanilla projectile of ID {p.type} was erroneously casted to a mod projectile of type {nameof(TProjectile)}.");
             else
-                mod.Logger.Warn($"A projectile of type {p.ModProjectile.Name} was erroneously casted to a mod projectile of type {nameof(T)}.");
+                mod.Logger.Warn($"A projectile of type {p.ModProjectile.Name} was erroneously casted to a mod projectile of type {nameof(TProjectile)}.");
 
-            return ModContent.GetInstance<T>();
+            return ModContent.GetInstance<TProjectile>();
         }
 
         /// <summary>

@@ -1,5 +1,4 @@
-﻿using System;
-using Terraria;
+﻿using Terraria;
 
 namespace Luminance.Common.Utilities
 {
@@ -45,19 +44,6 @@ namespace Luminance.Common.Utilities
                         Wiring.SkipWire(topLeftX + k, topLeftY + l);
                 }
             }
-        }
-
-        /// <summary>
-        ///     Performs an index-safe tile retrieval. If this mistakenly attempts to access a tile outside of the world, it returns a default, empty tile rather than throwing an <see cref="IndexOutOfRangeException"/>.
-        /// </summary>
-        /// <param name="x">The X position of the tile.</param>
-        /// <param name="y">The Y position of the tile.</param>
-        public static Tile ParanoidTileRetrieval(int x, int y)
-        {
-            if (!WorldGen.InWorld(x, y))
-                return new();
-
-            return Main.tile[x, y];
         }
     }
 }

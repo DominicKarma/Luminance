@@ -20,6 +20,8 @@ namespace Luminance.Core.Graphics
         /// </summary>
         public readonly Ref<Effect> Shader;
 
+        public Effect WrappedEffect => Shader.Value;
+
         /// <summary>
         /// Whether this shader is disposed.
         /// </summary>
