@@ -14,7 +14,7 @@ namespace Luminance.Common.Utilities
         {
             return (destination - entity.Center).SafeNormalize(Vector2.Zero);
         }
-
+        
         /// <summary>
         ///     Calculates the X direction to a given position from an entity.
         /// </summary>

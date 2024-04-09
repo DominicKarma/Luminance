@@ -4,11 +4,27 @@ using Terraria.ModLoader;
 
 namespace Luminance.Core.Globals
 {
-    internal class LuminanceGlobalNPC : GlobalNPC
+    public class LuminanceGlobalNPC : GlobalNPC
     {
         public override bool InstancePerEntity => true;
 
-        private bool HasBalancedHP;
+        public delegate void HPBalanceDelegate(NPC npc, int maxHP);
+
+        /// <summary>
+        /// Called whenever a npc has its hp adjusted for balance.
+        /// </summary>
+        public static event HPBalanceDelegate OnHPBalance;
+
+        public bool HasBalancedHP
+        {
+            get;
+            private set;
+        }
+
+        public override void Unload()
+        {
+            OnHPBalance = null;
+        }
 
         public override bool PreAI(NPC npc)
         {
@@ -21,6 +37,7 @@ namespace Luminance.Core.Globals
                     npc.life = npc.lifeMax = maxHP;
                     globalNPC.HasBalancedHP = true;
                     npc.netUpdate = true;
+                    OnHPBalance?.Invoke(npc, maxHP);
                 }
             }
             return true;

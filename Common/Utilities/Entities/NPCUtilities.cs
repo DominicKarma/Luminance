@@ -41,21 +41,21 @@ namespace Luminance.Common.Utilities
         /// <remarks>
         ///     In the case of casting errors, this will create a log message that informs the user of the failed cast and fall back on a dummy instance.
         /// </remarks>
-        /// <typeparam name="T">The ModNPC type to convert to.</typeparam>
+        /// <typeparam name="TNPC">The ModNPC type to convert to.</typeparam>
         /// <param name="n">The NPC to access the ModNPC from.</param>
-        public static T As<T>(this NPC n) where T : ModNPC
+        public static TNPC As<TNPC>(this NPC n) where TNPC : ModNPC
         {
-            if (n.ModNPC is T castedNPC)
+            if (n.ModNPC is TNPC castedNPC)
                 return castedNPC;
 
             bool vanillaNPC = n.ModNPC is null;
             Mod mod = ModContent.GetInstance<Luminance>();
             if (vanillaNPC)
-                mod.Logger.Warn($"A vanilla NPC of ID {n.type} was erroneously casted to a mod NPC of type {nameof(T)}.");
+                mod.Logger.Warn($"A vanilla NPC of ID {n.type} was erroneously casted to a mod NPC of type {nameof(TNPC)}.");
             else
-                mod.Logger.Warn($"A NPC of type {n.ModNPC.Name} was erroneously casted to a mod NPC of type {nameof(T)}.");
+                mod.Logger.Warn($"A NPC of type {n.ModNPC.Name} was erroneously casted to a mod NPC of type {nameof(TNPC)}.");
 
-            return ModContent.GetInstance<T>();
+            return ModContent.GetInstance<TNPC>();
         }
 
         private static bool? BossIsActiveThisFrame;

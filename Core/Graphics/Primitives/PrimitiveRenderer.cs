@@ -167,7 +167,7 @@ namespace Luminance.Core.Graphics
             PositionsIndex = 1;
 
             // Create the control points for the spline.
-            List<Vector2> controlPoints = new();
+            List<Vector2> controlPoints = [];
             int index = 0;
             foreach (var position in positions)
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
 
@@ -10,22 +11,22 @@ namespace Luminance.Core.Graphics
     public class ManagedScreenFilter : IDisposable
     {
         /// <summary>
+        /// All deferred textures that should be applied when the filter's shader is applied.
+        /// </summary>
+        private readonly Dictionary<int, DeferredTexture> DeferredTextures = [];
+
+        /// <summary>
         /// A managed copy of all parameter data. Used to minimize excess SetValue calls, in cases where the value aren't actually being changed.
         /// </summary>
-        private readonly Dictionary<string, object> parameterCache = new();
+        internal readonly Dictionary<string, object> parameterCache;
 
-        public Ref<Effect> Effect
+        public Ref<Effect> Shader
         {
             get;
             internal set;
         }
 
-        public Effect WrappedEffect => Effect.Value;
-
-        /// <summary>
-        /// A wrapper class for <see cref="Effect"/> that is focused around screen filter effects.
-        /// </summary>
-        public ManagedScreenFilter(Ref<Effect> effect) => Effect = effect;
+        public Effect WrappedEffect => Shader.Value;
 
         public bool Disposed
         {
@@ -52,6 +53,30 @@ namespace Luminance.Core.Graphics
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// The standard parameter name prefix for texture sizes.
+        /// </summary>
+        public const string TextureSizeParameterPrefix = "textureSize";
+
+        /// <summary>
+        /// Represents a texture that is supplied to a filter when its shader is ready to be applied.
+        /// </summary>
+        /// <param name="Texture">The texture to use.</param>
+        /// <param name="Index">The index in the <see cref="GraphicsDevice.Textures"/> array that the texture should go in.</param>
+        /// <param name="SamplerState">An optional sampler state that should be used alongside the texture. Does nothing if <see langword="null"/>.</param>
+        public record DeferredTexture(Texture2D Texture, int Index, SamplerState SamplerState);
+
+        /// <summary>
+        /// A wrapper class for <see cref="Effect"/> that is focused around screen filter effects.
+        /// </summary>
+        internal ManagedScreenFilter(Ref<Effect> shader)
+        {
+            Shader = shader;
+
+            // Initialize the parameter cache.
+            parameterCache = [];
         }
 
         /// <summary>
@@ -102,7 +127,7 @@ namespace Luminance.Core.Graphics
                 return false;
 
             // Check if the parameter even exists. If it doesn't, obviously do nothing else.
-            EffectParameter parameter = Effect.Value.Parameters[parameterName];
+            EffectParameter parameter = Shader.Value.Parameters[parameterName];
             if (parameter is null)
                 return false;
 
@@ -226,6 +251,41 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
+        /// Sets a texture at a given index for this filter to use based a the <see cref="Asset{T}"/> wrapper. Typically, index 0 is populated with whatever was passed into a <see cref="SpriteBatch"/>.Draw call.
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// The texture is cached rather than used immediately, since it can only be applied properly when the filter is being used (a.k.a during screen shader rendering).
+        /// </remarks>
+        /// 
+        /// <param name="textureAsset">The asset that contains the texture to supply.</param>
+        /// <param name="textureIndex">The index to place the texture in.</param>
+        /// <param name="samplerStateOverride">Which sampler should be used for the texture.</param>
+        public void SetTexture(Asset<Texture2D> textureAsset, int textureIndex, SamplerState samplerStateOverride = null)
+        {
+            if (Main.netMode == NetmodeID.Server)
+                return;
+
+            Texture2D texture = textureAsset.Value;
+            SetTexture(texture, textureIndex, samplerStateOverride);
+        }
+
+        /// <summary>
+        ///     Sets a texture at a given index for this shader to use. Typically, index 0 is populated with whatever was passed into a <see cref="SpriteBatch"/>.Draw call.
+        /// </summary>
+        /// <param name="texture">The texture to supply.</param>
+        /// <param name="textureIndex">The index to place the texture in.</param>
+        /// <param name="samplerStateOverride">Which sampler should be used for the texture.</param>
+        public void SetTexture(Texture2D texture, int textureIndex, SamplerState samplerStateOverride = null)
+        {
+            if (Main.netMode == NetmodeID.Server)
+                return;
+
+            DeferredTexture deferredTexture = new(texture, textureIndex, samplerStateOverride);
+            DeferredTextures[textureIndex] = deferredTexture;
+        }
+
+        /// <summary>
         /// Call to indicate that the filter should be active. This needs to happen each frame it should be active for.
         /// </summary>
         public void Activate() => IsActive = true;
@@ -246,20 +306,39 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// Apply the filter.
         /// </summary>
-        /// <param name="setCommonParams"> By default, it will set the "time" and "uWorldViewProjection" parameter if it exists.</param>
+        /// <param name="setCommonParams">If true, this will automatically try to set certain parameters in the shader, such as globalTime.</param>
         /// <param name="pass">Specify a specific pass to use, if the shader has multiple.</param>
         public void Apply(bool setCommonParams = true, string pass = null)
         {
             // Apply commonly used parameters.
             if (setCommonParams)
-                ApplyParams();
+                SetCommonParameters();
+
+            SupplyDeferredTextures();
 
             WrappedEffect.CurrentTechnique.Passes[pass ?? ManagedShader.DefaultPassName].Apply();
         }
 
-        private void ApplyParams()
+        private void SupplyDeferredTextures()
         {
-            WrappedEffect.Parameters["time"]?.SetValue(Main.GlobalTimeWrappedHourly);
+            var gd = Main.instance.GraphicsDevice;
+
+            foreach (DeferredTexture textureWrapper in DeferredTextures.Values)
+            {
+                int textureIndex = textureWrapper.Index;
+                Texture2D texture = textureWrapper.Texture;
+                SamplerState samplerStateOverride = textureWrapper.SamplerState;
+                WrappedEffect.Parameters[$"{TextureSizeParameterPrefix}{textureIndex}"]?.SetValue(texture.Size());
+
+                gd.Textures[textureIndex] = texture;
+                if (samplerStateOverride is not null)
+                    gd.SamplerStates[textureIndex] = samplerStateOverride;
+            }
+        }
+
+        private void SetCommonParameters()
+        {
+            WrappedEffect.Parameters["globalTime"]?.SetValue(Main.GlobalTimeWrappedHourly);
             WrappedEffect.Parameters["opacity"]?.SetValue(Opacity);
             WrappedEffect.Parameters["focusPosition"]?.SetValue(FocusPosition);
             WrappedEffect.Parameters["screenPosition"]?.SetValue(Main.screenPosition);
@@ -272,7 +351,7 @@ namespace Luminance.Core.Graphics
                 return;
 
             Disposed = true;
-            Effect.Value.Dispose();
+            Shader.Value.Dispose();
             parameterCache.Clear();
             GC.SuppressFinalize(this);
         }

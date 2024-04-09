@@ -159,13 +159,7 @@ namespace Luminance.Common.Utilities
             float width = MathF.Min(atlasTexture.Frame.Width - frame.Value.X + atlasTexture.Frame.X, Clamp(frame.Value.Width, 0f, atlasTexture.Frame.Width));
             float height = MathF.Min(atlasTexture.Frame.Height - frame.Value.Y + atlasTexture.Frame.Y, Clamp(frame.Value.Height, 0f, atlasTexture.Frame.Height));
             Rectangle finalFrame = new((int)xValue, (int)yValue, (int)width, (int)height);
-
-            // The origin must be moved to the appropriate atlas position if user defined.
-            if (origin != null)
-                origin += new Vector2(atlasTexture.Frame.X, atlasTexture.Frame.Y);
-            // Else, initialize it to the center of the atlas texture frame.
-            else
-                origin ??= finalFrame.Size() * 0.5f;
+            origin ??= finalFrame.Size() * 0.5f;
 
             spriteBatch.Draw(atlasTexture.Atlas.Texture.Value, position, finalFrame, color, rotation, origin.Value, scale.Value, spriteEffects, 0f);
         }

@@ -1,0 +1,15 @@
+Configs: {
+	Config: {
+		DisplayName: Paramètres
+
+		MaxParticles: {
+			Label: Particules Maximale
+			Tooltip: Change le nombre de particules qui peuvent exister à la fois.
+		}
+
+		ScreenshakeModifier: {
+			Label: Modificateur du tremblement d'écran
+			Tooltip: Modifie la les effets de la puissance du tremblement d'écran. Mettez à 0 pour désactiver les tremblements d'écran entièrement.
+		}
+	}
+}

@@ -11,14 +11,16 @@ namespace Luminance.Core.Graphics
     public sealed class ManagedShader : IDisposable
     {
         /// <summary>
-        ///     A managed copy of all parameter data. Used to minimize excess SetValue calls, in cases where the value aren't actually being changed.
+        /// A managed copy of all parameter data. Used to minimize excess SetValue calls, in cases where the value aren't actually being changed.
         /// </summary>
         private readonly Dictionary<string, object> parameterCache;
 
         /// <summary>
-        ///     The shader reference underlying this wrapper.
+        /// The shader reference underlying this wrapper.
         /// </summary>
         public readonly Ref<Effect> Shader;
+
+        public Effect WrappedEffect => Shader.Value;
 
         /// <summary>
         /// Whether this shader is disposed.
@@ -30,12 +32,12 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        ///     The standard parameter name prefix for texture sizes.
+        /// The standard parameter name prefix for texture sizes.
         /// </summary>
         public const string TextureSizeParameterPrefix = "textureSize";
 
         /// <summary>
-        ///     The standard pass name when autoloading shaders.
+        /// The standard pass name when autoloading shaders.
         /// </summary>
         public const string DefaultPassName = "AutoloadPass";
 
@@ -58,15 +60,16 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        ///     Resets the cache of parameters for this shader. Should be used in contexts where the underlying shader used by this can be changed in contexts that do not respect the cache.
+        /// Resets the cache of parameters for this shader. Should be used in contexts where the underlying shader used by this can be changed in contexts that do not respect the cache.
         /// </summary>
+        /// 
         /// <remarks>
-        ///     An example of this being useful could when be having this shader shared with a screen shader, which supplies its values directly and without the <see cref="TrySetParameter(string, object)"/> wrapper.
+        /// An example of this being useful could when be having this shader shared with a screen shader, which supplies its values directly and without the <see cref="TrySetParameter(string, object)"/> wrapper.
         /// </remarks>
         public void ResetCache() => parameterCache.Clear();
 
         /// <summary>
-        ///     Attempts to send parameter data to the GPU for the shader to use.
+        /// Attempts to send parameter data to the GPU for the shader to use.
         /// </summary>
         /// <param name="parameterName">The name of the parameter. This must correspond with the parameter name in the shader.</param>
         /// <param name="value">The value to supply to the parameter.</param>
@@ -201,7 +204,7 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        ///     Sets a texture at a given index for this shader to use based a the <see cref="Asset{T}"/> wrapper. Typically, index 0 is populated with whatever was passed into a <see cref="SpriteBatch"/>.Draw call.
+        /// Sets a texture at a given index for this shader to use based a the <see cref="Asset{T}"/> wrapper. Typically, index 0 is populated with whatever was passed into a <see cref="SpriteBatch"/>.Draw call.
         /// </summary>
         /// <param name="textureAsset">The asset that contains the texture to supply.</param>
         /// <param name="textureIndex">The index to place the texture in.</param>
@@ -218,7 +221,7 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        ///     Sets a texture at a given index for this shader to use. Typically, index 0 is populated with whatever was passed into a <see cref="SpriteBatch"/>.Draw call.
+        /// Sets a texture at a given index for this shader to use. Typically, index 0 is populated with whatever was passed into a <see cref="SpriteBatch"/>.Draw call.
         /// </summary>
         /// <param name="texture">The texture to supply.</param>
         /// <param name="textureIndex">The index to place the texture in.</param>
@@ -240,7 +243,7 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        ///     Prepares the shader for drawing.
+        /// Prepares the shader for drawing.
         /// </summary>
         /// <param name="passName">The pass to apply.</param>
         public void Apply(string passName = DefaultPassName)

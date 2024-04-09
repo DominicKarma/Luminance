@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace Luminance.Core.Balancing
 {
-    public class InternalBalancingManager : ModSystem
+    internal class InternalBalancingManager : ModSystem
     {
         private static List<BalancingManager> balancingManagers;
 

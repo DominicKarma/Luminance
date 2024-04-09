@@ -58,6 +58,9 @@ namespace Luminance.Common.Utilities
             return Vector2.Dot(lineDirection, evaluationPoint - linePoint);
         }
 
+        public static Vector2 SafeDirectionTo(this Vector2 target, Vector2 destination) =>
+            (destination - target).SafeNormalize(Vector2.Zero);
+
         /// <summary>
         ///     Rotates a vector's direction towards an ideal angle at a specific incremental rate.
         /// </summary>

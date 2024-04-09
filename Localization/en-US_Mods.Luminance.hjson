@@ -4,7 +4,7 @@ Configs: {
 
 		MaxParticles: {
 			Label: Max Particles
-			Tooltip: Changes the maximum number of particles that can exist at once
+			Tooltip: Changes the maximum number of particles that can exist at once.
 		}
 
 		ScreenshakeModifier: {
