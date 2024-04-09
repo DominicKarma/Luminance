@@ -254,7 +254,10 @@ namespace Luminance.Core.Graphics
                 if (compileAsFilter)
                 {
                     if (ShaderManager.filters.TryGetValue(shaderIdentifier, out ManagedScreenFilter oldShader))
+                    {
                         oldShader.Shader = refEffect;
+                        oldShader.parameterCache?.Clear();
+                    }
                     else
                         ShaderManager.SetFilter(shaderIdentifier, refEffect);
                 }
