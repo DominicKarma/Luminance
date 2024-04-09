@@ -9,7 +9,7 @@ namespace Luminance.Core.ModCalls
     {
         public static object DefaultObject => new();
 
-        public static readonly Dictionary<string, List<ModCall>> ModCallsByMods = new();
+        public static readonly Dictionary<string, List<ModCall>> ModCallsByMods = [];
 
         /// <summary>
         /// Call this from YourMod.Call(params object[] args).
@@ -34,7 +34,7 @@ namespace Luminance.Core.ModCalls
         private static List<ModCall> GetCorrectModCalls(string modName)
         {
             if (!ModCallsByMods.ContainsKey(modName))
-                ModCallsByMods[modName] = new();
+                ModCallsByMods[modName] = [];
             return ModCallsByMods[modName];
         }
 
