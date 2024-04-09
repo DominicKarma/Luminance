@@ -1,0 +1,15 @@
+﻿Configs: {
+	Config: {
+		DisplayName: Configuración
+
+		MaxParticles: {
+			Label: Maxima de partículas
+			Tooltip: Cambia la cantidad maxima de partículas que pueden existir al mismo tiempo.
+		}
+
+		ScreenshakeModifier: {
+			Label: Configuración temblor de pantalla.
+			Tooltip: Cambia la intensidad de effectos de temblor de pantalla. Poner en 0 deshabilita temblor de pantalla enteramente.
+		}
+	}
+}
