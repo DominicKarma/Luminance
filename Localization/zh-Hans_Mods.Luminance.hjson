@@ -4,7 +4,7 @@ Configs: {
 
 		MaxParticles: {
 			Label: 最大粒子数
-			Tooltip: 修改可同时存在的最大粒子数
+			Tooltip: 修改可同时存在的最大粒子数。
 		}
 
 		ScreenshakeModifier: {

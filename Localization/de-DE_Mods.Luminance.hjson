@@ -1,0 +1,15 @@
+﻿Configs: {
+	Config: {
+		DisplayName: Konfiguration
+
+		MaxParticles: {
+			Label: Maximale Partikel
+			Tooltip: Ändert die maximale Anzahl der Partikel die auf einmal existieren können.
+		}
+
+		ScreenshakeModifier: {
+			Label: Bildschirmschwanken Modifizierer
+			Tooltip: Ändert die Stärke vom Bildschirmschwanken. Setzte auf 0 um es auszuschalten.
+		}
+	}
+}

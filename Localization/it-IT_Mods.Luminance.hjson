@@ -1,0 +1,15 @@
+﻿Configs: {
+	Config: {
+		DisplayName: Configurazione
+
+		MaxParticles: {
+			Label: Limite particelle
+			Tooltip: Imposta il numero massimo di particelle che possono apparire a schermo.
+		}
+
+		ScreenshakeModifier: {
+			Label: Vibrazione schermo
+			Tooltip: Regola l'intensità della vibrazione dello schermo. Imposta a 0 per disabilitare.
+		}
+	}
+}
