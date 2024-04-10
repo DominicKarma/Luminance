@@ -66,7 +66,7 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// The opacity of the particle.
         /// </summary>
-        public float Opacity;
+        public float Opacity = 1f;
 
         /// <summary>
         /// The time the particle has existed for.
@@ -136,7 +136,7 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// Override to run custom drawcode for the particle. Draws the particle texture to the screen by default.
         /// </summary>
-        public virtual void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(Texture, Position - Main.screenPosition, Frame, DrawColor, Rotation, null, Scale, Direction.ToSpriteDirection());
+        public virtual void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(Texture, Position - Main.screenPosition, Frame, DrawColor * Opacity, Rotation, null, Scale, Direction.ToSpriteDirection());
         #endregion
     }
 }

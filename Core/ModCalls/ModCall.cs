@@ -7,21 +7,9 @@ namespace Luminance.Core.ModCalls
 {
     public abstract class ModCall : ILoadable
     {
-        ///<summary>
-        /// Once a call makes it to a public version, NEVER delete it from here.
-        /// </summary>
-        public abstract IEnumerable<string> CallCommands
-        {
-            get;
-        }
+        internal IEnumerable<string> CallCommands;
 
-        /// <summary>
-        /// The ordered types that the args must be. Set as null if none are needed.
-        /// </summary>
-        public abstract IEnumerable<Type> InputTypes
-        {
-            get;
-        }
+        internal IEnumerable<Type> InputTypes;
 
         // WHY doesnt ILoadable.Unload() pass the mod??
         public Mod AssosiatedMod
@@ -68,9 +56,21 @@ namespace Luminance.Core.ModCalls
         /// <returns></returns>
         protected abstract object SafeProcess(params object[] argsWithoutCommand);
 
+        ///<summary>
+        /// Once a call makes it to a public version, NEVER delete it from here.
+        /// </summary>
+        public abstract IEnumerable<string> GetCallCommands();
+
+        /// <summary>
+        /// The ordered types that the args must be. Return as null if none are needed.
+        /// </summary>
+        public abstract IEnumerable<Type> GetInputTypes();
+
         public void Load(Mod mod)
         {
             AssosiatedMod = mod;
+            CallCommands = GetCallCommands();
+            InputTypes = GetInputTypes();
             ModCallManager.RegisterModCall(mod, this);
         }
 
