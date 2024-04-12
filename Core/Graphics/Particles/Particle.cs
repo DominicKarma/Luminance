@@ -84,7 +84,7 @@ namespace Luminance.Core.Graphics
         public int Direction;
 
         /// <summary>
-        /// A 0-1 interlopant of how far along its lifetime the particle is.
+        /// A 0-1 interpolant of how far along its lifetime the particle is.
         /// </summary>
         public float LifetimeRatio => Time / (float)Lifetime;
 
@@ -134,7 +134,7 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        /// Override to run custom drawcode for the particle. Draws the particle texture to the screen by default.
+        /// Override to run custom rendering for the particle. Draws the particle texture to the screen by default.
         /// </summary>
         public virtual void Draw(SpriteBatch spriteBatch) => spriteBatch.Draw(Texture, Position - Main.screenPosition, Frame, DrawColor * Opacity, Rotation, null, Scale, Direction.ToSpriteDirection());
         #endregion
