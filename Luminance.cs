@@ -26,6 +26,7 @@ namespace Luminance
             // Go through every mod and check for effects to autoload.
             foreach (Mod mod in ModLoader.Mods)
             {
+                HookHelper.LoadHookInterfaces(mod);
                 ShaderManager.LoadShaders(mod);
                 AtlasManager.InitializeModAtlases(mod);
                 ParticleManager.InitializeManualRenderers(mod);
