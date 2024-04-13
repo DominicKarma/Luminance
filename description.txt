@@ -1,1 +1,1 @@
-Luminance is a library mod that provides a range of useful features to mods, primarily (but not limitied to) graphics systems. For more information, check the github.
+Luminance is a library mod that provides a range of useful features to mods, primarily (but not limited to) graphics systems. For more information, check the github.
