@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Luminance.Common.Reflection
+namespace Luminance.Common.StateMachines
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public sealed class AutomatedMethodInvokeAttribute : Attribute
