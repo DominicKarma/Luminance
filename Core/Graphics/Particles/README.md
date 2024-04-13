@@ -24,6 +24,6 @@ public class MyParticle : Particle
 
 ...
 
-new MyParticle(Projectile.Center, Projectile.Velocity * 0.2f, Color.White, 30).Spawn();
+new MyParticle(Projectile.Center, Projectile.velocity * 0.2f, Color.White, 30).Spawn();
 ```
 > A basic implementation of a custom particle, and spawning it.
