@@ -1,5 +1,5 @@
 # Luminance Changelogs
-This file will contain each version of the mod published, along with all of the accompanying changes. Use this as reference for updating your mod if required (read the [API breakage policy](https://github.com/DominicKarma/Luminance/blob/main/README.md)).
+This file will contain each version of the mod published, along with all of the accompanying changes. Use this as reference for updating your mod if required (read the [API breakage policy](https://github.com/DominicKarma/Luminance/blob/main/README.md#api-breakage-policy)).
 
 ---
 
