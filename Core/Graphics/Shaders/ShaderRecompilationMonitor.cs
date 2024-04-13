@@ -30,7 +30,7 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// The path to the central mod compiler.
         /// </summary>
-        public static string CompilerPath => Path.Combine(Main.SavePath, "EasyXNB");
+        public static string CompilerDirectory => Path.Combine(Main.SavePath, "EasyXNB");
 
         /// <summary>
         /// Represents a watcher that looks over a given directory with .fx files.
@@ -61,7 +61,9 @@ namespace Luminance.Core.Graphics
         /// </summary>
         public override void OnModLoad()
         {
-            if (Directory.Exists(CompilerPath) || Main.netMode != NetmodeID.SinglePlayer)
+            ClearCompilationDirectory();
+
+            if (Directory.Exists(CompilerDirectory) || Main.netMode != NetmodeID.SinglePlayer)
                 return;
 
             CreateCompilerDirectory();
@@ -77,18 +79,18 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        /// Creates the compiler directory in accordance with <see cref="CompilerPath"/>.
+        /// Creates the compiler directory in accordance with <see cref="CompilerDirectory"/>.
         /// </summary>
         internal void CreateCompilerDirectory()
         {
-            Directory.CreateDirectory(CompilerPath);
+            Directory.CreateDirectory(CompilerDirectory);
 
             var fileNames = Mod.GetFileNames();
             var compilerFileNames = fileNames.Where(f => f.Contains("Assets/AutoloadedEffects/Compiler"));
             foreach (string compilerFileName in compilerFileNames)
             {
                 byte[] fileData = Mod.GetFileBytes(compilerFileName);
-                string copyFileName = Path.Combine(CompilerPath, Path.GetFileName(compilerFileName));
+                string copyFileName = Path.Combine(CompilerDirectory, Path.GetFileName(compilerFileName));
 
                 // This is super scuffed but the mod for reasons unknown doesn't load files of extension .exe.config
                 // However, EasyXNB refuses to load if the configuration file is not loaded with that exact formatting.
@@ -136,6 +138,20 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
+        /// Clears all .fx and .xnb files in the compiler directory.
+        /// </summary>
+        private static void ClearCompilationDirectory()
+        {
+            if (!Directory.Exists(CompilerDirectory))
+                return;
+
+            foreach (string fxFile in Directory.GetFiles(CompilerDirectory, "*.fx"))
+                File.Delete(fxFile);
+            foreach (string xnbFile in Directory.GetFiles(CompilerDirectory, "*.xnb"))
+                File.Delete(xnbFile);
+        }
+
+        /// <summary>
         /// Attempts to create a new shader watcher for a given mod over a given path.
         /// </summary>
         /// <param name="mod">The mod that should own the shader watcher.</param>
@@ -163,7 +179,7 @@ namespace Luminance.Core.Graphics
         private static void ProcessCompilationsForWatcher(ShaderWatcher watcher)
         {
             List<CompilingFile> compiledFiles = [];
-            string compilerDirectory = CompilerPath;
+            string compilerDirectory = CompilerDirectory;
             while (CompilingFiles.TryPeek(out CompilingFile file))
             {
                 if (!file.FilePath.Contains(watcher.ModName))
@@ -193,8 +209,8 @@ namespace Luminance.Core.Graphics
             {
                 StartInfo = new()
                 {
-                    FileName = CompilerPath + "\\EasyXnb.exe",
-                    WorkingDirectory = CompilerPath + "//",
+                    FileName = CompilerDirectory + "\\EasyXnb.exe",
+                    WorkingDirectory = CompilerDirectory + "//",
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
@@ -223,7 +239,7 @@ namespace Luminance.Core.Graphics
             bool compileAsFilter = file.CompileAsFilter;
             string shaderPath = file.FilePath;
             string modName = $"{watcher.ModName}.";
-            string compiledXnbPath = CompilerPath + "\\" + Path.GetFileNameWithoutExtension(shaderPath) + ".xnb";
+            string compiledXnbPath = CompilerDirectory + "\\" + Path.GetFileNameWithoutExtension(shaderPath) + ".xnb";
             string originalXnbPath = shaderPath.Replace(".fx", ".xnb");
             string shaderPathInCompilerDirectory = compilerDirectory + Path.GetFileName(shaderPath);
 
@@ -276,7 +292,7 @@ namespace Luminance.Core.Graphics
         private static void MoveFileToCompilingFolder(CompilingFile file)
         {
             string shaderPath = file.FilePath;
-            string shaderPathInCompilerDirectory = Path.Combine(CompilerPath, Path.GetFileName(shaderPath));
+            string shaderPathInCompilerDirectory = Path.Combine(CompilerDirectory, Path.GetFileName(shaderPath));
 
             File.Delete(shaderPathInCompilerDirectory);
             try
