@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Luminance.Core.Hooking;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Luminance.Core.Balancing
 {
-    internal class InternalBalancingManager : ModSystem
+    public class InternalBalancingManager : ModSystem, ICustomDetourProvider
     {
         private static List<BalancingManager> balancingManagers;
 
@@ -18,11 +20,9 @@ namespace Luminance.Core.Balancing
 
         private static IEnumerable<NPCHPBalancingChange> npcHPBalancingChanges;
 
-        internal static void RegisterManager(BalancingManager manager)
-        {
-            balancingManagers ??= [];
-            balancingManagers.Add(manager);
-        }
+        public static event Action<NPC> AfterHPBalancingEvent;
+
+        private delegate void Orig_SetDefaultDelegate(NPC npc, bool createModNPC);
 
         public override void PostSetupContent()
         {
@@ -55,6 +55,13 @@ namespace Luminance.Core.Balancing
             npcHPBalancingChanges = null;
             balancingManagers = null;
             npcHitRulesTable = null;
+            AfterHPBalancingEvent = null;
+        }
+
+        internal static void RegisterManager(BalancingManager manager)
+        {
+            balancingManagers ??= [];
+            balancingManagers.Add(manager);
         }
 
         internal static void ApplyFromProjectile(NPC npc, ref NPC.HitModifiers modifiers, Projectile proj)
@@ -125,6 +132,15 @@ namespace Luminance.Core.Balancing
             }
 
             changeToPerform?.PerformBalancing(item);
+        }
+
+        void ICustomDetourProvider.ModifyMethods() => HookHelper.ModifyMethodWithDetour(typeof(NPCLoader).GetMethod("SetDefaults", UniversalBindingFlags), SetDefaults_LuminanceHPBalancing);
+
+        private void SetDefaults_LuminanceHPBalancing(Orig_SetDefaultDelegate orig, NPC npc, bool createModNPC)
+        {
+            orig(npc, createModNPC);
+            npc.lifeMax = GetBalancedHP(npc);
+            AfterHPBalancingEvent?.Invoke(npc);
         }
     }
 }

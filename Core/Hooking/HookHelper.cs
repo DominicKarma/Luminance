@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using Terraria.ModLoader;
 
 namespace Luminance.Core.Hooking
 {
@@ -15,6 +17,24 @@ namespace Luminance.Core.Hooking
         private static List<Hook> detours = [];
 
         private static List<ILHook> ilHooks = [];
+
+        private static List<IExistingDetourProvider> existingDetourProviders = [];
+
+        internal static void LoadHookInterfaces(Mod mod)
+        {
+            var existingDetourProvidersColection = mod.GetContent().Where(c => c is IExistingDetourProvider).Select(c => c as IExistingDetourProvider);
+            var customDetourProvidersCollection = mod.GetContent().Where(c => c is ICustomDetourProvider).Select(c => c as ICustomDetourProvider);
+
+            existingDetourProviders ??= [];
+            foreach (var detour in existingDetourProvidersColection)
+            {
+                detour.Subscribe();
+                existingDetourProviders.Add(detour);
+            }
+
+            foreach (var detour in customDetourProvidersCollection)
+                detour.ModifyMethods();
+        }
 
         /// <summary>
         /// Modifies the provided methodbase with the provided detour, and caches it. This is automatically undone on unloading.
@@ -46,8 +66,12 @@ namespace Luminance.Core.Hooking
             foreach (var hook in ilHooks)
                 hook.Undo();
 
+            foreach (var detour in existingDetourProviders)
+                detour.Unsubscribe();
+
             detours = null;
             ilHooks = null;
+            existingDetourProviders = null;
         }
 
         /// <summary>
