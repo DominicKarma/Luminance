@@ -11,3 +11,5 @@
 - The hooking features.
 - Mod calls.
 - Looped sounds.
+- Explain how to set up a basic primitive shader.
+  - Go into detail regarding usage of the Z component in TEXCOORD data.
