@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
+using Terraria.Achievements;
 using Terraria.ModLoader;
 
 namespace Luminance.Core.Hooking
@@ -22,18 +24,22 @@ namespace Luminance.Core.Hooking
 
         internal static void LoadHookInterfaces(Mod mod)
         {
-            var existingDetourProvidersColection = mod.GetContent().Where(c => c is IExistingDetourProvider).Select(c => c as IExistingDetourProvider);
-            var customDetourProvidersCollection = mod.GetContent().Where(c => c is ICustomDetourProvider).Select(c => c as ICustomDetourProvider);
+            var existingDetourProvidersColection = GetEveryTypeDerivedFrom(typeof(IExistingDetourProvider), mod.Code).ToList();
+            var customDetourProvidersCollection = GetEveryTypeDerivedFrom(typeof(ICustomDetourProvider), mod.Code).ToList();
 
             existingDetourProviders ??= [];
-            foreach (var detour in existingDetourProvidersColection)
+            foreach (var type in existingDetourProvidersColection)
             {
+                var detour = (IExistingDetourProvider)FormatterServices.GetUninitializedObject(type);
                 detour.Subscribe();
                 existingDetourProviders.Add(detour);
             }
 
-            foreach (var detour in customDetourProvidersCollection)
+            foreach (var type in customDetourProvidersCollection)
+            {
+                var detour = (ICustomDetourProvider)FormatterServices.GetUninitializedObject(type);
                 detour.ModifyMethods();
+            }
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 
 namespace Luminance.Common.Utilities
 {
@@ -28,5 +29,20 @@ namespace Luminance.Common.Utilities
 
             return contentInterfaces;
         }
+
+        /// <summary>
+        /// Retrieves all types which derive from a specific type in a given assembly.
+        /// </summary>
+        /// <param name="baseType">The base type.</param>
+        /// <param name="assemblyToSearch">The assembly to search.</param>
+        public static IEnumerable<Type> GetEveryTypeDerivedFrom(Type baseType, Assembly assemblyToSearch) =>
+            assemblyToSearch.GetTypes().Where(type => !type.IsAbstract && !type.ContainsGenericParameters)
+            .Where(type => type.IsAssignableTo(baseType))
+            .Where(type =>
+            {
+                bool derivedHasConstructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.EmptyTypes) != null;
+                bool baseHasHasConstructor = type.BaseType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.EmptyTypes) != null;
+                return derivedHasConstructor || baseHasHasConstructor;
+            });
     }
 }
