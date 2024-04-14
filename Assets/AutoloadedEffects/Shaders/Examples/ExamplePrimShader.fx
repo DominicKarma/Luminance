@@ -1,17 +1,9 @@
-// Optional parameter - Used for storing arbitrary textures. Can be supplied via the SetTexture method on the C# end.
-// For primitives these typically correspond to noise or specially prepared scrolling textures, but really anything can be used.
+// Documentation for this file exists as the following location: https://github.com/DominicKarma/Luminance/tree/main/Core/Graphics/Primitives
+// If you copypaste this .fx file for use as a base for a custom shader, don't forget to delete the residual comments in here.
 sampler overlayTexture : register(s1);
-
-// Optional parameter - Used for making the results of this shader vary based on time. Could be used for something like a texture scroll along the primitives, for example.
 float globalTime;
-
-// Required parameter - This specifies the matrix used to transform input positions to screen UVs.
-// If you import shaders from somewhere else, make sure that this parameter name matches EXACTLY, or it will inevitably fail.
 matrix uWorldViewProjection;
 
-// Define vertex data structures.
-// If you import shaders from somewhere else, make sure that the TextureCoordinates varible is specified as float3, not float2.
-// This constraint is necessary for an upcoming calculation in the vertex shader function.
 struct VertexShaderInput
 {
     float4 Position : POSITION0;
@@ -28,17 +20,12 @@ struct VertexShaderOutput
 
 VertexShaderOutput VertexShaderFunction(in VertexShaderInput input)
 {
-    // Simply pass along data from the VertexShaderInput struct into its corresponding output.
-    // The uWorldViewProjection matrix is applied during this step to ensure that positions are correctly mapped onto the screen.
-    VertexShaderOutput output = (VertexShaderOutput)0;
+    VertexShaderOutput output = (VertexShaderOutput) 0;
     output.Position = mul(input.Position, uWorldViewProjection);
     output.Position.z = 0;
     output.Color = input.Color;
     output.TextureCoordinates = input.TextureCoordinates;
     
-    // This is a necessary step for all primitive shaders that use Luminance's primitive renderer. Not using it will result in very strange visual bugs that look like an extreme zoom-in effect.
-    // The exact mechanics of what this is for are a bit complex and have to do with taking advantage of the automatic
-    // interpolation between vertex data in order to alleviate noticeable distortions on primitives that have sudden width function changes.
     output.TextureCoordinates.y = (output.TextureCoordinates.y - 0.5) / input.TextureCoordinates.z + 0.5;
 
     return output;
