@@ -8,7 +8,7 @@
 		}
 
 		ScreenshakeModifier: {
-			Label: Configuración temblor de pantalla
+			Label: Modificador de movimiento de la pantalla
 			Tooltip: Cambia la intensidad de effectos de temblor de pantalla. Poner en 0 deshabilita temblor de pantalla enteramente.
 		}
 	}
