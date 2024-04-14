@@ -129,7 +129,7 @@ namespace Luminance.Core.Graphics
             {
                 string assetFilepath = $"{mod.Name}/" + path;
                 string filename = Path.GetFileNameWithoutExtension(assetFilepath);
-                string formattedAtlasPath = assetFilepath.Replace(".json", string.Empty).Replace(".xnb", string.Empty);
+                string formattedAtlasPath = assetFilepath.Replace(".json", string.Empty).Replace(".xnb", string.Empty).Replace(".rawimg", string.Empty);
 
                 if (!AtlasIsRegistered(filename))
                     RegisterAtlas(mod, filename, formattedAtlasPath);
