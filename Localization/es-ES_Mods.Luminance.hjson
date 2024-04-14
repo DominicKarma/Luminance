@@ -9,7 +9,7 @@
 
 		ScreenshakeModifier: {
 			Label: Modificador de movimiento de la pantalla
-			Tooltip: Cambia la intensidad de effectos de temblor de pantalla. Poner en 0 deshabilita temblor de pantalla enteramente.
+			Tooltip: Modifica la intensidad de efectos del movimiento de la pantalla. Poner en 0 deshabilita el movimiento de la pantalla enteramente.
 		}
 	}
 }
