@@ -3,7 +3,7 @@
 		DisplayName: Configuración
 
 		MaxParticles: {
-			Label: Maxima de partículas
+			Label: Partículas máximas
 			Tooltip: Cambia la cantidad maxima de partículas que pueden existir al mismo tiempo.
 		}
 
