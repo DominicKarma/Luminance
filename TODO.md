@@ -1,0 +1,15 @@
+## Add documentation for the following:
+- IProjOwnedByBoss<T>.
+- Easings.
+- Utilities? Theres a lot of these, so maybe just descriptions of which each files contain?
+- Balancing.
+- Cutscenes.
+- Manual particle rendering + more detail for particles.
+- Metaballs.
+- Shaders, including the auto-recompilation feature.
+- All the specific effect managers.
+- The hooking features.
+- Mod calls.
+- Looped sounds.
+- Explain how to set up a basic primitive shader.
+  - Go into detail regarding usage of the Z component in TEXCOORD data.

@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace Luminance.Core.Globals
 {
-    public class LuminanceGlobalNPC : GlobalNPC
+    internal class LuminanceGlobalNPC : GlobalNPC
     {
         public override bool InstancePerEntity => true;
 

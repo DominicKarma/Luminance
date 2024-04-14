@@ -84,6 +84,9 @@ namespace Luminance.Core.Graphics
 
         internal static void LoadShaders(Mod mod)
         {
+            if (Main.netMode == NetmodeID.Server)
+                return;
+
             List<string> fileNames = mod.GetFileNames();
             if (fileNames is null)
                 return;

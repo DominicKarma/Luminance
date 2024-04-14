@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Luminance.Core.Graphics
@@ -114,6 +116,9 @@ namespace Luminance.Core.Graphics
         #region NonPublic Methods
         internal static void InitializeModAtlases(Mod mod)
         {
+            if (Main.netMode == NetmodeID.Server)
+                return;
+
             // A variable path *could* be used here, but its easier to enforce mods using the hardcoded path (and encourages usage of a proper assets directory).
             List<string> modFileNames = mod.GetFileNames();
             if (modFileNames is null)
