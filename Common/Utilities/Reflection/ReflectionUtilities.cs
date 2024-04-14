@@ -36,22 +36,8 @@ namespace Luminance.Common.Utilities
         /// <param name="baseType">The base type.</param>
         /// <param name="assemblyToSearch">The assembly to search.</param>
         public static IEnumerable<Type> GetEveryTypeDerivedFrom(Type baseType, Assembly assemblyToSearch) =>
-            assemblyToSearch.GetTypes().Where(type => !type.IsAbstract && !type.ContainsGenericParameters)
+            AssemblyManager.GetLoadableTypes(assemblyToSearch).Where(type => !type.IsAbstract && !type.ContainsGenericParameters)
             .Where(type => type.IsAssignableTo(baseType))
-            .Where(type =>
-            {
-                var attribute = type.GetCustomAttribute<ExtendsFromModAttribute>();
-                if (attribute is null)
-                    return true;
-
-                var modNames = attribute.Names;
-                foreach (var name in modNames)
-                {
-                    if (!ModLoader.HasMod(name))
-                        return false;
-                }
-                return true;
-            })
             .Where(type =>
             {
                 bool derivedHasConstructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.EmptyTypes) != null;
