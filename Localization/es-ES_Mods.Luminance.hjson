@@ -4,7 +4,7 @@
 
 		MaxParticles: {
 			Label: Partículas máximas
-			Tooltip: Cambia la cantidad maxima de partículas que pueden existir al mismo tiempo.
+			Tooltip: Cambia la cantidad máxima de partículas que pueden existir al mismo tiempo.
 		}
 
 		ScreenshakeModifier: {
