@@ -9,7 +9,8 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>.\Luminance.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Assets\AutoloadedEffects\Shaders\OverlayModifiers\MetaballEdgeShader.fx" />

@@ -1,0 +1,2494 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Luminance</name>
+    </assembly>
+    <members>
+        <member name="T:Luminance.Assets.LazyAsset`1">
+            <summary>
+                <see cref="T:ReLogic.Content.Asset`1"/> wrapper that facilitates lazy-loading.
+            </summary>
+            <typeparam name="AssetType">The asset type.</typeparam>
+        </member>
+        <member name="M:Luminance.Assets.LazyAsset`1.#ctor(System.Func{ReLogic.Content.Asset{`0}})">
+            <summary>
+                <see cref="T:ReLogic.Content.Asset`1"/> wrapper that facilitates lazy-loading.
+            </summary>
+            <typeparam name="AssetType">The asset type.</typeparam>
+        </member>
+        <member name="P:Luminance.Assets.LazyAsset`1.Asset">
+            <summary>
+                The lazy-initialized asset.
+            </summary>
+        </member>
+        <member name="P:Luminance.Assets.LazyAsset`1.Value">
+            <summary>
+                The value underlying this asset.
+            </summary>
+        </member>
+        <member name="M:Luminance.Assets.LazyAsset`1.Request(System.String,ReLogic.Content.AssetRequestMode)">
+            <summary>
+                Requests an asset, wrapped in a <see cref="T:Luminance.Assets.LazyAsset`1"/>.
+            </summary>
+            <param name="path">The path to the asset.</param>
+            <param name="requestMode">The request mode by which the asset should be loaded. Defaults to <see cref="F:ReLogic.Content.AssetRequestMode.AsyncLoad"/>.</param>
+        </member>
+        <member name="F:Luminance.Common.Easings.EasingCurves.Elastic">
+            <summary>
+            An elastic easing curves. Characterized chiefly by small bumps at extreme points.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.Easings.EasingCurves.Linear">
+            <summary>
+            A linear easing curve.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.Easings.EasingCurves.Sine">
+            <summary>
+            A sine easing curve.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.Easings.EasingCurves.Exp">
+            <summary>
+            An exponential easing curve.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.Easings.EasingCurves.Circ">
+            <summary>
+            A circular easing curve.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.Easings.EasingCurves.Quadratic">
+            <summary>
+            A polynomial easing curve of degree 2.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.Easings.EasingCurves.Cubic">
+            <summary>
+            A polynomial easing curve of degree 3.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.Easings.EasingCurves.Quartic">
+            <summary>
+            A polynomial easing curve of degree 4.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.Easings.EasingCurves.Quintic">
+            <summary>
+            A polynomial easing curve of degree 5.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.Easings.EasingCurves.Sextic">
+            <summary>
+            A polynomial easing curve of degree 6.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Easings.EasingCurves.MakePoly(System.Single)">
+            <summary>
+            Creates a polynomial easing curves with an arbitrary exponent/potentially-non-integer degree.
+            </summary>
+            <param name="exponent">The exponent of the polynomial curve.</param>
+        </member>
+        <member name="T:Luminance.Common.Easings.EasingType">
+            <summary>
+                An easing mode.
+            </summary>
+            <remarks>
+                "In" curves start out slowly but gradually reach their end value, similar to an x^2 function.<br></br>
+                "Out" curves start out quickly but gradually slow down to reach their end value, similar to an x^0.5 function.<br></br>
+                "InOut" curves start out and end gradually, but accelerate near the middle, similar to a smoothstep function.
+            </remarks>
+        </member>
+        <member name="T:Luminance.Common.Easings.PiecewiseCurve.CurveSegment">
+            <summary>
+            A piecewise curve that takes up a part of the domain of a <see cref="T:Luminance.Common.Easings.PiecewiseCurve"/>, specifying the equivalent range and curvature in said domain.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Easings.PiecewiseCurve.CurveSegment.#ctor(System.Single,System.Single,System.Single,System.Single,Luminance.Common.Easings.EasingCurves.Curve,Luminance.Common.Easings.EasingType)">
+            <summary>
+            A piecewise curve that takes up a part of the domain of a <see cref="T:Luminance.Common.Easings.PiecewiseCurve"/>, specifying the equivalent range and curvature in said domain.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.Easings.PiecewiseCurve.segments">
+            <summary>
+            The list of <see cref="T:Luminance.Common.Easings.PiecewiseCurve.CurveSegment"/> that encompass the entire 0-1 domain of this function.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Easings.PiecewiseCurve.Add(Luminance.Common.Easings.EasingCurves.Curve,Luminance.Common.Easings.EasingType,System.Single,System.Single,System.Nullable{System.Single})">
+            <summary>
+            Inserts a new easing curve into the domain of the overall piecewise curve.
+            </summary>
+            <param name="curve">The curve to insert.</param>
+            <param name="curveType">The type to use when evaluating the curve, such as In, Out, or InOut.</param>
+            <param name="endingHeight">The ending height of the curve.</param>
+            <param name="animationEnd">The ending input domain for the newly added curve. Must be greater than 0 and less than or equal to 1.</param>
+            <param name="startingHeight">An optional starting height for the curve. Defaults to the ending height of the last curve, or 0 if there are no curves yet.</param>
+            <returns>The original easing curve, for method chaining purposes.</returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:Luminance.Common.Easings.PiecewiseCurve.Evaluate(System.Single)">
+            <summary>
+            Evaluates the result of the chained easing curves as a given 0-1 interpolant value.
+            </summary>
+            
+            <remarks>
+            The interpolant value is automatically clamped between 0-1 by this method, since the domain of piecewise curves exists solely within those bounds.
+            </remarks>
+            
+            <param name="interpolant">The interpolant input to evaluate at.</param>
+        </member>
+        <member name="T:Luminance.Common.Easings.PiecewiseRotation.CurveSegment">
+            <summary>
+            A piecewise rotation curve that takes up a part of the domain of a <see cref="T:Luminance.Common.Easings.PiecewiseRotation"/>, specifying the equivalent range and curvature in said domain.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Easings.PiecewiseRotation.CurveSegment.#ctor(Microsoft.Xna.Framework.Quaternion,Microsoft.Xna.Framework.Quaternion,System.Single,System.Single,Luminance.Common.Easings.EasingCurves.Curve,Luminance.Common.Easings.EasingType)">
+            <summary>
+            A piecewise rotation curve that takes up a part of the domain of a <see cref="T:Luminance.Common.Easings.PiecewiseRotation"/>, specifying the equivalent range and curvature in said domain.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.Easings.PiecewiseRotation.segments">
+            <summary>
+            The list of <see cref="T:Luminance.Common.Easings.PiecewiseRotation.CurveSegment"/> that encompass the entire 0-1 domain of this function.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Easings.PiecewiseRotation.Add(Luminance.Common.Easings.EasingCurves.Curve,Luminance.Common.Easings.EasingType,Microsoft.Xna.Framework.Quaternion,System.Single,System.Nullable{Microsoft.Xna.Framework.Quaternion})">
+            <summary>
+            Adds a new interpolation step to this piecewise rotation curve, encompassing a part of the animation function's domain.
+            </summary>
+            <param name="curve">The curve.</param>
+            <param name="curveType">The type of curve to use.</param>
+            <param name="endingRotation">The ending rotation to interpolate between.</param>
+            <param name="animationEnd">The ending interpolant that this rotation should encompass.</param>
+            <param name="startingRotation">The starting rotation to interpolate between. Uses the last <see cref="F:Luminance.Common.Easings.PiecewiseRotation.segments"/> rotation by default, assuming it isn't empty.</param>
+            <returns>The original rotation, for method chaining purposes.</returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
+        <member name="M:Luminance.Common.Easings.PiecewiseRotation.Evaluate(System.Single,System.Boolean,System.Int32)">
+            <summary>
+            Evaluates the overall rotation curve, interpolating between configurations as necessary.
+            </summary>
+            <param name="animationInterpolant">The animation completion interpolant.</param>
+            <param name="takeOptimalRoute">Whether rotations should take the optimal route in cases where the rotational difference exceeds 180 degrees. One might want this disabled for giant swings, so that the full arc is travelled.</param>
+            <param name="inversionDirection">The direction of inversion with respect to the optimal route taking.</param>
+        </member>
+        <member name="T:Luminance.Common.StateMachines.AutoloadAsBehavior`2">
+            <summary>
+            Marks a method as associated with the provided <typeparamref name="TStateIdentifier"/> for the purpose of automated state machine behavior linking.
+            </summary>
+            <param name="assosiatedState">The state to register this method as behavior for.</param>
+        </member>
+        <member name="M:Luminance.Common.StateMachines.AutoloadAsBehavior`2.#ctor(`1)">
+            <summary>
+            Marks a method as associated with the provided <typeparamref name="TStateIdentifier"/> for the purpose of automated state machine behavior linking.
+            </summary>
+            <param name="assosiatedState">The state to register this method as behavior for.</param>
+        </member>
+        <member name="F:Luminance.Common.StateMachines.AutoloadAsBehavior`2.AssociatedState">
+            <summary>
+            The associated state of the method.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.StateMachines.AutoloadAsBehavior`2.FillStateMachineBehaviors``1(Luminance.Common.StateMachines.PushdownAutomata{`0,`1},``0)">
+            <summary>
+            Fills the <paramref name="stateMachine"/>'s behaviors with all methods in the provided instance that have this attribute.
+            </summary>
+            <typeparam name="TInstanceType">The type of the instance that will access the methods.</typeparam>
+            <param name="stateMachine">The state machine to fill.</param>
+            <param name="instance">The instance to access the methods with.</param>
+        </member>
+        <member name="M:Luminance.Common.StateMachines.AutomatedMethodInvokeAttribute.InvokeWithAttribute(System.Object)">
+            <summary>
+            Invokes all methods marked with a <see cref="T:Luminance.Common.StateMachines.AutomatedMethodInvokeAttribute"/> for a given object.
+            </summary>
+            <param name="instance">The object instance to check methods for.</param>
+        </member>
+        <member name="T:Luminance.Common.StateMachines.EntityAIState`1">
+            <summary>
+            An implementation of <see cref="T:Luminance.Common.StateMachines.IState`1"/> that adds only a simple integer timer.
+            </summary>
+            <typeparam name="TStateIdentifier">The type that this state is associated with.</typeparam>
+            <param name="identifier">The identifying value for this specific state.</param>
+        </member>
+        <member name="M:Luminance.Common.StateMachines.EntityAIState`1.#ctor(`0)">
+            <summary>
+            An implementation of <see cref="T:Luminance.Common.StateMachines.IState`1"/> that adds only a simple integer timer.
+            </summary>
+            <typeparam name="TStateIdentifier">The type that this state is associated with.</typeparam>
+            <param name="identifier">The identifying value for this specific state.</param>
+        </member>
+        <member name="P:Luminance.Common.StateMachines.EntityAIState`1.Identifier">
+            <summary>
+            The identifier for this state.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.StateMachines.EntityAIState`1.Time">
+            <summary>
+            A local timer that exists for use by this state.
+            </summary>
+        </member>
+        <member name="T:Luminance.Common.StateMachines.IState`1">
+            <summary>
+            Represents an abstraction of a state within a <see cref="T:Luminance.Common.StateMachines.PushdownAutomata`2"/>, containing local information specific to the state, such as timers or switches, as it sits within the stack.
+            </summary>
+            <typeparam name="TStateIdentifier"></typeparam>
+        </member>
+        <member name="P:Luminance.Common.StateMachines.IState`1.Identifier">
+            <summary>
+            The identifier for this state.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.StateMachines.IState`1.OnPopped">
+            <summary>
+            A method called whenever this state is popped from the stack in the <see cref="T:Luminance.Common.StateMachines.PushdownAutomata`2"/>.
+            </summary>
+        </member>
+        <member name="T:Luminance.Common.StateMachines.PushdownAutomata`2.TransitionHijack">
+            <summary>
+                Represents a framework for hijacking a transition's final state selection.
+                This is useful for allowing states to transition to something customized when its default transition condition has been triggered, without having to duplicate conditions many times.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.StateMachines.PushdownAutomata`2.TransitionHijack.#ctor(System.Func{System.Nullable{`1},System.Nullable{`1}},System.Action{System.Nullable{`1}})">
+            <summary>
+                Represents a framework for hijacking a transition's final state selection.
+                This is useful for allowing states to transition to something customized when its default transition condition has been triggered, without having to duplicate conditions many times.
+            </summary>
+        </member>
+        <member name="T:Luminance.Common.StateMachines.PushdownAutomata`2.TransitionInfo">
+            <summary>
+                Represents a framework for a state transition's information.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.StateMachines.PushdownAutomata`2.TransitionInfo.#ctor(System.Nullable{`1},System.Boolean,System.Func{System.Boolean},System.Action)">
+            <summary>
+                Represents a framework for a state transition's information.
+            </summary>
+        </member>
+        <member name="T:Luminance.Common.StateMachines.PushdownAutomata`2.OnStateTransitionDelegate">
+            <summary>
+            Delegate for actions that run when <see cref="E:Luminance.Common.StateMachines.PushdownAutomata`2.OnStateTransition"/> is fired.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.StateMachines.PushdownAutomata`2.StateBehaviors">
+            <summary>
+                A collection of custom states that should be performed when a state is ongoing.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.StateMachines.PushdownAutomata`2.HijackActions">
+            <summary>
+                A list of hijack actions to perform during a state transition.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.StateMachines.PushdownAutomata`2.StateRegistry">
+            <summary>
+                A generalized registry of states with individualized data.
+            </summary>
+        </member>
+        <member name="F:Luminance.Common.StateMachines.PushdownAutomata`2.StateStack">
+            <summary>
+                The state stack for the automaton.
+            </summary>
+        </member>
+        <member name="P:Luminance.Common.StateMachines.PushdownAutomata`2.CurrentState">
+            <summary>
+                The current state of the automaton.
+            </summary>
+        </member>
+        <member name="E:Luminance.Common.StateMachines.PushdownAutomata`2.OnStatePop">
+            <summary>
+                The set of actions that should occur when a state is popped.
+            </summary>
+        </member>
+        <member name="E:Luminance.Common.StateMachines.PushdownAutomata`2.OnStateTransition">
+            <summary>
+                The set of actions that should occur when a state transition occurs.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.StateMachines.PushdownAutomata`2.RegisterState(`0)">
+            <summary>
+            Registers a state in the registry.
+            </summary>
+            <param name="state">The state to register.</param>
+        </member>
+        <member name="M:Luminance.Common.StateMachines.PushdownAutomata`2.RegisterStateBehavior(`1,System.Action)">
+            <summary>
+            Links an action to a state identifier as its behavior.
+            </summary>
+            <remarks>
+            Consider using <see cref="T:Luminance.Common.StateMachines.AutoloadAsBehavior`2"/> instead of this method to reduce boilerplate.
+            </remarks>
+            <param name="state"></param>
+            <param name="behavior"></param>
+        </member>
+        <member name="M:Luminance.Common.StateMachines.PushdownAutomata`2.RegisterTransition(`1,System.Nullable{`1},System.Boolean,System.Func{System.Boolean},System.Action)">
+            <summary>
+            Registers a transition between two states.
+            </summary>
+            <param name="initialState">The state to transition from.</param>
+            <param name="newState">The state to transition to.</param>
+            <param name="rememberPreviousState">Whether to pop the initial state or not, useful for states that pause other states instead of replacing them.</param>
+            <param name="transitionCondition">The condition that must be fulfilled for the transition to occur.</param>
+            <param name="transitionCallback">An optional action that runs when the transition occurs.</param>
+        </member>
+        <member name="M:Luminance.Common.StateMachines.PushdownAutomata`2.ApplyToAllStatesExcept(System.Action{`1},`1[])">
+            <summary>
+            Applies an action to every registered state in this machine, barring any provided exceptions. A good use example is for states that interrupt most other states if a certain condition is met.
+            </summary>
+            <param name="action">The action to perform.</param>
+            <param name="exceptions">The list of exceptions.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.FindGroundVertical(Microsoft.Xna.Framework.Point)">
+            <summary>
+                Shifts a point until it reaches level ground.
+            </summary>
+            <param name="p">The original point.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.FindGround(Microsoft.Xna.Framework.Point,Microsoft.Xna.Framework.Vector2)">
+            <summary>
+                Shifts a point until it reaches level ground.
+            </summary>
+            <param name="p">The original point.</param>
+            <param name="direction">The direction to search in.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.DrawAfterimagesCentered(Terraria.Projectile,System.Int32,Microsoft.Xna.Framework.Color,System.Int32,System.Nullable{System.Int32},System.Single,System.Single,Microsoft.Xna.Framework.Graphics.Texture2D,System.Boolean)">
+            <summary>
+                Draws a projectile as a series of afterimages. The first of these afterimages is centered on the center of the projectile's hitbox.<br />
+                This function is guaranteed to draw the projectile itself, even if it has no afterimages and/or the Afterimages config option is turned off.
+            </summary>
+            <param name="proj">The projectile to be drawn.</param>
+            <param name="mode">The type of afterimage drawing code to use. Vanilla Terraria has three options: 0, 1, and 2.</param>
+            <param name="lightColor">The light color to use for the afterimages.</param>
+            <param name="typeOneIncrement">If mode 1 is used, this controls the loop increment. Set it to more than 1 to skip afterimages.</param>
+            <param name="afterimageCountOverride">An optional override to set the amount of afterimages that are drawn.</param>
+            <param name="minScale">The minimum scaling factor across the afterimages. Defaults to 1, but values below that allow for afterimages to "shrink" as they get smaller.</param>
+            <param name="positionClumpInterpolant">An interpolant that determines how clumped afterimages are to the original position via Vector2.Lerp(afterimagePosition, Projectile.Center, positionClumpInterpolant).</param>
+            <param name="texture">The texture to draw. Set to <b>null</b> to draw the projectile's own loaded texture.</param>
+            <param name="drawCentered">If <b>false</b>, the afterimages will be centered on the projectile's position instead of its own center.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.DrawBloomLine(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+            Draws a simple bloom line from a starting point to an ending point. Positional parameters are expected to be in world position.
+            <br></br>
+            This method expects to be drawn with <see cref="F:Microsoft.Xna.Framework.Graphics.BlendState.Additive"/>.
+            </summary>
+            <param name="spriteBatch">The sprite batch to draw the line with.</param>
+            <param name="start">The world position of the start of the line.</param>
+            <param name="end">The world position of the end of the line.</param>
+            <param name="color">The color of the line.</param>
+            <param name="width">How wide the line should be.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.MulticolorLerp(System.Single,Microsoft.Xna.Framework.Color[])">
+            <summary>
+                Returns a color interpolation similar to <see cref="M:Microsoft.Xna.Framework.Color.Lerp(Microsoft.Xna.Framework.Color,Microsoft.Xna.Framework.Color,System.Single)"/> that supports multiple colors.
+            </summary>
+            <param name="interpolant">The 0-1 incremental value used when interpolating.</param>
+            <param name="colors">The various colors to interpolate across.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.ColorSwap(Microsoft.Xna.Framework.Color,Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+                Returns a color lerp that allows for smooth transitioning between two given colors.
+            </summary>
+            <param name="firstColor">The first color you want it to switch between.</param>
+            <param name="secondColor">The second color you want it to switch between.</param>
+            <param name="seconds">How long you want it to take to swap between colors. This accounts for dividing by zero errors.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.HueShift(Microsoft.Xna.Framework.Color,System.Single)">
+            <summary>
+                Hue shifts a given color by a desired amount. The hue spectrum is within a 0-1 range.
+            </summary>
+            <param name="color">The original color.</param>
+            <param name="hueOffset">The amount to offset the hue by.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.FlipOriginByDirection(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Graphics.Texture2D,Microsoft.Xna.Framework.Graphics.SpriteEffects)">
+            <summary>
+                Flips an origin around a <see cref="T:Microsoft.Xna.Framework.Graphics.Texture2D"/> in accordance with a <see cref="T:Microsoft.Xna.Framework.Graphics.SpriteEffects"/> direction.
+            </summary>
+            <param name="texture">The texture to flip based on.</param>
+            <param name="origin">The unmodified origin.</param>
+            <param name="flipDirection">The direction to use as a basis for flipping.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.FlipOriginByDirection(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Graphics.SpriteEffects)">
+            <summary>
+                Flips an origin around a <see cref="T:Microsoft.Xna.Framework.Rectangle"/> frame in accordance with a <see cref="T:Microsoft.Xna.Framework.Graphics.SpriteEffects"/> direction.
+            </summary>
+            <param name="frame">The frame to flip based on.</param>
+            <param name="origin">The unmodified origin.</param>
+            <param name="flipDirection">The direction to use as a basis for flipping.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.GetLaserControlPoints(Terraria.Projectile,System.Int32,System.Single,System.Nullable{Microsoft.Xna.Framework.Vector2})">
+            <summary>
+                Generates an arbitrary quantity of evenly spaced laser point positions for a projectile. Commonly used when calculating points for primitive-based laser beams.
+            </summary>
+            <param name="projectile">The projectile to calculate positions from.</param>
+            <param name="samplesCount">The amount of subdivisions that should be performed. Larger values are more precise, but also more computationally expensive to use.</param>
+            <param name="laserLength">The length of the laser. Used for determining the end point of the laser.</param>
+            <param name="laserDirection">The direction of the laser. By default uses the unit direction of the projectile's velocity.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.CalculatePrimitiveMatrices(System.Int32,System.Int32,Microsoft.Xna.Framework.Matrix@,Microsoft.Xna.Framework.Matrix@,System.Boolean)">
+            <summary>
+                Calculates matrices for usage by vertex shaders, notably in the context of primitive meshes.
+            </summary>
+            <param name="width">The width of the overall view.</param>
+            <param name="height">The height of the overall view.</param>
+            <param name="viewMatrix">The view matrix.</param>
+            <param name="projectionMatrix">The projection matrix.</param>
+            <param name="ui">Whether this is for UI. Controls whether gravity screen flipping is taken into account.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.GetCustomSkyBackgroundMatrix">
+            <summary>
+                Calculates a <see cref="T:Microsoft.Xna.Framework.Matrix"/> for the purpose of <see cref="T:Microsoft.Xna.Framework.Graphics.SpriteBatch"/> resets in the context of background/sky drawing.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.WorldSpaceToScreenUV(Microsoft.Xna.Framework.Vector2)">
+            <summary>
+                Converts world positions to 0-1 UV values relative to the screen. This is incredibly useful when supplying position data to screen shaders.
+            </summary>
+            <param name="worldPosition">The world position.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.SwapToRenderTarget(Microsoft.Xna.Framework.Graphics.RenderTarget2D,System.Nullable{Microsoft.Xna.Framework.Color})">
+            <summary>
+            Swaps the <see cref="T:Microsoft.Xna.Framework.Graphics.GraphicsDevice"/> to a desired render target and clears said render target's contents.
+            <br></br>
+            Be careful when using this method. Render targets have been observed to cause significant lag on weaker devices, and as such should be manipulated only as necessary.
+            </summary>
+            <param name="renderTarget">The desired render target.</param>
+            <param name="flushColor">The color to reset the render target's contents to. Defaults to <see cref="P:Microsoft.Xna.Framework.Color.Transparent"/>.</param>
+        </member>
+        <member name="P:Luminance.Common.Utilities.Utilities.SubtractiveBlending">
+            <summary>
+            A blend state that works opposite to <see cref="F:Microsoft.Xna.Framework.Graphics.BlendState.Additive"/>, making colors darker based on intensity rather than brighter.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.UseBlendState(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Graphics.BlendState)">
+            <summary>
+            Resets a sprite batch with a desired <see cref="T:Microsoft.Xna.Framework.Graphics.BlendState"/>. The <see cref="T:Microsoft.Xna.Framework.Graphics.SpriteSortMode"/> is specified as <see cref="F:Microsoft.Xna.Framework.Graphics.SpriteSortMode.Deferred"/>. If <see cref="F:Microsoft.Xna.Framework.Graphics.SpriteSortMode.Immediate"/> is needed, use <see cref="M:Luminance.Common.Utilities.Utilities.PrepareForShaders(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Graphics.BlendState,System.Boolean)"/> instead.
+            <br></br>
+            Like any sprite batch resetting function, use this sparingly. Overusage (such as performing this operation multiple times per frame) will lead to significantly degraded performance on weaker systems.
+            </summary>
+            <param name="spriteBatch">The sprite batch.</param>
+            <param name="newBlendState">The desired blend state.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.PrepareForShaders(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Graphics.BlendState,System.Boolean)">
+            <summary>
+            Resets the sprite batch with <see cref="F:Microsoft.Xna.Framework.Graphics.SpriteSortMode.Immediate"/> blending, along with an optional <see cref="T:Microsoft.Xna.Framework.Graphics.BlendState"/>. For use when shaders are necessary.
+            <br></br>
+            Like any sprite batch resetting function, use this sparingly. Overusage (such as performing this operation multiple times per frame) will lead to significantly degraded performance on weaker devices.
+            </summary>
+            <param name="spriteBatch">The sprite batch.</param>
+            <param name="newBlendState">An optional blend state. If none is supplied, <see cref="F:Microsoft.Xna.Framework.Graphics.BlendState.AlphaBlend"/> is used.</param>
+            <param name="ui">Whether this is for UI drawing or not. Controls what matrix is used.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.ResetToDefault(Microsoft.Xna.Framework.Graphics.SpriteBatch,System.Boolean)">
+            <summary>
+            Resets the sprite batch to its 'default' state relative to most effects in the game, with a default blend state and sort mode. For use after the sprite batch state has been altered and needs to be reset.
+            <br></br>
+            Like any sprite batch resetting function, use this sparingly. Overusage (such as performing this operation multiple times per frame) will lead to significantly degraded performance on weaker systems.
+            </summary>
+            <param name="spriteBatch">The sprite batch.</param>
+            <param name="end">Whether to call <see cref="M:Microsoft.Xna.Framework.Graphics.SpriteBatch.End"/> first and flush the contents of the previous draw batch. Defaults to true.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.ResetToDefaultUI(Microsoft.Xna.Framework.Graphics.SpriteBatch,System.Boolean)">
+            <summary>
+            Resets the sprite batch to its 'default' state relative to the UI, with a default blend state and sort mode. For use after the sprite batch state has been altered and needs to be reset.
+            <br></br>
+            Like any sprite batch resetting function, use this sparingly. Overusage (such as performing this operation multiple times per frame) will lead to significantly degraded performance on weaker systems.
+            </summary>
+            <param name="spriteBatch">The sprite batch.</param>
+            <param name="end">Whether to call <see cref="M:Microsoft.Xna.Framework.Graphics.SpriteBatch.End"/> first and flush the contents of the previous draw batch. Defaults to true.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.PrepareScreenCullRasterizer">
+            <summary>
+            Prepares a specialized <see cref="T:Microsoft.Xna.Framework.Graphics.RasterizerState"/> with enabled screen culling, for efficiency reasons. It also informs the <see cref="T:Microsoft.Xna.Framework.Graphics.GraphicsDevice"/> of this change.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch,Luminance.Core.Graphics.AtlasTexture,Microsoft.Xna.Framework.Vector2,System.Nullable{Microsoft.Xna.Framework.Rectangle},Microsoft.Xna.Framework.Color,System.Single,System.Nullable{Microsoft.Xna.Framework.Vector2},System.Nullable{Microsoft.Xna.Framework.Vector2},Microsoft.Xna.Framework.Graphics.SpriteEffects)">
+            <summary>
+            Draws an atlas texture to the screen.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.OnRightSideOf(Terraria.Entity,Microsoft.Xna.Framework.Vector2)">
+            <summary>
+                Determine whether a given destination point is right of a given entity.
+            </summary>
+            <param name="entity">The entity to check relative to.</param>
+            <param name="destination">The point to check.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.OnRightSideOf(Terraria.Entity,Terraria.Entity)">
+            <summary>
+                Determine whether a given destination point is right of a given entity.
+            </summary>
+            <param name="entity">The entity to check relative to.</param>
+            <param name="other">The other entity whose center point should be checked.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.SafeDirectionTo(Terraria.Entity,Microsoft.Xna.Framework.Vector2)">
+            <summary>
+                Calculates the direction to a given position from an entity with safely performed underlying normalization.
+            </summary>
+            <param name="entity">The entity to perform the calculations relative to.</param>
+            <param name="destination">The position to get the direction towards.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.HorizontalDirectionTo(Terraria.Entity,Microsoft.Xna.Framework.Vector2)">
+            <summary>
+                Calculates the X direction to a given position from an entity.
+            </summary>
+            <param name="entity">The entity to perform the calculations relative to.</param>
+            <param name="destination">The position to get the direction towards.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.SetLifeMaxByMode(Terraria.NPC,System.Int32,System.Int32,System.Int32)">
+            <summary>
+                Defines a given <see cref="T:Terraria.NPC"/>'s HP based on the current difficulty mode.
+            </summary>
+            <param name="npc">The NPC to set the HP for.</param>
+            <param name="normalModeHP">HP value for normal mode</param>
+            <param name="expertModeHP">HP value for expert mode</param>
+            <param name="masterModeHP">HP value for master mode</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.ExcludeFromBestiary(Terraria.ModLoader.ModNPC)">
+            <summary>
+                Excludes a given <see cref="T:Terraria.NPC"/> from the bestiary completely.
+            </summary>
+            <param name="npc">The NPC to apply the bestiary deletion to.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.As``1(Terraria.NPC)">
+            <summary>
+                A simple utility that gracefully gets a <see cref="T:Terraria.NPC"/>'s <see cref="P:Terraria.NPC.ModNPC"/> instance as a specific type without having to do clunky casting.
+            </summary>
+            <remarks>
+                In the case of casting errors, this will create a log message that informs the user of the failed cast and fall back on a dummy instance.
+            </remarks>
+            <typeparam name="TNPC">The ModNPC type to convert to.</typeparam>
+            <param name="n">The NPC to access the ModNPC from.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.AnyBosses">
+            <summary>
+                Checks if any bosses are present this frame.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.GrantInfiniteFlight(Terraria.Player)">
+            <summary>
+                Gives a given <see cref="T:Terraria.Player"/> infinite flight.
+            </summary>
+            <param name="p">The player to apply infinite flight to.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.HeldMouseItem(Terraria.Player)">
+            <summary>
+                Gets the current mouse item for a given <see cref="T:Terraria.Player"/>. This supports <see cref="F:Terraria.Main.mouseItem"/> (the item held by the cursor) and <see cref="P:Terraria.Player.HeldItem"/> (the item in use with the hotbar).
+            </summary>
+            <param name="player">The player to retrieve the mouse item for.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.NewProjectileBetter(Terraria.DataStructures.IEntitySource,System.Single,System.Single,System.Single,System.Single,System.Int32,System.Int32,System.Single,System.Int32,System.Single,System.Single,System.Single)">
+            <summary>
+                Summons a projectile of a specific type while also adjusting damage for vanilla spaghetti regarding hostile projectiles.
+            </summary>
+            <param name="source">The source of the projectile.</param>
+            <param name="spawnX">The X spawn position of the projectile.</param>
+            <param name="spawnY">The Y spawn position of the projectile.</param>
+            <param name="velocityX">The X velocity of the projectile.</param>
+            <param name="velocityY">The Y velocity of the projectile</param>
+            <param name="type">The id of the projectile type that should be spawned.</param>
+            <param name="damage">The damage of the projectile.</param>
+            <param name="knockback">The knockback of the projectile.</param>
+            <param name="owner">The owner index of the projectile.</param>
+            <param name="ai0">An optional <see cref="F:Terraria.NPC.ai"/>[0] fill value. Defaults to 0.</param>
+            <param name="ai1">An optional <see cref="F:Terraria.NPC.ai"/>[1] fill value. Defaults to 0.</param>
+            <param name="ai2">An optional <see cref="F:Terraria.NPC.ai"/>[2] fill value. Defaults to 0.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.NewProjectileBetter(Terraria.DataStructures.IEntitySource,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,System.Int32,System.Int32,System.Single,System.Int32,System.Single,System.Single,System.Single)">
+            <summary>
+                Summons a projectile of a specific type while also adjusting damage for vanilla spaghetti regarding hostile projectiles.
+            </summary>
+            <param name="source">The source of the projectile.</param>
+            <param name="center">The spawn position of the projectile.</param>
+            <param name="velocity">The velocity of the projectile</param>
+            <param name="type">The id of the projectile type that should be spawned.</param>
+            <param name="damage">The damage of the projectile.</param>
+            <param name="knockback">The knockback of the projectile.</param>
+            <param name="owner">The owner index of the projectile.</param>
+            <param name="ai0">An optional <see cref="F:Terraria.NPC.ai"/>[0] fill value. Defaults to 0.</param>
+            <param name="ai1">An optional <see cref="F:Terraria.NPC.ai"/>[1] fill value. Defaults to 0.</param>
+            <param name="ai2">An optional <see cref="F:Terraria.NPC.ai"/>[2] fill value. Defaults to 0.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.AllProjectilesByID(System.Int32[])">
+            <summary>
+                Returns all projectiles present of a specific type.
+            </summary>
+            <param name="desiredTypes">The projectile type to check for.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.IsFinalExtraUpdate(Terraria.Projectile)">
+            <summary>
+                Determines if a <see cref="T:Terraria.Projectile"/> is on its final extra update. Useful for things like timer increments, which may only want to be performed once every frame.
+            </summary>
+            <param name="p">The projectile to check.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.AnyProjectiles(System.Int32)">
+            <summary>
+                Checks if a given projectile ID is present anywhere.
+            </summary>
+            <param name="projectileID">The projectile ID to check for.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.CountProjectiles(System.Int32[])">
+            <summary>
+                Counts the amount of projectiles of any given IDs.
+            </summary>
+            <param name="desiredTypes">The projectile IDs to check for.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.IsOffscreen(Terraria.Projectile)">
+            <summary>
+                Checks whether the projectile's hitbox intersects the screen, accounting for the <see cref="F:Terraria.ID.ProjectileID.Sets.DrawScreenCheckFluff"/> setting.
+            </summary>
+            <param name="p">The projectile to check.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.As``1(Terraria.Projectile)">
+            <summary>
+                A simple utility that gracefully gets a <see cref="T:Terraria.Projectile"/>'s <see cref="P:Terraria.Projectile.ModProjectile"/> instance as a specific type without having to do clunky casting.
+            </summary>
+            <remarks>
+                In the case of casting errors, this will create a log message that informs the user of the failed cast and fall back on a dummy instance.
+            </remarks>
+            <typeparam name="TProjectile">The ModProjectile type to convert to.</typeparam>
+            <param name="p">The Projectile to access the ModProjectile from.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.FindProjectileByIdentity(System.Int32,System.Int32)">
+            <summary>
+                Finds the projectile with the current identity that belongs to the provided owner.
+            </summary>
+            <returns>The projectile, null if one was not found.</returns>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.LightHitWire(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Enables toggled tile states on the X frame based on whether a wire signal is flowing through the tile.
+            <br></br>
+            This works for multi-framed tiles, checking the top-left-most tile.
+            </summary>
+            <param name="type">The tile's ID.</param>
+            <param name="x">The X position of the tile.</param>
+            <param name="y">The Y position of the tile.</param>
+            <param name="tileWidth">The width of the overall tile.</param>
+            <param name="tileHeight">The height of overall tile.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.CircularHitboxCollision(Microsoft.Xna.Framework.Vector2,System.Single,Microsoft.Xna.Framework.Rectangle)">
+            <summary>
+                Determines if a typical hitbox rectangle is intersecting a circular hitbox.
+            </summary>
+            <param name="centerCheckPosition">The center of the circular hitbox.</param>
+            <param name="radius">The radius of the circular hitbox.</param>
+            <param name="targetHitbox">The hitbox of the target to check.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.RotatingHitboxCollision(Terraria.Entity,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,System.Nullable{Microsoft.Xna.Framework.Vector2},System.Single)">
+            <summary>
+                Performs collision based a rotating hitbox for an entity by treating the hitbox as a line. By default uses the velocity of the entity as a direction. This can be overridden.
+            </summary>
+            <param name="entity">The entity.</param>
+            <param name="targetTopLeft">The top left coordinates of the target to check.</param>
+            <param name="targetHitboxDimensions">The hitbox size of the target to check.</param>
+            <param name="directionOverride">An optional direction override</param>
+            <param name="scale">The scale of the hitbox.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.DistanceToTileCollisionHit(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,System.Int32)">
+            <summary>
+            Determines the distance required before a ray in a given direction from a given starting position hits solid tiles. Gives up after a certain quantity of tiles, or when a world border is reached.
+            </summary>
+            <param name="startingPoint">The point to check from.</param>
+            <param name="checkDirection">The direction in which tiles are checked. Will always be a unit vector.</param>
+            <param name="giveUpLimit">How many times to repeat a step and check for collision before giving up and returning.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.WrapAngle360(System.Single)">
+            <summary>
+                Wraps an angle similar to <see cref="M:Microsoft.Xna.Framework.MathHelper.WrapAngle(System.Single)"/>, except with a range of 0 to 2pi instead of -pi to pi.
+            </summary>
+            <param name="theta">The angle to wrap.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.WrapAngle90Degrees(System.Single)">
+            <summary>
+            Wraps an angle between -90 and 90 degrees. If an angle goes past this range it'll go back to the other end.
+            </summary>
+            <param name="theta"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.AngleBetween(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2)">
+            <summary>
+                Determines the angular distance between two vectors based on dot product comparisons. This method ensures underlying normalization is performed safely.
+            </summary>
+            <param name="v1">The first vector.</param>
+            <param name="v2">The second vector.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.Inverse(Microsoft.Xna.Framework.Quaternion)">
+            <summary>
+                Determines the inverse of a given quaternion.
+            </summary>
+            <param name="rotation">The quaternion to calculate the inverse of.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.RotatedBy(Microsoft.Xna.Framework.Vector3,Microsoft.Xna.Framework.Quaternion)">
+            <summary>
+                Rotates a given vector by a given quaternion rotation.
+            </summary>
+            <param name="vector">The vector to rotate.</param>
+            <param name="rotation">The quaternion to rotate by.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.Modulo(System.Single,System.Single)">
+            <summary>
+            Gives the <b>real</b> modulo of a divided by a divisor.
+            This method is necessary because the % operator in C# keeps the sign of the dividend.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.ApproximateDerivative(System.Func{System.Double,System.Double},System.Double)">
+            <summary>
+            Approximates the derivative of a function at a given point based on a 
+            </summary>
+            <param name="fx">The function to take the derivative of.</param>
+            <param name="x">The value to evaluate the derivative at.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.IterativelySearchForRoot(System.Func{System.Double,System.Double},System.Double,System.Int32)">
+            <summary>
+            Searches for an approximate for a root of a given function.
+            </summary>
+            <param name="fx">The function to find the root for.</param>
+            <param name="initialGuess">The initial guess for what the root could be.</param>
+            <param name="iterations">The amount of iterations to perform. The higher this is, the more generally accurate the result will be.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.GaussianDistribution(System.Single,System.Single,System.Single)">
+            <summary>
+            Samples a value from a Gaussian distribution.
+            </summary>
+            <param name="x">The input value.</param>
+            <param name="standardDeviation">The standard deviation of the distribution.</param>
+            <param name="mean">The mean of the distribution. Used for horizontally shifting the overall resulting graph.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.NonZeroSign(System.Single)">
+            <summary>
+                Determines the sign of a number. Does not return zero. If zero is supplied as an input, one is returned.
+            </summary>
+            <param name="x">The input number.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.ToSpriteDirection(System.Int32)">
+            <summary>
+                Converts a -1 or 1 based direction to an equivalent <see cref="T:Microsoft.Xna.Framework.Graphics.SpriteEffects"/> for convenience.
+            </summary>
+            <param name="direction">The numerical direction.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.Convert01To010(System.Single)">
+            <summary>
+                Commonly known as a sine bump. Converts 0 to 1 values to a 0 to 1 to 0 again bump.
+            </summary>
+            <param name="x">The input number.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.SecondsToFrames(System.Single)">
+            <summary>
+                Easy shorthand that converts seconds to whole number frames.
+            </summary>
+            <param name="seconds">The amount of seconds.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.MinutesToFrames(System.Single)">
+            <summary>
+                Easy shorthand that converts minutes to whole number frames.
+            </summary>
+            <param name="minutes">The amount of minutes.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.Sin01(System.Single)">
+            <summary>
+                Easy shorthand for (sin(x) + 1) / 2, which has the useful property of having a range of 0 to 1 rather than -1 to 1.
+            </summary>
+            <param name="x">The input number.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.Cos01(System.Single)">
+            <summary>
+                Easy shorthand for (cos(x) + 1) / 2, which has the useful property of having a range of 0 to 1 rather than -1 to 1.
+            </summary>
+            <param name="x">The input number.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.Saturate(System.Single)">
+            <summary>
+                Clamps a given number between 0 and 1.
+            </summary>
+            <param name="x">The number to clamp.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.InverseLerp(System.Single,System.Single,System.Single,System.Boolean)">
+            <summary>
+                A shorthand for <see cref="M:Terraria.Utils.GetLerpValue(System.Single,System.Single,System.Single,System.Boolean)"/> with <paramref name="clamped"/> defaulting to true.
+            </summary>
+            <param name="from">The value to interpolate from.</param>
+            <param name="to">The value to interpolate to.</param>
+            <param name="x">The value to interpolate in accordance with.</param>
+            <param name="clamped">Whether outputs should be clamped between 0 and 1.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.InverseLerpBump(System.Single,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                Performs a linear bump across a spectrum of two in/out values.
+            </summary>
+            <param name="start1">The value at which the output should rise from 0 to 1.</param>
+            <param name="start2">The value at which the output start bumping at 1.</param>
+            <param name="end1">The value at which the output cease bumping at 1.</param>
+            <param name="end2">The value at which the output should descent from 1 to 0.</param>
+            <param name="x">The input interpolant.</param>
+            <returns>
+                0 when <paramref name="x"/> is less than or equal to <paramref name="start1"/>.
+                <br></br>
+                Anywhere between 0 and 1, ascending, when <paramref name="x"/> is greater than <paramref name="start1"/> but less than <paramref name="start2"/>.
+                <br></br>
+                1 when <paramref name="x"/> is between <paramref name="start2"/> and <paramref name="end1"/>.
+                <br></br>
+                Anywhere between 0 and 1, descending, when <paramref name="x"/> is greater than <paramref name="end1"/> but less than <paramref name="end2"/>.
+                <br></br>
+                1 when <paramref name="x"/> is greater than or equal to <paramref name="end2"/>.
+            </returns>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.SmoothBump(System.Single)">
+            <summary>
+                A smooth polynomial curve (4x^3 - 6x^2 + 3x, to be exact) that takes in a 0-1 interpolant and biases it smoothly towards 0.5.
+            </summary>
+            <remarks>
+                The resulting polynomial of 4x^3 - 6x^2 + 3x was arrived at via a lerp(x^3, 1 - (1 - x)^3, x) operation and simplifying results.
+            </remarks>
+            <param name="interpolant">The input interpolant.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.Squared(System.Single)">
+            <summary>
+            Multiplies x by itself twice.
+            </summary>
+            <param name="x">The input number.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.Cubed(System.Single)">
+            <summary>
+            Multiplies x by itself three times.
+            </summary>
+            <param name="x">The input number.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.AperiodicSin(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+                Calculates an aperiodic sine. This function only achieves this if <paramref name="a"/> and <paramref name="b"/> are irrational numbers.
+            </summary>
+            <param name="x">The input value.</param>
+            <param name="dx">An optional, secondary value that works similarly to x. Unlike x, however, it serves as an input offset that is unaffected by the two coefficients.</param>
+            <param name="a">The first irrational coefficient.</param>
+            <param name="b">The second irrational coefficient.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.FractalBrownianMotion(System.Single,System.Single,System.Int32,System.Int32,System.Single,System.Single)">
+            <summary>
+                Applies 2D FBM, an iterative process commonly use with things like Perlin noise to give a natural, "crisp" aesthetic to noise, rather than a blobby one.
+                <br></br>
+                The greater the amount of octaves, the more pronounced this effect is, but the more performance intensive it is.
+            </summary>
+            <param name="x">The X position to sample from.</param>
+            <param name="y">The Y position to sample from.</param>
+            <param name="seed">The RNG seed for the underlying noise calculations.</param>
+            <param name="octaves">The amount of octaves. The greater than is, the more crisp the results are.</param>
+            <param name="gain">The exponential factor between each iteration. Iterations have an intensity of g^n, where g is the gain and n is the iteration number.</param>
+            <param name="lacunarity">The degree of self-similarity of the noise.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.NextGaussian(Terraria.Utilities.UnifiedRandom,System.Single,System.Single)">
+            <summary>
+            Samples a random value from a Gaussian distribution.
+            </summary>
+            <param name="rng">The RNG to use for sampling.</param>
+            <param name="standardDeviation">The standard deviation of the distribution.</param>
+            <param name="mean">The mean of the distribution. Used for horizontally shifting the overall resulting graph.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.PerlinNoise2D(System.Single,System.Single,System.Int32,System.Int32)">
+            <summary>
+            Computes 2-dimensional Perlin Noise, which gives "random" but continuous values.
+            </summary>
+            <param name="x">The X position on the map.</param>
+            <param name="y">The Y position on the map.</param>
+            <param name="octaves">A metric of "instability" of the noise. The higher this is, the more unstable. Lower of bounds of 2-3 are preferable.</param>
+            <param name="seed">The seed for the noise.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.CalculateElbowPosition(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,System.Single,System.Single,System.Boolean)">
+            <summary>
+                Calculates the elbow position of a two-limbed IK system via trigonometry.
+            </summary>
+            <param name="start">The start of the IK system.</param>
+            <param name="end">The end effector position of the IK system.</param>
+            <param name="armLength">The length of the first limb.</param>
+            <param name="forearmLength">The length of the second limb.</param>
+            <param name="flip">Whether the angles need to be flipped.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.ClampLength(Microsoft.Xna.Framework.Vector2,System.Single,System.Single)">
+            <summary>
+                Clamps the length of a vector.
+            </summary>
+            <param name="v">The vector to clamp the length of.</param>
+            <param name="min">The minimum vector length.</param>
+            <param name="max">The maximum vector length.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.QuadraticBezier(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,System.Single)">
+            <summary>
+                Interpolates between three <see cref="T:Microsoft.Xna.Framework.Vector2"/>-based points via a quadratic Bezier spline.
+            </summary>
+            <param name="a">The first point.</param>
+            <param name="b">The second point.</param>
+            <param name="c">The third point.</param>
+            <param name="interpolant">The interpolant to sample points by.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.SignedDistanceToLine(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2)">
+            <summary>
+                Calculates the signed distance of a point from a given line. This is relative to how far it is perpendicular to said line.
+            </summary>
+            <param name="evaluationPoint">The point to check.</param>
+            <param name="linePoint">The pivot point upon which the line rotates.</param>
+            <param name="lineDirection">The direction of the line.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.RotateTowards(Microsoft.Xna.Framework.Vector2,System.Single,System.Single)">
+            <summary>
+                Rotates a vector's direction towards an ideal angle at a specific incremental rate.
+            </summary>
+            <param name="originalVector">The original vector to rotated from.</param>
+            <param name="idealAngle">The ideal direction to approach.</param>
+            <param name="angleIncrement">The maximum angular increment to make in the pursuit of approaching the destination.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.NextBool(Terraria.Utilities.UnifiedRandom,System.Single)">
+            <summary>
+                Rolls a random 0-1 probability based on a <see cref="T:Terraria.Utilities.UnifiedRandom"/> RNG, and checks whether it fits the criteria of a certain probability.
+            </summary>
+            <param name="rng">The random number generator.</param>
+            <param name="probability">The probability of a success.</param>
+        </member>
+        <member name="F:Luminance.Common.Utilities.Utilities.UniversalBindingFlags">
+            <summary>
+                Binding flags that account for all access/local membership status.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.LoadInterfacesFromContent``2(Terraria.ModLoader.Mod,System.Func{``0,System.Boolean})">
+            <summary>
+                Loads all instances of a given mod type (such as <see cref="T:Terraria.ModLoader.ModNPC"/>) that have a specific interface attribute.<br></br>
+                This method is useful for handling autoloading on multi-attributed pieces of content.
+            </summary>
+            <param name="mod">The mod to search in.</param>
+            <param name="queryCondition">A secondary query condition to apply when collecting interfaces. By default this doesn't affect output results.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.GetEveryTypeDerivedFrom(System.Type,System.Reflection.Assembly)">
+            <summary>
+            Retrieves all types which derive from a specific type in a given assembly.
+            </summary>
+            <param name="baseType">The base type.</param>
+            <param name="assemblyToSearch">The assembly to search.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.GetPath(System.Object)">
+            <summary>
+                Returns the namespace path to the provided object, including the object itself.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.AddOrdinalSuffix(System.Int32)">
+            <summary>
+                Returns the provided number with the correct ordinal suffix.<br/>
+                For example, 3 would return 3rd.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.BroadcastText(System.String,System.Nullable{Microsoft.Xna.Framework.Color})">
+            <summary>
+                Displays arbitrary text in the game chat with a desired color. This method expects to be called server-side in multiplayer, with the message display packet being sent to all clients from there.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="color">The color of the text.</param>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.BroadcastLocalizedText(System.String,System.Nullable{Microsoft.Xna.Framework.Color})">
+            <summary>
+                Displays the localized text gotten from the provided key in the chat, accounting for multiplayer.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.Utilities.Utilities.ColorMessage(System.String,Microsoft.Xna.Framework.Color)">
+            <summary>
+                Colors a message with the provided color using chat tags.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Balancing.BalancePriority">
+            <summary>
+            Defines what priority a balance change should have in case of conflicts. Only the change with the highest priority will occur.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Balancing.BalancePriority.Low">
+            <summary>
+            Use if the balance change isnt that important, and being overwritten by other mod's balancing is fine.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Balancing.BalancePriority.Medium">
+            <summary>
+            Use if the balance change should happen, but it isnt a huge deal if it gets overwritten.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Balancing.BalancePriority.High">
+            <summary>
+            Use if the balance change is quite important, and being overwritten could noticably mess with balance.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Balancing.BalancePriority.VeryHigh">
+            <summary>
+            Use if the balance change is very important, and should only be overwritten in extreme cases.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Balancing.BalancePriority.ExtremelyHigh">
+            <summary>
+            Use sparingly if the balance change MUST happen, and should not be overwritten.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Balancing.BalancingManager">
+            <summary>
+            A class to supply balancing changes on mod loading.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Balancing.BalancingManager.GetItemBalancingChanges">
+            <summary>
+            Return all relevant item balancing changes here. <br/>
+            <b>Called automatically, do not call.</b>
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Balancing.BalancingManager.GetNPCHitBalancingChanges">
+            <summary>
+            Return all relevant npc hit balancing changes here. <br/>
+            <b>Called automatically, do not call.</b>
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Balancing.BalancingManager.GetNPCHPBalancingChanges">
+            <summary>
+            Return all relevant npc hp balancing changes here. <br/>
+            <b>Called automatically, do not call.</b>
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Balancing.DefaultNPCBalancingRules">
+            <summary>
+            This class contains several default balancing rules that you can use. You can also make your own by creating a class/record that implements <see cref="T:Luminance.Core.Balancing.INPCHitBalancingRule"/>.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Balancing.DefaultNPCBalancingRules.ProjectileResistBalancingRule">
+            <summary>
+            Reduces all incoming damage from projectiles of specified types.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Balancing.DefaultNPCBalancingRules.ProjectileResistBalancingRule.#ctor(System.Single,Luminance.Core.Balancing.BalancePriority,System.Int32[])">
+            <summary>
+            Reduces all incoming damage from projectiles of specified types.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Balancing.DefaultNPCBalancingRules.PierceResistBalancingRule">
+            <summary>
+            Appies to all incoming damage caused by projectiles with remaining pierce.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Balancing.DefaultNPCBalancingRules.PierceResistBalancingRule.#ctor(System.Single,Luminance.Core.Balancing.BalancePriority)">
+            <summary>
+            Appies to all incoming damage caused by projectiles with remaining pierce.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Balancing.DefaultNPCBalancingRules.ClassResistBalancingRule">
+            <summary>
+            Applies to all incoming damage from projectiles of specified damage classes.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Balancing.DefaultNPCBalancingRules.ClassResistBalancingRule.#ctor(System.Single,Luminance.Core.Balancing.BalancePriority,Terraria.ModLoader.DamageClass)">
+            <summary>
+            Applies to all incoming damage from projectiles of specified damage classes.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Balancing.INPCHitBalancingRule">
+            <summary>
+            Use to create new balancing rules by attaching to classes/records.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Balancing.INPCHitBalancingRule.UniqueRuleName">
+            <summary>
+            A unique name for the rule. Good practice is to prefix it with your mods name.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Balancing.INPCHitBalancingRule.Priority">
+            <summary>
+            The priority of this balancing rule.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Balancing.INPCHitBalancingRule.AppliesTo(Terraria.NPC,Luminance.Core.Balancing.NPCHitContext)">
+            <summary>
+            Whether the rule should apply to the npc based on the hit context.
+            </summary>
+            <param name="npc"></param>
+            <param name="hitContext"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Luminance.Core.Balancing.INPCHitBalancingRule.ApplyBalancingChange(Terraria.NPC,Terraria.NPC.HitModifiers@)">
+            <summary>
+            Apply any balancing change(s) here.
+            </summary>
+            <param name="npc"></param>
+            <param name="modifiers"></param>
+        </member>
+        <member name="P:Luminance.Core.Cutscenes.Cutscene.Timer">
+            <summary>
+            How long the cutscene has been active for.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Cutscenes.Cutscene.IsActive">
+            <summary>
+            Whether the cutscene is active.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Cutscenes.Cutscene.EndAbruptly">
+            <summary>
+            Set to true to force the cutscene to instantly end.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Cutscenes.Cutscene.LifetimeRatio">
+            <summary>
+            A 0-1 ratio of how far along its lifetime this cutscene is.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Cutscenes.Cutscene.CutsceneLength">
+            <summary>
+            The length of time the cutscene should be active for.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Cutscenes.Cutscene.GetBlockCondition">
+            <summary>
+            An optional blocker condition to use for the cutscene. Returns <see cref="P:Luminance.Core.Graphics.BlockerSystem.BlockCondition.None"/> by default.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Cutscenes.Cutscene.OnBegin">
+            <summary>
+            Called when the cutscene begins.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Cutscenes.Cutscene.OnEnd">
+            <summary>
+            Called when the cutscene ends.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Cutscenes.Cutscene.Update">
+            <summary>
+            Called each tick the cutscene is active. Runs at the end of the update.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Cutscenes.Cutscene.ModifyScreenPosition">
+            <summary>
+            Use to modify <see cref="F:Terraria.Main.screenPosition"/>
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Cutscenes.Cutscene.ModifyTransformMatrix(Terraria.Graphics.SpriteViewMatrix@)">
+            <summary>
+            Use to modify the transform matrix.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Cutscenes.Cutscene.DrawToWorld(Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <summary>
+            Called after NPC drawing.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Cutscenes.Cutscene.DrawWorld(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Graphics.RenderTarget2D)">
+            <summary>
+            Called in <see cref="T:Luminance.Core.Graphics.ScreenModifierManager"/> at layer <see cref="F:Luminance.Core.Graphics.ScreenModifierManager.CutsceneLayer"/> (125). Draw to <paramref name="screen"/> last.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Cutscenes.Cutscene.PostDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <summary>
+            Called during PostDraw.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Cutscenes.CutsceneManager.ActiveCutscene">
+            <summary>
+            The cutscene that is currently active.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Cutscenes.CutsceneManager.AnyActive">
+            <summary>
+            Whether any cutscenes are active.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Cutscenes.CutsceneManager.QueueCutscene(Luminance.Core.Cutscenes.Cutscene)">
+            <summary>
+            Queues a cutscene to be played.
+            </summary>
+            <param name="cutscene"></param>
+        </member>
+        <member name="M:Luminance.Core.Cutscenes.CutsceneManager.IsActive(Luminance.Core.Cutscenes.Cutscene)">
+            <summary>
+            Returns whether the provided cutscene is active, via checking the names.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Graphics.Atlas">
+            <summary>
+            Represents a texture atlas, which is a large texture sheet with smaller, single textures crammed into it as tightly as possible.<br/>
+            Single textures are loaded by a data file that contains json data for each texture. Access these textures via <see cref="M:Luminance.Core.Graphics.AtlasManager.GetTexture(System.String)"/>.
+            You can create atlases using <see href="http://free-tex-packer.com">this software</see>
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.Atlas.Texture">
+            <summary>
+            The texture of the atlas.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.Atlas.AtlasMod">
+            <summary>
+            The mod that owns this atlas.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.Atlas.Name">
+            <summary>
+            The name of the atlas.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.Atlas.AtlasPath">
+            <summary>
+            The file path to both the texture and data files, without the file extensions.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.Atlas.TextureSize">
+            <summary>
+            The size of the atlas texture.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.Atlas.IsDisposed">
+            <summary>
+            Whether the texture has been disposed of.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.Atlas.Textures">
+            <summary>
+            All textures stored on the atlas.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.Atlas.#ctor(Terraria.ModLoader.Mod,System.String,System.String)">
+            <summary>
+            Represents a texture atlas, which is a large texture with smaller, single textures crammed into it as tightly as possible.<br/>
+            Single textures are loaded by a data file, that contains json data for each texture. Access these via <see cref="M:Luminance.Core.Graphics.AtlasManager.GetTexture(System.String)"/>.
+            </summary>
+            <param name="mod">The mod this atlas belongs to.</param>
+            <param name="name">The name of the atlas.</param>
+            <param name="atlasPath">The file path to both the texture and data files, without the file extensions nor the quality suffix.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.AtlasManager.GetTexture(System.String)">
+            <summary>
+            Gets a texture with the given name from the atlases.
+            </summary>
+            <param name="textureName">The unique texture name, prefixed with the mod name. For example, "MyMod.Particles".</param>
+            <returns>The texture, or <see langword="null"/> if it was not found.</returns>
+        </member>
+        <member name="M:Luminance.Core.Graphics.AtlasManager.GetAtlas(System.String)">
+            <summary>
+            Gets the atlas with the given name. Will return <see langword="null"/> if it is not registered.
+            </summary>
+            <param name="atlasName">The name of the atlas.</param>
+            <returns>The atlas.</returns>
+        </member>
+        <member name="M:Luminance.Core.Graphics.AtlasManager.TryGetAtlas(System.String,Luminance.Core.Graphics.Atlas@)">
+            <summary>
+            Attempts to get the atlas with the given name.
+            </summary>
+            <param name="atlasName">The name of the atlas.</param>
+            <param name="atlas">The atlas.</param>
+            <returns>Whether the atlas was found.</returns>
+        </member>
+        <member name="M:Luminance.Core.Graphics.AtlasManager.AtlasIsRegistered(System.String)">
+            <summary>
+            Checks if an atlas with the given name is registered.
+            </summary>
+            <param name="atlasName">The name of the atlas.</param>
+            <returns>Whether the atlas is registered.</returns>
+        </member>
+        <member name="M:Luminance.Core.Graphics.AtlasManager.RegisterAtlas(Terraria.ModLoader.Mod,System.String,System.String)">
+            <summary>
+            Registers an atlas.
+            </summary>
+            <param name="mod">The mod this atlas belongs to.</param>
+            <param name="name">The name of the atlas. Must be unique.</param>
+            <param name="atlasPath">The file path to the atlas files, not including the file extensions.</param>
+            <returns>The atlas that was registered.</returns>
+        </member>
+        <member name="T:Luminance.Core.Graphics.AtlasTexture">
+            <summary>
+            Represents a texture on an <see cref="T:Luminance.Core.Graphics.Atlas"/>. Contains its position on the atlas, and a unique string identifier.<br/>
+            Use <see cref="M:Luminance.Core.Graphics.AtlasManager.GetTexture(System.String)"/> to retrieve an instance with the given string identifier.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.AtlasTexture.#ctor(System.String,Luminance.Core.Graphics.Atlas,Microsoft.Xna.Framework.Rectangle)">
+            <summary>
+            Represents a texture on an <see cref="T:Luminance.Core.Graphics.Atlas"/>. Contains its position on the atlas, and a unique string identifier.<br/>
+            Use <see cref="M:Luminance.Core.Graphics.AtlasManager.GetTexture(System.String)"/> to retrieve an instance with the given string identifier.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedRenderTarget.WaitingForFirstInitialization">
+            <summary>
+                Whether this render target if waiting for its first initialization or not.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedRenderTarget.InitializationAction">
+            <summary>
+                The initialization action that dictates how this render target should be (re)initialized.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedRenderTarget.IsUninitialized">
+            <summary>
+                Whether this render target is uninitialized or not.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedRenderTarget.TimeSinceLastUsage">
+            <summary>
+                How long it's been, in frames, since this render target was last used in some way.
+            </summary>
+            <remarks>
+                This is based on calls to the <see cref="P:Luminance.Core.Graphics.ManagedRenderTarget.Target"/> property getter.
+            </remarks>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedRenderTarget.IsDisposed">
+            <summary>
+                Whether this render target is disposed or not.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedRenderTarget.ShouldResetUponScreenResize">
+            <summary>
+                Whether this render target should be reset when the screen size changes.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedRenderTarget.SubjectToGarbageCollection">
+            <summary>
+                Whether this render target should be subject to automatic garbage collection when not in use.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedRenderTarget.Target">
+            <summary>
+                The raw <see cref="T:Microsoft.Xna.Framework.Graphics.RenderTarget2D"/> this wrapper holds.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedRenderTarget.Width">
+            <summary>
+                The width of the render target.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedRenderTarget.Height">
+            <summary>
+                The height of the render target.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedRenderTarget.CreateScreenSizedTarget(System.Int32,System.Int32)">
+            <summary>
+                Represents a standard render target regeneration method. Used commonly in conjunction with <see cref="T:Luminance.Core.Graphics.ManagedRenderTarget.RenderTargetInitializationAction"/> and the ManagedRenderTarget constructor.
+            </summary>
+            <param name="screenWidth">The screen width.</param>
+            <param name="screenHeight">The screen height.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedRenderTarget.Dispose">
+            <summary>
+                Immediately disposes of this render target, freeing unmanaged GPU resources in the process.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedRenderTarget.Recreate(System.Int32,System.Int32)">
+            <summary>
+                Recreates this render target, freeing old unmanaged GPU resources in the process before creating new ones.
+            </summary>
+            <param name="screenWidth">The width that should be used as a basis for recreating the render target.</param>
+            <param name="screenHeight">The height that should be used as a basis for recreating the render target.</param>
+        </member>
+        <member name="F:Luminance.Core.Graphics.RenderTargetManager.ManagedTargets">
+            <summary>
+                The set of all managed render targets.
+            </summary>
+        </member>
+        <member name="E:Luminance.Core.Graphics.RenderTargetManager.RenderTargetUpdateLoopEvent">
+            <summary>
+                The event responsible for updating all render targets.
+            </summary>
+            <remarks>
+                Should be subscribed for the purpose of rendering into render targets, to ensure that their contents are defined in a way that does not interfere with other parts of the game's rendering loop.
+            </remarks>
+        </member>
+        <member name="F:Luminance.Core.Graphics.RenderTargetManager.TimeUntilUntilUnusedTargetsAreDisposed">
+            <summary>
+                How long standard render targets can go, in frames, before they are subject to automatic disposal.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.RenderTargetManager.DisposeOfTargets">
+            <summary>
+                Causes all managed render targets to become disposed, freeing their unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.RenderTargetManager.HandleTargetUpdateLoop(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+                Evaluates all active render targets, checking if they need to be reset or disposed of.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.RenderTargetManager.PerformTargetResetCheck(Luminance.Core.Graphics.ManagedRenderTarget)">
+            <summary>
+                Checks a render target for whether it needs to be reset for any reason. If so, the reset is scheduled on the main thread for the next frame.
+            </summary>
+            <param name="target">The render target to check.</param>
+        </member>
+        <member name="T:Luminance.Core.Graphics.ManualParticleRenderer`1">
+            <summary>
+            Provides direct access to the associated particle's draw collection, allowing for more control about how they are rendered.
+            </summary>
+            <remarks>
+            Particles using this will not be automatically rendered.
+            </remarks>
+            <typeparam name="TParticleType">The particle type that is associated with this renderer.</typeparam>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManualParticleRenderer`1.RenderParticles">
+            <summary>
+            Iterate over <see cref="F:Luminance.Core.Graphics.ManualParticleRenderer`1.Particles"/> here and perform rendering logic.<br/>
+            <b>Note that no spritebatch has been started.</b>
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Graphics.MetaballInstance">
+            <summary>
+            Represents a base metaball particle instance.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.MetaballInstance.Center">
+            <summary>
+            The position of the metaball particle.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.MetaballInstance.Velocity">
+            <summary>
+            The velocity of the metaball particle.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.MetaballInstance.Size">
+            <summary>
+            The size of the metaball particle.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.MetaballInstance.ExtraInfo">
+            <summary>
+            An array of length 4 that contains optional extra info for per metaball information. What this is used for depends on the <see cref="T:Luminance.Core.Graphics.MetaballType"/> that owns this particle instance.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.MetaballType.RenderLayerWithShader">
+            <summary>
+            Renders the contents of this metaball.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.MetaballType.Dispose">
+            <summary>
+            Disposes of all unmanaged GPU resources used up by the <see cref="F:Luminance.Core.Graphics.MetaballType.LayerTargets"/>. This is called automatically on mod unload.<br></br>
+            <i>It is your responsibility to recreate layer targets later if you call this method manually.</i>
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.MetaballType.DrawnManually">
+            <summary>
+            Whether this metaball should be drawn manually.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.MetaballType.LayerIsFixedToScreen(System.Int32)">
+            <summary>
+            Whether the layer overlay contents at the provided index should be fixed to the screen.<br/>
+            When true, the texture will be statically drawn to the screen with no respect for world position.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.MetaballType.CalculateManualOffsetForLayer(System.Int32)">
+            <summary>
+            Optionally overridable method that can be used to make layers offset when drawn, to allow for layer-specific animations. Defaults to <see cref="P:Microsoft.Xna.Framework.Vector2.Zero"/>, aka no animation.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.MetaballType.PerformCustomSpritebatchBegin(Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <summary>
+            Use this method to use your own custom spritebatch begin call.<br/>
+            <b>Return <see langword="true"/> if you do this.</b><br/>
+            Returns <see langword="false"/> by default.
+            </summary>
+            <param name="spriteBatch"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Luminance.Core.Graphics.MetaballType.ShouldKillParticle(Luminance.Core.Graphics.MetaballInstance)">
+            <summary>
+            Whether a given particle in the <see cref="F:Luminance.Core.Graphics.MetaballType.Particles"/> list should be killed or not.
+            </summary>
+            <param name="particle">The particle to determine the kill state of.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.MetaballType.PrepareShaderForTarget(System.Int32)">
+            <summary>
+            Optionally overridable method that defines for preparations for the render target. Defaults to using the typical texture overlay behavior.
+            </summary>
+            <param name="layerIndex">The layer index that should be prepared for.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.MetaballType.ExtraDrawing">
+            <summary>
+            Optional method that allows for drawing optional things to the layers.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.MetaballType.UpdateParticle(Luminance.Core.Graphics.MetaballInstance)">
+            <summary>
+            Update things such as velocity, size, and any optional things here. The center will be automatically updated by velocity after this method has ran.<br/>
+            Be aware that this method is called in parallel, and as such should not modify anything other than the particle instance provided.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.Particle.Texture">
+            <summary>
+            The texture of the particle.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.Particle.AtlasTextureName">
+            <summary>
+            The texture name of this particle on the particle atlas. Should be prefixed with "YourModName."
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.Particle.ManuallyDrawn">
+            <summary>
+            Whether the particle is manually drawn.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.Particle.Position">
+            <summary>
+            The position of the particle.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.Particle.Velocity">
+            <summary>
+            The velocity of the particle.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.Particle.Scale">
+            <summary>
+            The scale of the particle.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.Particle.DrawColor">
+            <summary>
+            The draw color of the particle.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.Particle.Frame">
+            <summary>
+            The frame of the particle.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.Particle.Rotation">
+            <summary>
+            The rotation of the particle.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.Particle.RotationSpeed">
+            <summary>
+            The rotation speed of the particle.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.Particle.Opacity">
+            <summary>
+            The opacity of the particle.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.Particle.Time">
+            <summary>
+            The time the particle has existed for.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.Particle.Lifetime">
+            <summary>
+            The maximum lifetime of the particle, in seconds.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.Particle.Direction">
+            <summary>
+            The direction of the particle.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.Particle.LifetimeRatio">
+            <summary>
+            A 0-1 interpolant of how far along its lifetime the particle is.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.Particle.BlendState">
+            <summary>
+            The blend state to draw the particle with. Defaults to <see cref="F:Microsoft.Xna.Framework.Graphics.BlendState.AlphaBlend"/>.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.Particle.FrameCount">
+            <summary>
+            How many frames this particle has in its standard texture. Defaults to 1.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.Particle.Spawn">
+            <summary>
+            Spawns the particle into the world.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Luminance.Core.Graphics.Particle.Kill">
+            <summary>
+            Immediately destroys this particle next update.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.Particle.Update">
+            <summary>
+            Override to run custom update code for the particle. Does nothing by default.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.Particle.Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <summary>
+            Override to run custom rendering for the particle. Draws the particle texture to the screen by default.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer">
+            <summary>
+            Use to successfully render primitives with pixelation with an NPC or Projectile.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer.LayerToRenderTo">
+            <summary>
+            The layer to render the primitive(s) to.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer.RenderPixelatedPrimitives(Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <summary>
+            Render primitives that use pixelation here.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Graphics.PixelationPrimitiveLayer">
+            <summary>
+            Controls what layer the <see cref="M:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer.RenderPixelatedPrimitives(Microsoft.Xna.Framework.Graphics.SpriteBatch)"/> renders to.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitivePixelationSystem.CurrentlyRendering">
+            <summary>
+            Whether the system is currently rendering any primitives.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.PrimitivePixelationSystem.RenderToPrimsNextFrame(System.Action,Luminance.Core.Graphics.PixelationPrimitiveLayer)">
+            <summary>
+            Prepares a draw action for rendering to the pixelation target on the next frame.
+            </summary>
+            
+            <remarks>
+            <i>This should only be used when absolutely necessary.</i> If possible, you should use <see cref="T:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer"/> instead.
+            </remarks>
+            
+            <param name="renderAction">The render action to perform.</param>
+            <param name="layer">The layer to draw to.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.PrimitiveRenderer.RenderTrail(System.Collections.Generic.IEnumerable{Microsoft.Xna.Framework.Vector2},Luminance.Core.Graphics.PrimitiveSettings,System.Nullable{System.Int32})">
+            <summary>
+            Renders a primitive trail.
+            </summary>
+            <param name="positions">The list of positions to use. Keep in mind that these are expected to be in <b>world position</b>, and <see cref="F:Terraria.Main.screenPosition"/> is automatically subtracted from them all.<br/>At least 4 points are required to use smoothing.</param>
+            <param name="settings">The primitive draw settings to use.</param>
+            <param name="pointsToCreate">The amount of points to use. More is higher detailed, but less performant. By default, is the number of positions provided. <b>Going above 100 is NOT recommended.</b></param>
+        </member>
+        <member name="T:Luminance.Core.Graphics.PrimitiveSettings.VertexWidthFunction">
+            <summary>
+            A delegate to dynamically determine the width of the trail at each position.
+            </summary>
+            <param name="trailLengthInterpolant">The current position along the trail as a 0-1 interpolant value.</param>
+            <returns>The width for the current point.</returns>
+        </member>
+        <member name="T:Luminance.Core.Graphics.PrimitiveSettings.VertexColorFunction">
+            <summary>
+            A delegate to dynamically determine the color of the trail at each position.
+            </summary>
+            <param name="trailLengthInterpolant">The current position along the trail as a 0-1 interpolant value.</param>
+            <returns>The color for the current point.</returns>
+        </member>
+        <member name="T:Luminance.Core.Graphics.PrimitiveSettings.VertexOffsetFunction">
+            <summary>
+            A delegate to dynamically determine the offset of the trail at each position.
+            </summary>
+            <param name="trailLengthInterpolant">The current position along the trail as a 0-1 interpolant value.</param>
+            <returns>The offset for the current point.</returns>
+        </member>
+        <member name="T:Luminance.Core.Graphics.VertexPosition2DColorTexture">
+            <summary>
+            A custom vertex type with a position using Vector2 instead of Vector4, as Terraria is only a 2D game.
+            </summary>
+            <remarks>This represents a vertex that will be rendered by the GPU.</remarks>
+        </member>
+        <member name="M:Luminance.Core.Graphics.VertexPosition2DColorTexture.#ctor(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color,Microsoft.Xna.Framework.Vector2,System.Single)">
+            <summary>
+            A custom vertex type with a position using Vector2 instead of Vector4, as Terraria is only a 2D game.
+            </summary>
+            <remarks>This represents a vertex that will be rendered by the GPU.</remarks>
+        </member>
+        <member name="F:Luminance.Core.Graphics.VertexPosition2DColorTexture.Position">
+            <summary>
+            The position of the vertex.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.VertexPosition2DColorTexture.Color">
+            <summary>
+            The color of the vertex.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.VertexPosition2DColorTexture.TextureCoordinates">
+            <summary>
+            The texture-coordinate of the vertex.
+            </summary>
+            /// <remarks>
+            The Z component isn't actually related to 3D, it holds the width of the vertex at the given point, since arbitrary data cannot be saved on a per-vertex basis and needs to be contained within some pre-defined format.
+            </remarks>
+        </member>
+        <member name="P:Luminance.Core.Graphics.VertexPosition2DColorTexture.VertexDeclaration">
+            <summary>
+            The vertex declaration. This declares the layout and size of the data in the vertex shader.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ManagedScreenFilter.DeferredTextures">
+            <summary>
+            All deferred textures that should be applied when the filter's shader is applied.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ManagedScreenFilter.parameterCache">
+            <summary>
+            A managed copy of all parameter data. Used to minimize excess SetValue calls, in cases where the value aren't actually being changed.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedScreenFilter.Opacity">
+            <summary>
+            The opacity of the filter. As long as this is above 0, the filter will be applied for that frame.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ManagedScreenFilter.TextureSizeParameterPrefix">
+            <summary>
+            The standard parameter name prefix for texture sizes.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Graphics.ManagedScreenFilter.DeferredTexture">
+            <summary>
+            Represents a texture that is supplied to a filter when its shader is ready to be applied.
+            </summary>
+            <param name="Texture">The texture to use.</param>
+            <param name="Index">The index in the <see cref="P:Microsoft.Xna.Framework.Graphics.GraphicsDevice.Textures"/> array that the texture should go in.</param>
+            <param name="SamplerState">An optional sampler state that should be used alongside the texture. Does nothing if <see langword="null"/>.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedScreenFilter.DeferredTexture.#ctor(Microsoft.Xna.Framework.Graphics.Texture2D,System.Int32,Microsoft.Xna.Framework.Graphics.SamplerState)">
+            <summary>
+            Represents a texture that is supplied to a filter when its shader is ready to be applied.
+            </summary>
+            <param name="Texture">The texture to use.</param>
+            <param name="Index">The index in the <see cref="P:Microsoft.Xna.Framework.Graphics.GraphicsDevice.Textures"/> array that the texture should go in.</param>
+            <param name="SamplerState">An optional sampler state that should be used alongside the texture. Does nothing if <see langword="null"/>.</param>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedScreenFilter.DeferredTexture.Texture">
+            <summary>The texture to use.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedScreenFilter.DeferredTexture.Index">
+            <summary>The index in the <see cref="P:Microsoft.Xna.Framework.Graphics.GraphicsDevice.Textures"/> array that the texture should go in.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedScreenFilter.DeferredTexture.SamplerState">
+            <summary>An optional sampler state that should be used alongside the texture. Does nothing if <see langword="null"/>.</summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedScreenFilter.#ctor(Terraria.Ref{Microsoft.Xna.Framework.Graphics.Effect})">
+            <summary>
+            A wrapper class for <see cref="T:Microsoft.Xna.Framework.Graphics.Effect"/> that is focused around screen filter effects.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedScreenFilter.SetMainColor(Microsoft.Xna.Framework.Color)">
+            <summary>
+            Sets "mainColor" to the provided value, if it exists.
+            </summary>
+            <param name="color"></param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedScreenFilter.SetSecondaryColor(Microsoft.Xna.Framework.Color)">
+            <summary>
+            Sets "secondaryColor" to the provided value, if it exists.
+            </summary>
+            <param name="color"></param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedScreenFilter.TrySetParameter(System.String,System.Object)">
+            <summary>
+            Attempts to send parameter data to the GPU for the filter to use.
+            </summary>
+            <param name="parameterName">The name of the parameter. This must correspond with the parameter name in the filter.</param>
+            <param name="value">The value to supply to the parameter.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedScreenFilter.SetTexture(ReLogic.Content.Asset{Microsoft.Xna.Framework.Graphics.Texture2D},System.Int32,Microsoft.Xna.Framework.Graphics.SamplerState)">
+            <summary>
+            Sets a texture at a given index for this filter to use based a the <see cref="T:ReLogic.Content.Asset`1"/> wrapper. Typically, index 0 is populated with whatever was passed into a <see cref="T:Microsoft.Xna.Framework.Graphics.SpriteBatch"/>.Draw call.
+            </summary>
+            
+            <remarks>
+            The texture is cached rather than used immediately, since it can only be applied properly when the filter is being used (a.k.a during screen shader rendering).
+            </remarks>
+            
+            <param name="textureAsset">The asset that contains the texture to supply.</param>
+            <param name="textureIndex">The index to place the texture in.</param>
+            <param name="samplerStateOverride">Which sampler should be used for the texture.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedScreenFilter.SetTexture(Microsoft.Xna.Framework.Graphics.Texture2D,System.Int32,Microsoft.Xna.Framework.Graphics.SamplerState)">
+            <summary>
+                Sets a texture at a given index for this shader to use. Typically, index 0 is populated with whatever was passed into a <see cref="T:Microsoft.Xna.Framework.Graphics.SpriteBatch"/>.Draw call.
+            </summary>
+            <param name="texture">The texture to supply.</param>
+            <param name="textureIndex">The index to place the texture in.</param>
+            <param name="samplerStateOverride">Which sampler should be used for the texture.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedScreenFilter.Activate">
+            <summary>
+            Call to indicate that the filter should be active. This needs to happen each frame it should be active for.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedScreenFilter.Deactivate">
+            <summary>
+            Automatically called at the end of each update, after updating the filter.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedScreenFilter.Apply(System.Boolean,System.String)">
+            <summary>
+            Apply the filter.
+            </summary>
+            <param name="setCommonParams">If true, this will automatically try to set certain parameters in the shader, such as globalTime.</param>
+            <param name="pass">Specify a specific pass to use, if the shader has multiple.</param>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ManagedShader.parameterCache">
+            <summary>
+            A managed copy of all parameter data. Used to minimize excess SetValue calls, in cases where the value aren't actually being changed.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ManagedShader.Shader">
+            <summary>
+            The shader reference underlying this wrapper.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ManagedShader.Disposed">
+            <summary>
+            Whether this shader is disposed.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ManagedShader.TextureSizeParameterPrefix">
+            <summary>
+            The standard parameter name prefix for texture sizes.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ManagedShader.DefaultPassName">
+            <summary>
+            The standard pass name when autoloading shaders.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedShader.ResetCache">
+            <summary>
+            Resets the cache of parameters for this shader. Should be used in contexts where the underlying shader used by this can be changed in contexts that do not respect the cache.
+            </summary>
+            
+            <remarks>
+            An example of this being useful could when be having this shader shared with a screen shader, which supplies its values directly and without the <see cref="M:Luminance.Core.Graphics.ManagedShader.TrySetParameter(System.String,System.Object)"/> wrapper.
+            </remarks>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedShader.TrySetParameter(System.String,System.Object)">
+            <summary>
+            Attempts to send parameter data to the GPU for the shader to use.
+            </summary>
+            <param name="parameterName">The name of the parameter. This must correspond with the parameter name in the shader.</param>
+            <param name="value">The value to supply to the parameter.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedShader.SetTexture(ReLogic.Content.Asset{Microsoft.Xna.Framework.Graphics.Texture2D},System.Int32,Microsoft.Xna.Framework.Graphics.SamplerState)">
+            <summary>
+            Sets a texture at a given index for this shader to use based a the <see cref="T:ReLogic.Content.Asset`1"/> wrapper. Typically, index 0 is populated with whatever was passed into a <see cref="T:Microsoft.Xna.Framework.Graphics.SpriteBatch"/>.Draw call.
+            </summary>
+            <param name="textureAsset">The asset that contains the texture to supply.</param>
+            <param name="textureIndex">The index to place the texture in.</param>
+            <param name="samplerStateOverride">Which sampler should be used for the texture.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedShader.SetTexture(Microsoft.Xna.Framework.Graphics.Texture2D,System.Int32,Microsoft.Xna.Framework.Graphics.SamplerState)">
+            <summary>
+            Sets a texture at a given index for this shader to use. Typically, index 0 is populated with whatever was passed into a <see cref="T:Microsoft.Xna.Framework.Graphics.SpriteBatch"/>.Draw call.
+            </summary>
+            <param name="texture">The texture to supply.</param>
+            <param name="textureIndex">The index to place the texture in.</param>
+            <param name="samplerStateOverride">Which sampler should be used for the texture.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ManagedShader.Apply(System.String)">
+            <summary>
+            Prepares the shader for drawing.
+            </summary>
+            <param name="passName">The pass to apply.</param>
+        </member>
+        <member name="T:Luminance.Core.Graphics.ShaderManager">
+            <summary>
+            The class responsible for central shader management, including both general-purpose and screen filter shaders.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ShaderManager.shaders">
+            <summary>
+            The set of all shaders handled by this manager class.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ShaderManager.filters">
+            <summary>
+            The set of all filters handled by this manager class.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ShaderManager.HasFinishedLoading">
+            <summary>
+            Whether this manager class has finished loading all shaders yet or not.
+            </summary>
+            
+            <remarks>
+            This primarily exists for cases where shaders may be used at mod loading times, such as on the game title screen.
+            </remarks>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ShaderManager.MainTarget">
+            <summary>
+            The main screen render target used for screen filter management.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ShaderManager.AuxiliaryTarget">
+            <summary>
+            A secondary screen render target used for screen filter management, as a means of swapping back and forth to create repeated shader effects.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ShaderManager.AutoloadDirectoryShaders">
+            <summary>
+            The folder directory in which shaders to autoload are searched for.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ShaderManager.AutoloadDirectoryFilters">
+            <summary>
+            The folder directory in which filters to autoload are searched for.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderManager.OnModLoad">
+            <summary>
+            Handles all shader initialization effects.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderManager.GetShader(System.String)">
+            <summary>
+            Retrieves a managed shader of a given name.
+            </summary>
+            <remarks>
+            In this context, the "name" must correspond with the file name of the shader, not including the path extension.
+            </remarks>
+            <param name="name">The name of the shader.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderManager.GetFilter(System.String)">
+            <summary>
+            Retrieves a managed filter of a given name.
+            </summary>
+            <remarks>
+            In this context, the "name" must correspond with the file name of the filter, not including the path extension.
+            </remarks>
+            <param name="name">The name of the filter.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderManager.TryGetShader(System.String,Luminance.Core.Graphics.ManagedShader@)">
+            <summary>
+            Safely retrieves a managed shader of a given name.
+            </summary>
+            <remarks>
+            In this context, the "name" must correspond with the file name of the shader, not including the path extension.
+            </remarks>
+            <param name="name">The name of the shader.</param>
+            <param name="shader">The shader output.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderManager.TryGetFilter(System.String,Luminance.Core.Graphics.ManagedScreenFilter@)">
+            <summary>
+            Safely retrieves a managed filter of a given name.
+            </summary>
+            <remarks>
+            In this context, the "name" must correspond with the file name of the filter, not including the path extension.
+            </remarks>
+            <param name="name">The name of the filter.</param>
+            <param name="filter">The filter output.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderManager.SetShader(System.String,Terraria.Ref{Microsoft.Xna.Framework.Graphics.Effect})">
+            <summary>
+            Sets a shader with a given name in the registry manually.
+            </summary>
+            <param name="name">The name of the shader.</param>
+            <param name="newShaderData">The shader data reference to save.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderManager.SetFilter(System.String,Terraria.Ref{Microsoft.Xna.Framework.Graphics.Effect})">
+            <summary>
+            Sets a filter with a given name in the registry manually.
+            </summary>
+            <param name="name">The name of the filter.</param>
+            <param name="newShaderData">The shader data reference to save.</param>
+        </member>
+        <member name="T:Luminance.Core.Graphics.ShaderRecompilationMonitor">
+            <summary>
+            The shader recompilation manager, which is responsible for ensuring that changes to .fx files are reflected in-game automatically.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ShaderRecompilationMonitor.CompilerDirectory">
+            <summary>
+            The path to the central mod compiler.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Graphics.ShaderRecompilationMonitor.ShaderWatcher">
+            <summary>
+            Represents a watcher that looks over a given directory with .fx files.
+            </summary>
+            <param name="EffectsPath">The path that this watcher oversees.</param>
+            <param name="ModName">The name of the mod responsible for this shader watcher.</param>
+            <param name="FileWatcher">The file watcher that fires signals when an .fx file changes.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.ShaderWatcher.#ctor(System.String,System.String,System.IO.FileSystemWatcher)">
+            <summary>
+            Represents a watcher that looks over a given directory with .fx files.
+            </summary>
+            <param name="EffectsPath">The path that this watcher oversees.</param>
+            <param name="ModName">The name of the mod responsible for this shader watcher.</param>
+            <param name="FileWatcher">The file watcher that fires signals when an .fx file changes.</param>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ShaderRecompilationMonitor.ShaderWatcher.EffectsPath">
+            <summary>The path that this watcher oversees.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ShaderRecompilationMonitor.ShaderWatcher.ModName">
+            <summary>The name of the mod responsible for this shader watcher.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ShaderRecompilationMonitor.ShaderWatcher.FileWatcher">
+            <summary>The file watcher that fires signals when an .fx file changes.</summary>
+        </member>
+        <member name="T:Luminance.Core.Graphics.ShaderRecompilationMonitor.CompilingFile">
+            <summary>
+            Represents a .fx file that is being compiled.
+            </summary>
+            <param name="FilePath">The path to the associated file.</param>
+            <param name="CompileAsFilter">Whether the file represents a screen filter or not.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.CompilingFile.#ctor(System.String,System.Boolean)">
+            <summary>
+            Represents a .fx file that is being compiled.
+            </summary>
+            <param name="FilePath">The path to the associated file.</param>
+            <param name="CompileAsFilter">Whether the file represents a screen filter or not.</param>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ShaderRecompilationMonitor.CompilingFile.FilePath">
+            <summary>The path to the associated file.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ShaderRecompilationMonitor.CompilingFile.CompileAsFilter">
+            <summary>Whether the file represents a screen filter or not.</summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.PostUpdateEverything">
+            <summary>
+            Processes all shader watchers, checking if anything needs to be compiled.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.OnModLoad">
+            <summary>
+            Handles on-mod-load effects for the library, ensuring that the compiler directory is unpacked.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.OnModUnload">
+            <summary>
+            Handles on-mod-unload effects for all shader watchers, disposing of unmanaged file watchers.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.CreateCompilerDirectory">
+            <summary>
+            Creates the compiler directory in accordance with <see cref="P:Luminance.Core.Graphics.ShaderRecompilationMonitor.CompilerDirectory"/>.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.LoadForMod(Terraria.ModLoader.Mod)">
+            <summary>
+            Attempts to load all potential shader watchers for a given mod.
+            </summary>
+            
+            <remarks>
+            In order for this method to do anything, the following conditions must be met:
+            <list type="bullet">
+                <item>The mod being searched must have an Assets/AutoloadedEffects directory, as an indicator that the mod is using the Luminance library.</item>
+                <item>The mod being searched must have an Assets/AutoloadedEffects/Compiler directory.</item>
+                <item>The user executing this method must have a relevant mod source folder that corresponds with the mod.</item>
+            </list>
+            </remarks>
+            <param name="mod">The mod to check for.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.ClearCompilationDirectory">
+            <summary>
+            Clears all .fx and .xnb files in the compiler directory.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.TryToWatchPath(Terraria.ModLoader.Mod,System.String)">
+            <summary>
+            Attempts to create a new shader watcher for a given mod over a given path.
+            </summary>
+            <param name="mod">The mod that should own the shader watcher.</param>
+            <param name="path">The path that the shader watcher should oversee.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.ProcessCompilationsForWatcher(Luminance.Core.Graphics.ShaderRecompilationMonitor.ShaderWatcher)">
+            <summary>
+            Processes a given shader watcher, compiling files as they're modified.
+            </summary>
+            <param name="watcher">The shader watcher to process</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.StartCompilerProcess">
+            <summary>
+            Starts EasyXNB.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.ProcessCompiledFile(Luminance.Core.Graphics.ShaderRecompilationMonitor.CompilingFile,Luminance.Core.Graphics.ShaderRecompilationMonitor.ShaderWatcher,System.String)">
+            <summary>
+            Processes a given compiled file after compilation, handling the deletion of old files and the setting of shaders in the central management system.
+            </summary>
+            <param name="file">The file to process.</param>
+            <param name="watcher">The shader watcher responsible for the file.</param>
+            <param name="compilerDirectory">The directory that contains the compiler executable.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.MoveFileToCompilingFolder(Luminance.Core.Graphics.ShaderRecompilationMonitor.CompilingFile)">
+            <summary>
+            Moves a given compiling file to the compilation directory so that EasyXNB can run on it and acquire a new compiled shader.
+            </summary>
+            <param name="file">The file to move.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.MarkFileAsNeedingCompilation(System.Object,System.IO.FileSystemEventArgs)">
+            <summary>
+            Marks a given file as needing compilation. Called as a consequence of a file watcher event firing.
+            </summary>
+            <param name="sender">The event sender.</param>
+            <param name="e">The event arguments that specify file data.</param>
+        </member>
+        <member name="T:Luminance.Core.Graphics.BlockerSystem.BlockCondition">
+            <summary>
+            Represents a condition that dictates an input block.
+            </summary>
+            <param name="BlockInputs">Whether inputs should be blocked.</param>
+            <param name="BlockUI">Whether UI interactions and drawing should be blocked.</param>
+            <param name="BlockIsInEffect">The condition delegate that dictates whether the block is in effect.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.BlockerSystem.BlockCondition.#ctor(System.Boolean,System.Boolean,System.Func{System.Boolean})">
+            <summary>
+            Represents a condition that dictates an input block.
+            </summary>
+            <param name="BlockInputs">Whether inputs should be blocked.</param>
+            <param name="BlockUI">Whether UI interactions and drawing should be blocked.</param>
+            <param name="BlockIsInEffect">The condition delegate that dictates whether the block is in effect.</param>
+        </member>
+        <member name="P:Luminance.Core.Graphics.BlockerSystem.BlockCondition.BlockInputs">
+            <summary>Whether inputs should be blocked.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.BlockerSystem.BlockCondition.BlockUI">
+            <summary>Whether UI interactions and drawing should be blocked.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.BlockerSystem.BlockCondition.BlockIsInEffect">
+            <summary>The condition delegate that dictates whether the block is in effect.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.BlockerSystem.BlockCondition.IsntDoingAnything">
+            <summary>
+            Whether this block affects nothing.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.BlockerSystem.BlockCondition.None">
+            <summary>
+            A default-object blocking condition that does nothing.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.BlockerSystem.AnythingWasBlockedLastFrame">
+            <summary>
+            Whether a block of any kind was in effect lack frame or not.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.BlockerSystem.Start(System.Boolean,System.Boolean,System.Func{System.Boolean})">
+            <summary>
+            Starts a new block effect with a given condition.
+            </summary>
+            <param name="blockInput">Whether inputs should be blocked.</param>
+            <param name="blockUi">Whether UI interactions and drawing should be blocked.</param>
+            <param name="condition">The condition delegate that dictates whether the block is in effect.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.BlockerSystem.Start(Luminance.Core.Graphics.BlockerSystem.BlockCondition)">
+            <summary>
+            Starts a new block effect based on a given <see cref="T:Luminance.Core.Graphics.BlockerSystem.BlockCondition"/>.
+            </summary>
+            <param name="condition">The configuration that dictates how the black should operate.</param>
+        </member>
+        <member name="P:Luminance.Core.Graphics.CameraPanSystem.CameraFocusPoint">
+            <summary>
+                The position the camera should focus on.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.CameraPanSystem.CameraPanInterpolant">
+            <summary>
+                The 0-1 interpolant that dictates how much the camera position should move.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.CameraPanSystem.Zoom">
+            <summary>
+                How much the camera should zoom in. Accepts negative values up -1 for zoom-out effects.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.CameraPanSystem.PanTowards(Microsoft.Xna.Framework.Vector2,System.Single)">
+            <summary>
+                Causes the camera to pan towards a given point, with a given 0-1 interpolant.
+            </summary>
+            <param name="panDestination">The point at which the camera should focus on.</param>
+            <param name="panInterpolant">How much the screen position should pan towards the destination.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.CameraPanSystem.ZoomIn(System.Single)">
+            <summary>
+                Zooms the camera in by a given factor. Does not work with negative values.
+            </summary>
+            <remarks>
+                A value of 0 means no zoom-in, a value of 1 means 2x the zoom in, a value of 2 means 3x, and so on.
+            </remarks>
+            <param name="zoom">The amount to zoom in by.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.CameraPanSystem.ZoomOut(System.Single)">
+            <summary>
+                Zooms the camera out by a given factor. Does not work with negative values.
+            </summary>
+            <remarks>
+                A value of 0 means no zoom-in, a value of 1 means 0.5x the zoom, a value of 2 means 0.333x, and so on.
+            </remarks>
+            <param name="zoom">The amount to zoom out by.</param>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ScreenModifierManager.CutsceneLayer">
+            <summary>
+            The layer of cutscenes in the modifiers.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ScreenModifierManager.FilterLayer">
+            <summary>
+            The layer of screen filters in the modifiers.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ScreenModifierManager.RegisterScreenModifier(Luminance.Core.Graphics.ScreenModifierManager.ScreenTargetModifierDelegate,System.Byte)">
+            <summary>
+            Call to register a screen modifier delegate at the provided layer. Each registered modifier is ran in ascending layer order.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ScreenShakeSystem.ShakeInfo.AngularVariance">
+            <summary>
+            This indicates the maximum amount BaseDirection can be rotated by when a shake occurs. At sufficiently high values there is effectively no shake direction and it's equivalent to NextVector2Circular.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ScreenShakeSystem.ShakeInfo.ShakeStrength">
+            <summary>
+            This indicate how much, in pixels, the screen should shake.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ScreenShakeSystem.ShakeInfo.BaseDirection">
+            <summary>
+            This indicates the general direction the shake should occur in.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Graphics.ScreenShakeSystem.ShakeInfo.ShakeStrengthDissipationIncrement">
+            <summary>
+            This indicates how much the shake should dissipate every frame.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Hooking.HookHelper">
+            <summary>
+            Provides useful methods for working with IL editing and custom detouring.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Hooking.HookHelper.ModifyMethodWithDetour(System.Reflection.MethodBase,System.Delegate)">
+            <summary>
+            Modifies the provided methodbase with the provided detour, and caches it. This is automatically undone on unloading.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Hooking.HookHelper.ModifyMethodWithIL(System.Reflection.MethodBase,MonoMod.Cil.ILContext.Manipulator)">
+            <summary>
+            Modifies the provided methodbase with the provided IL manipulator, and caches it. This is automatically undone on unloading.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Hooking.HookHelper.ILEventRemove">
+            <summary>
+            Does nothing, existing solely for the purpose of unsubscription in custom IL edit event implementations that use add/remove event syntax.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Hooking.HookHelper.EarlyReturnEdit(MonoMod.Cil.ILContext,Luminance.Core.Hooking.ManagedILEdit)">
+            <summary>
+            A generic IL edit that simply immediately emits a return.
+            </summary>
+            <param name="il"></param>
+            <param name="_"></param>
+        </member>
+        <member name="T:Luminance.Core.Hooking.ICustomDetourProvider">
+            <summary>
+            Provides a class with automanaged implementation of creating and subscribing to a new detour(s).
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Hooking.ICustomDetourProvider.ModifyMethods">
+            <summary>
+            Call <see cref="M:Luminance.Core.Hooking.HookHelper.ModifyMethodWithDetour(System.Reflection.MethodBase,System.Delegate)"/> here to implement your custom detour(s).
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Hooking.IExistingDetourProvider">
+            <summary>
+            Provides a class with automanaged implementation of an existing tModLoader detour(s).
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Hooking.IExistingDetourProvider.Subscribe">
+            <summary>
+            Subscribe to the detour here.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Hooking.IExistingDetourProvider.Unsubscribe">
+            <summary>
+            Unsubscribe to the detour here.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Hooking.ILEditProvider">
+            <summary>
+            A basic provider class for wrapping around a single <see cref="T:Luminance.Core.Hooking.ManagedILEdit"/>. If you need to do multiple in one class, use a <see cref="T:Terraria.ModLoader.ModSystem"/> or similar.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Hooking.ILEditProvider.Subscribe(Luminance.Core.Hooking.ManagedILEdit)">
+            <summary>
+            Subscribe <see cref="M:Luminance.Core.Hooking.ManagedILEdit.SubscriptionWrapper(MonoMod.Cil.ILContext)"/> to your IL event here.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Hooking.ILEditProvider.Unsubscribe(Luminance.Core.Hooking.ManagedILEdit)">
+            <summary>
+            Unsubscribe <see cref="M:Luminance.Core.Hooking.ManagedILEdit.SubscriptionWrapper(MonoMod.Cil.ILContext)"/> to your IL event here.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Hooking.ILEditProvider.PerformEdit(MonoMod.Cil.ILContext,Luminance.Core.Hooking.ManagedILEdit)">
+            <summary>
+            Perform the actual IL edit here. Use the provided ManagedILEdit's log method if something goes wrong.
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.Hooking.ManagedILEdit">
+            <summary>
+            Wrapper for ILEdits that automatically un-applies them all, and provides a useful error logging template.
+            </summary>
+            <param name="Name">The name of the edit.</param>
+            <param name="AssociatedMod">The mod that owns this ILEdit.</param>
+            <param name="SubscriptionFunction">An action that subscribes the ILEdit.</param>
+            <param name="UnsubscriptionFunction">An action that unsubscribes the ILEdit.</param>
+            <param name="EditingFunction">The delegate that contains/represents the ILEdit.</param>
+        </member>
+        <member name="M:Luminance.Core.Hooking.ManagedILEdit.#ctor(System.String,Terraria.ModLoader.Mod,System.Action{Luminance.Core.Hooking.ManagedILEdit},System.Action{Luminance.Core.Hooking.ManagedILEdit},Luminance.Core.Hooking.ManagedILManipulator)">
+            <summary>
+            Wrapper for ILEdits that automatically un-applies them all, and provides a useful error logging template.
+            </summary>
+            <param name="Name">The name of the edit.</param>
+            <param name="AssociatedMod">The mod that owns this ILEdit.</param>
+            <param name="SubscriptionFunction">An action that subscribes the ILEdit.</param>
+            <param name="UnsubscriptionFunction">An action that unsubscribes the ILEdit.</param>
+            <param name="EditingFunction">The delegate that contains/represents the ILEdit.</param>
+        </member>
+        <member name="P:Luminance.Core.Hooking.ManagedILEdit.Name">
+            <summary>The name of the edit.</summary>
+        </member>
+        <member name="P:Luminance.Core.Hooking.ManagedILEdit.AssociatedMod">
+            <summary>The mod that owns this ILEdit.</summary>
+        </member>
+        <member name="P:Luminance.Core.Hooking.ManagedILEdit.SubscriptionFunction">
+            <summary>An action that subscribes the ILEdit.</summary>
+        </member>
+        <member name="P:Luminance.Core.Hooking.ManagedILEdit.UnsubscriptionFunction">
+            <summary>An action that unsubscribes the ILEdit.</summary>
+        </member>
+        <member name="P:Luminance.Core.Hooking.ManagedILEdit.EditingFunction">
+            <summary>The delegate that contains/represents the ILEdit.</summary>
+        </member>
+        <member name="M:Luminance.Core.Hooking.ManagedILEdit.SubscriptionWrapper(MonoMod.Cil.ILContext)">
+            <summary>
+            Exposes the editing function directly, this should be used in <see cref="M:Luminance.Core.Hooking.ILEditProvider.Subscribe(Luminance.Core.Hooking.ManagedILEdit)"/> and <see cref="M:Luminance.Core.Hooking.ILEditProvider.Unsubscribe(Luminance.Core.Hooking.ManagedILEdit)"/>
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:Luminance.Core.Hooking.ManagedILEdit.Apply(System.Boolean)">
+            <summary>
+            Applies the ILEdits <see cref="P:Luminance.Core.Hooking.ManagedILEdit.EditingFunction"/>.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Hooking.ManagedILEdit.LogFailure(System.String)">
+            <summary>
+            Provides a standardization for IL editing failure cases, making use of <see cref="P:Terraria.ModLoader.Mod.Logger"/>.<br></br>
+            This should be used if an IL edit could not be loaded for any reason, such as a <see cref="M:MonoMod.Cil.ILCursor.TryGotoNext(MonoMod.Cil.MoveType,System.Func{Mono.Cecil.Cil.Instruction,System.Boolean}[])"/> failure.
+            </summary>
+            <param name="reason">The reason that the IL edit failed.</param>
+        </member>
+        <member name="M:Luminance.Core.ModCalls.ModCall.ProcessInternal(System.Object[])">
+            <summary>
+            Processes the modcall, checking that all the parameters match and throws if not.
+            </summary>
+            <param name="argsWithoutCommand"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:Luminance.Core.ModCalls.ModCall.SafeProcess(System.Object[])">
+            <summary>
+            Process the mod call here. Return <see cref="P:Luminance.Core.ModCalls.ModCallManager.DefaultObject"/> instead of null if no other return value is suitable.
+            </summary>
+            <param name="argsWithoutCommand"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Luminance.Core.ModCalls.ModCall.GetCallCommands">
+            <summary>
+             Once a call makes it to a public version, NEVER delete it from here.
+             </summary>
+        </member>
+        <member name="M:Luminance.Core.ModCalls.ModCall.GetInputTypes">
+            <summary>
+            The ordered types that the args must be. Return as null if none are needed.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.ModCalls.ModCallManager.ProcessAllModCalls(Terraria.ModLoader.Mod,System.Object[])">
+            <summary>
+            Call this from YourMod.Call(params object[] args).
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Sounds.LoopedSoundInstance.AutomaticTerminationCondition">
+            <summary>
+                An automatic termination condition that governs whether the looping sound should terminate or not. Meant to serve as a fail-safe to ensure that looped sounds do not go on long after they should have stopped.
+                Useful for cases such as sounds that are attached to an entity but should go away.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Sounds.LoopedSoundInstance.LoopingSoundSlot">
+            <summary>
+                The sound slot that manages this looping sound.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Sounds.LoopedSoundInstance.HasLoopSoundBeenStarted">
+            <summary>
+                Whether the loop sound has been started yet or not.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Sounds.LoopedSoundInstance.HasBeenStopped">
+            <summary>
+                Whether this sound has been stopped or not.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Sounds.LoopedSoundInstance.LoopIsBeingPlayed">
+            <summary>
+                Whether the loop sound is being played.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Sounds.LoopedSoundInstance.UpdateSoundSlots(Microsoft.Xna.Framework.Vector2,System.Action{Terraria.Audio.ActiveSound})">
+            <summary>
+                Updates all active sounds.
+            </summary>
+            <param name="soundPosition">The moving source position of the sounds.</param>
+            <param name="updateLoop">An optional update behavior that should be applied to the sounds.</param>
+        </member>
+        <member name="M:Luminance.Core.Sounds.LoopedSoundInstance.StartSounds(Microsoft.Xna.Framework.Vector2)">
+            <summary>
+                Starts all sounds.
+            </summary>
+            <param name="soundPosition">The source position of the sounds.</param>
+        </member>
+        <member name="M:Luminance.Core.Sounds.LoopedSoundInstance.StopSoundsInternal">
+            <summary>
+                Handles stop behaviors for sounds, sans the state changes.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Sounds.LoopedSoundInstance.Update(Microsoft.Xna.Framework.Vector2,System.Action{Terraria.Audio.ActiveSound})">
+            <summary>
+                Performs all necessary update behaviors for sounds, evaluating whether they need to be started, updating sound positions in the world, and performing arbitrary update behaviors via <paramref name="soundUpdateStep"/>.
+            </summary>
+            <param name="soundPosition">The source position of the sounds.</param>
+            <param name="soundUpdateStep">An optional update behavior that should be applied to the sounds.</param>
+        </member>
+        <member name="M:Luminance.Core.Sounds.LoopedSoundInstance.Restart">
+            <summary>
+                Marks sounds as being eligible for restarting.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Sounds.LoopedSoundInstance.Stop">
+            <summary>
+                Stops all sounds.
+            </summary>
+        </member>
+        <member name="F:Luminance.Core.Sounds.LoopedSoundManager.loopedSounds">
+            <summary>
+                The set of all looping sounds handled by the manager.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Sounds.LoopedSoundManager.CreateNew(Terraria.Audio.SoundStyle,System.Func{System.Boolean})">
+            <summary>
+                Creates a new looping sound, with an optional, perpetually evaluated termination condition.
+            </summary>
+            <param name="loopingSound">The sound that should be looped.</param>
+            <param name="automaticTerminationCondition">An optional condition that dictates whether the sound should terminate automatically.</param>
+        </member>
+        <member name="T:Luminance.Luminance">
+            <summary>
+            The central mod type for the Luminance library.
+            </summary>
+        </member>
+        <member name="M:Luminance.Luminance.Unload">
+            <summary>
+            Handles all necessary manual unloading effects for the library.
+            </summary>
+        </member>
+        <member name="M:Luminance.Luminance.PostSetupContent">
+            <summary>
+            Handles all necessary loading effects for the library, after all mods have loaded and all dependencies have been established.
+            </summary>
+        </member>
+    </members>
+</doc>
