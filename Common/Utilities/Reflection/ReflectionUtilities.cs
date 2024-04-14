@@ -43,6 +43,7 @@ namespace Luminance.Common.Utilities
                 bool derivedHasConstructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.EmptyTypes) != null;
                 bool baseHasHasConstructor = type.BaseType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.EmptyTypes) != null;
                 return derivedHasConstructor || baseHasHasConstructor;
-            });
+            })
+            .Where(type => type.GetCustomAttribute<ExtendsFromModAttribute>() is null);
     }
 }
