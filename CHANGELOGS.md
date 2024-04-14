@@ -3,6 +3,10 @@ This file will contain each version of the mod published, along with all of the 
 
 ---
 
+## V1.0.2
+- Improved the design of the mod's icon.
+- Improved the Spanish mod localization.
+
 ## V1.0.1
 - Fixed a bug where atlases could include the .rawimg file extension in their registered texture paths.
 
