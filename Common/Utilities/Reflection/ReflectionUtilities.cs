@@ -44,6 +44,19 @@ namespace Luminance.Common.Utilities
                 bool baseHasHasConstructor = type.BaseType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.EmptyTypes) != null;
                 return derivedHasConstructor || baseHasHasConstructor;
             })
-            .Where(type => type.GetCustomAttribute<ExtendsFromModAttribute>() is null);
+            .Where(type =>
+            {
+                var attribute = type.GetCustomAttribute<ExtendsFromModAttribute>();
+                if (attribute is null)
+                    return true;
+
+                var modNames = attribute.Names;
+                foreach (var name in modNames)
+                {
+                    if (!ModLoader.HasMod(name))
+                        return false;
+                }
+                return true;
+            });
     }
 }
