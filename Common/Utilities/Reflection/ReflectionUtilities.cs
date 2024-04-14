@@ -40,12 +40,6 @@ namespace Luminance.Common.Utilities
             .Where(type => type.IsAssignableTo(baseType))
             .Where(type =>
             {
-                bool derivedHasConstructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.EmptyTypes) != null;
-                bool baseHasHasConstructor = type.BaseType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.EmptyTypes) != null;
-                return derivedHasConstructor || baseHasHasConstructor;
-            })
-            .Where(type =>
-            {
                 var attribute = type.GetCustomAttribute<ExtendsFromModAttribute>();
                 if (attribute is null)
                     return true;
@@ -57,6 +51,12 @@ namespace Luminance.Common.Utilities
                         return false;
                 }
                 return true;
+            })
+            .Where(type =>
+            {
+                bool derivedHasConstructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.EmptyTypes) != null;
+                bool baseHasHasConstructor = type.BaseType.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, Type.EmptyTypes) != null;
+                return derivedHasConstructor || baseHasHasConstructor;
             });
     }
 }
