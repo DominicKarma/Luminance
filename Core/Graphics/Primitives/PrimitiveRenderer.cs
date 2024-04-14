@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Luminance.Core.Graphics
@@ -39,6 +40,9 @@ namespace Luminance.Core.Graphics
         {
             Main.QueueMainThreadAction(() =>
             {
+                if (Main.netMode == NetmodeID.Server)
+                    return;
+
                 MainPositions = new Vector2[MaxPositions];
                 MainVertices = new VertexPosition2DColorTexture[MaxVertices];
                 MainIndices = new short[MaxIndices];
@@ -51,6 +55,9 @@ namespace Luminance.Core.Graphics
         {
             Main.QueueMainThreadAction(() =>
             {
+                if (Main.netMode == NetmodeID.Server)
+                    return;
+
                 MainPositions = null;
                 MainVertices = null;
                 MainIndices = null;
