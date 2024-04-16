@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -220,7 +221,7 @@ namespace Luminance.Core.Graphics
             easyXnb.Start();
             if (!easyXnb.WaitForExit(3000))
             {
-                Main.NewText("Shader compiler timed out. Likely error.");
+                Main.NewText("Shader compiler timed out. Likely error.", Color.OrangeRed);
                 easyXnb.Kill();
                 return;
             }
@@ -241,10 +242,12 @@ namespace Luminance.Core.Graphics
             string modName = $"{watcher.ModName}.";
             string compiledXnbPath = CompilerDirectory + "\\" + Path.GetFileNameWithoutExtension(shaderPath) + ".xnb";
             string originalXnbPath = shaderPath.Replace(".fx", ".xnb");
-            string shaderPathInCompilerDirectory = compilerDirectory + Path.GetFileName(shaderPath);
+            string shaderPathInCompilerDirectory = compilerDirectory + Path.DirectorySeparatorChar + Path.GetFileName(shaderPath);
+
+            if (File.Exists(originalXnbPath))
+                File.Delete(originalXnbPath);
 
             // Copy over the XNB from the compiler, and delete the copy in the Compiler folder.
-            File.Delete(originalXnbPath);
             try
             {
                 File.Copy(compiledXnbPath, originalXnbPath);

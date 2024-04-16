@@ -23,14 +23,13 @@ namespace Luminance
         /// </summary>
         public override void PostSetupContent()
         {
-            // Go through every mod and check for effects to autoload.
             foreach (Mod mod in ModLoader.Mods)
             {
                 HookHelper.LoadHookInterfaces(mod);
+                ShaderRecompilationMonitor.LoadForMod(mod);
                 ShaderManager.LoadShaders(mod);
                 AtlasManager.InitializeModAtlases(mod);
                 ParticleManager.InitializeManualRenderers(mod);
-                ShaderRecompilationMonitor.LoadForMod(mod);
             }
 
             // Mark loading operations as finished.
