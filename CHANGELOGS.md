@@ -6,6 +6,9 @@ This file will contain each version of the mod published, along with all of the 
 ## V1.0.2
 - Improved the design of the mod's icon.
 - Improved the Spanish mod localization.
+- Shaders without a compiled xnb now get automatically compiled when entering a world.
+- Fixed files being left behind in the shader compiler directory.
+- Fixed a potential index error in the primitive renderer.
 
 ## V1.0.1
 - Fixed a bug where atlases could include the .rawimg file extension in their registered texture paths.
