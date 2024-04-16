@@ -91,28 +91,43 @@ namespace Luminance.Core.Graphics
             if (fileNames is null)
                 return;
 
-            foreach (var path in fileNames)
+            #region Shaders
+            var shaderXnbPaths = fileNames.Where(path => path.Contains(AutoloadDirectoryShaders) && !path.Contains("Compiler/") && path.Contains(".xnb"));
+            var shaderFxPathsToCompile = fileNames.Where(path => path.Contains(AutoloadDirectoryShaders) && !path.Contains("Compiler/") && path.Contains(".fx") && !shaderXnbPaths.Contains(path.Replace(".fx", ".xnb")));
+
+            foreach (var path in shaderXnbPaths)
             {
-                // Ignore paths inside of the compiler directory.
-                if (path?.Contains("Compiler/") ?? true)
-                    continue;
-
-                if (path.Contains(AutoloadDirectoryShaders))
-                {
-                    string shaderName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
-                    string clearedPath = Path.Combine(Path.GetDirectoryName(path), shaderName).Replace(@"\", @"/").Replace($"{mod.Name}.", string.Empty);
-                    Ref<Effect> shader = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
-                    SetShader(shaderName, shader);
-                }
-                else if (path.Contains(AutoloadDirectoryFilters))
-                {
-                    string filterName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
-                    string clearedPath = Path.Combine(Path.GetDirectoryName(path), filterName).Replace(@"\", @"/").Replace($"{mod.Name}.", string.Empty);
-
-                    Ref<Effect> filter = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
-                    SetFilter(filterName, filter);
-                }
+                string shaderName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
+                string clearedPath = Path.Combine(Path.GetDirectoryName(path), shaderName).Replace(@"\", @"/").Replace($"{mod.Name}.", string.Empty);
+                Ref<Effect> shader = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
+                SetShader(shaderName, shader);
             }
+
+            foreach (var path in shaderFxPathsToCompile)
+            {
+                string fxPath = mod.Name + "\\" + Path.Combine(Path.GetDirectoryName(path), Path.GetFileName(path)).Replace(@"\", @"/");
+                ShaderRecompilationMonitor.CompilingFiles.Enqueue(new(Path.Combine(Main.SavePath, "ModSources", fxPath), false));
+            }
+            #endregion
+
+            #region Filters
+            var filterXnbPaths = fileNames.Where(path => path.Contains(AutoloadDirectoryFilters) && !path.Contains("Compiler/") && path.Contains(".xnb"));
+            var filterFxPathsToCompile = fileNames.Where(path => path.Contains(AutoloadDirectoryFilters) && !path.Contains("Compiler/") && path.Contains(".fx") && !filterXnbPaths.Contains(path.Replace(".fx", ".xnb")));
+
+            foreach (var path in filterXnbPaths)
+            {
+                string filterName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
+                string clearedPath = Path.Combine(Path.GetDirectoryName(path), filterName).Replace(@"\", @"/").Replace($"{mod.Name}.", string.Empty);
+                Ref<Effect> filter = new(mod.Assets.Request<Effect>(clearedPath, AssetRequestMode.ImmediateLoad).Value);
+                SetFilter(filterName, filter);
+            }
+
+            foreach (var path in filterFxPathsToCompile)
+            {
+                string fxPath = mod.Name + "\\" + Path.Combine(Path.GetDirectoryName(path), Path.GetFileName(path)).Replace(@"\", @"/");
+                ShaderRecompilationMonitor.CompilingFiles.Enqueue(new(Path.Combine(Main.SavePath, "ModSources", fxPath), true));
+            }
+            #endregion
         }
 
         public override void Unload()
