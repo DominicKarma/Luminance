@@ -153,6 +153,7 @@ namespace Luminance.Core.Graphics
 
                 // Would like to remove this, but unsure how else to properly ensure that none are zero.
                 positions = positions.Where(originalPosition => originalPosition != Vector2.Zero);
+                positionsCount = positions.Count();
 
                 if (positionsCount <= 2)
                     return false;
