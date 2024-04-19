@@ -11,7 +11,7 @@ namespace Luminance.Core.Graphics
 {
     public class PrimitiveRenderer : ILoadable
     {
-        #region Static Members
+        #region Fields/Properties
         private static DynamicVertexBuffer VertexBuffer;
 
         private static DynamicIndexBuffer IndexBuffer;
@@ -24,11 +24,16 @@ namespace Luminance.Core.Graphics
 
         private static short[] MainIndices;
 
-        private const short MaxPositions = 1000;
+        private const short MaxTrailPositions = 2000;
 
-        private const short MaxVertices = 3072;
+        /// <summary>
+        /// Must be lower than <see cref="MaxTrailPositions"/>, less than 1/4 of <see cref="MaxVertices"/> and less than 1/6 of <see cref="MaxIndices"/>.
+        /// </summary>
+        private const short MaxCirclePositions = 1500;
 
-        private const short MaxIndices = 8192;
+        private const short MaxVertices = 6144;
+
+        private const short MaxIndices = 16384;
 
         private static short PositionsIndex;
 
@@ -36,6 +41,12 @@ namespace Luminance.Core.Graphics
 
         private static short IndicesIndex;
 
+        private static readonly short[] QuadIndices = [0, 1, 2, 2, 3, 0];
+
+        private static Matrix QuadVertexMatrix;
+        #endregion
+
+        #region General Methods
         void ILoadable.Load(Mod mod)
         {
             Main.QueueMainThreadAction(() =>
@@ -43,7 +54,7 @@ namespace Luminance.Core.Graphics
                 if (Main.netMode == NetmodeID.Server)
                     return;
 
-                MainPositions = new Vector2[MaxPositions];
+                MainPositions = new Vector2[MaxTrailPositions];
                 MainVertices = new VertexPosition2DColorTexture[MaxVertices];
                 MainIndices = new short[MaxIndices];
                 VertexBuffer ??= new DynamicVertexBuffer(Main.instance.GraphicsDevice, VertexPosition2DColorTexture.VertexDeclaration2D, MaxVertices, BufferUsage.WriteOnly);
@@ -76,7 +87,9 @@ namespace Luminance.Core.Graphics
             else if (!settings.Pixelate && PrimitivePixelationSystem.CurrentlyRendering)
                 throw new Exception("Error: Primitives not using pixelation MUST NOT be prepared/rendered from the IPixelatedPrimitiveRenderer.RenderPixelatedPrimitives method.");
         }
+        #endregion
 
+        #region Trail Rendering
         /// <summary>
         /// Renders a primitive trail.
         /// </summary>
@@ -91,7 +104,7 @@ namespace Luminance.Core.Graphics
             if (count <= 2)
                 return;
 
-            if (count >= MaxPositions)
+            if (count >= MaxTrailPositions)
                 return;
 
             // IF this is false, a correct position trail could not be made and rendering should not continue.
@@ -140,13 +153,12 @@ namespace Luminance.Core.Graphics
             Main.instance.GraphicsDevice.Indices = IndexBuffer;
             Main.instance.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, VerticesIndex, 0, IndicesIndex / 3);
         }
-        #endregion
 
-        #region Set Preperation
         private static bool AssignPointsRectangleTrail(IEnumerable<Vector2> positions, PrimitiveSettings settings, int pointsToCreate)
         {
             // Don't smoothen the points unless explicitly told do so.
             int positionsCount = positions.Count();
+            pointsToCreate = Math.Min(pointsToCreate, MaxTrailPositions - 1);
             if (!settings.Smoothen)
             {
                 PositionsIndex = 0;
@@ -165,8 +177,7 @@ namespace Luminance.Core.Graphics
                     int currentIndex = (int)(completionRatio * (positionsCount - 1));
                     Vector2 currentPoint = positions.ElementAt(currentIndex);
                     Vector2 nextPoint = positions.ElementAt((currentIndex + 1) % positionsCount);
-                    MainPositions[PositionsIndex] = Vector2.Lerp(currentPoint, nextPoint, completionRatio * (positionsCount - 1) % 0.99999f) - Main.screenPosition;
-                    PositionsIndex++;
+                    MainPositions[PositionsIndex++] = Vector2.Lerp(currentPoint, nextPoint, completionRatio * (positionsCount - 1) % 0.99999f) - Main.screenPosition;
                 }
                 return true;
             }
@@ -225,14 +236,12 @@ namespace Luminance.Core.Graphics
                 else
                     farRight = controlPoints[localSplineIndex + 2];
 
-                MainPositions[PositionsIndex] = Vector2.CatmullRom(farLeft, left, right, farRight, localSplineInterpolant);
-                PositionsIndex++;
+                MainPositions[PositionsIndex++] = Vector2.CatmullRom(farLeft, left, right, farRight, localSplineInterpolant);
             }
 
             // Manually insert the front and end points.
             MainPositions[0] = controlPoints.First();
-            MainPositions[PositionsIndex] = controlPoints.Last();
-            PositionsIndex++;
+            MainPositions[PositionsIndex++] = controlPoints.Last();
             return true;
         }
 
@@ -267,10 +276,8 @@ namespace Luminance.Core.Graphics
                 // What this is doing, at its core, is defining a rectangle based on two triangles.
                 // These triangles are defined based on the width of the strip at that point.
                 // The resulting rectangles combined are what make the trail itself.
-                MainVertices[VerticesIndex] = new VertexPosition2DColorTexture(left, vertexColor, leftCurrentTextureCoord, widthAtVertex);
-                VerticesIndex++;
-                MainVertices[VerticesIndex] = new VertexPosition2DColorTexture(right, vertexColor, rightCurrentTextureCoord, widthAtVertex);
-                VerticesIndex++;
+                MainVertices[VerticesIndex++] = new VertexPosition2DColorTexture(left, vertexColor, leftCurrentTextureCoord, widthAtVertex);
+                MainVertices[VerticesIndex++] = new VertexPosition2DColorTexture(right, vertexColor, rightCurrentTextureCoord, widthAtVertex);
             }
         }
 
@@ -285,23 +292,12 @@ namespace Luminance.Core.Graphics
             for (short i = 0; i < PositionsIndex - 2; i++)
             {
                 short connectToIndex = (short)(i * 2);
-                MainIndices[IndicesIndex] = connectToIndex;
-                IndicesIndex++;
-
-                MainIndices[IndicesIndex] = (short)(connectToIndex + 1);
-                IndicesIndex++;
-
-                MainIndices[IndicesIndex] = (short)(connectToIndex + 2);
-                IndicesIndex++;
-
-                MainIndices[IndicesIndex] = (short)(connectToIndex + 2);
-                IndicesIndex++;
-
-                MainIndices[IndicesIndex] = (short)(connectToIndex + 1);
-                IndicesIndex++;
-
-                MainIndices[IndicesIndex] = (short)(connectToIndex + 3);
-                IndicesIndex++;
+                MainIndices[IndicesIndex++] = connectToIndex;
+                MainIndices[IndicesIndex++] = (short)(connectToIndex + 1);
+                MainIndices[IndicesIndex++] = (short)(connectToIndex + 2);
+                MainIndices[IndicesIndex++] = (short)(connectToIndex + 2);
+                MainIndices[IndicesIndex++] = (short)(connectToIndex + 1);
+                MainIndices[IndicesIndex++] = (short)(connectToIndex + 3);
             }
         }
 
@@ -310,6 +306,154 @@ namespace Luminance.Core.Graphics
             // Due to the scaling, the normal transformation calculations do not work with pixelated primitives.
             projectionMatrix = Matrix.CreateOrthographicOffCenter(0, width, height, 0f, -1f, 1f);
             viewMatrix = Matrix.Identity;
+        }
+        #endregion
+
+        #region Quad Rendering
+        public static void RenderQuad(Texture2D texture, Vector2 center, float scale, float rotation, Color? color = null, ManagedShader shader = null, Quaternion? rotationQuarternion = null)
+            => RenderQuad(texture, center, new Vector2(scale), rotation, color, shader, rotationQuarternion);
+
+        public static void RenderQuad(Texture2D texture, Vector2 center, Vector2 scale, float rotation, Color? color = null, ManagedShader shader = null, Quaternion? rotationQuarternion = null)
+        {
+            var rotationMatrix = rotationQuarternion is null ? Matrix.CreateRotationZ(rotation) : Matrix.CreateFromQuaternion(rotationQuarternion.Value) * Matrix.CreateRotationZ(rotation);
+            var scaleMatrix = Matrix.CreateScale(scale.X, scale.Y, 1f);
+            var viewMatrix = Matrix.CreateTranslation(new Vector3(center.X - Main.screenPosition.X, center.Y - Main.screenPosition.Y, 0f))
+                * Main.GameViewMatrix.TransformationMatrix
+                * Matrix.CreateOrthographicOffCenter(0f, Main.screenWidth, Main.screenHeight, 0f, -150f, 150f);
+
+            QuadVertexMatrix = rotationMatrix * scaleMatrix * viewMatrix;
+
+            Vector2 quadArea = texture.Size();
+            color ??= Lighting.GetColor(center.ToTileCoordinates());
+
+            MainVertices[0] = new(new(0f, -quadArea.Y), color.Value, Vector2.One * 0.01f, 1f);
+            MainVertices[1] = new(new(quadArea.X, -quadArea.Y), color.Value, Vector2.UnitX * 0.99f, 1f);
+            MainVertices[2] = new(new(quadArea.X, 0f), color.Value, Vector2.One * 0.99f, 1f);
+            MainVertices[3] = new(new(0f, 0f), color.Value, Vector2.UnitY * 0.99f, 1f);
+            VerticesIndex = 4;
+
+            Main.instance.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+            Main.instance.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
+            Main.instance.GraphicsDevice.ScissorRectangle = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
+
+            shader ??= ShaderManager.GetShader("Luminance.QuadRenderer");
+            shader.TrySetParameter("uWorldViewProjection", QuadVertexMatrix);
+            shader.SetTexture(texture, 1, SamplerState.PointClamp);
+            shader.Apply();
+
+            VertexBuffer.SetData(MainVertices, 0, VerticesIndex, SetDataOptions.Discard);
+            IndexBuffer.SetData(QuadIndices, 0, QuadIndices.Length, SetDataOptions.Discard);
+
+            Main.instance.GraphicsDevice.SetVertexBuffer(VertexBuffer);
+            Main.instance.GraphicsDevice.Indices = IndexBuffer;
+            Main.instance.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, VerticesIndex, 0, 2);
+        }
+        #endregion
+
+        #region Circle Rendering
+        public static void RenderCircle(Vector2 center, PrimitiveSettings settings, int sideCount = 512)
+        {
+            if (sideCount <= 0)
+                return;
+
+            PerformPixelationSafetyChecks(settings);
+            MainSettings = settings;
+            sideCount = Math.Min(sideCount, MaxCirclePositions - 1);
+
+            float sideAngle = TwoPi / sideCount;
+            float sideLengthMinusRadius = Sqrt(2f - Cos(sideAngle));
+
+            VerticesIndex = 0;
+            IndicesIndex = 0;
+
+            for (int i = 0; i < sideCount; i++)
+            {
+                float completionRatio = i / (float)(sideCount - 1f);
+                float nextSideCompletionRatio = (i + 1f) / (float)(sideCount - 1f);
+                float radius = settings.WidthFunction(completionRatio);
+                Color color = settings.ColorFunction(completionRatio);
+
+                Vector2 orthogonal = (TwoPi * completionRatio + PiOver2).ToRotationVector2();
+                Vector2 radiusOffset = (TwoPi * completionRatio).ToRotationVector2() * radius;
+                Vector2 leftEdge = center + radiusOffset + orthogonal * (sideLengthMinusRadius * radius) * -0.5f;
+                Vector2 rightEdge = center + radiusOffset + orthogonal * (sideLengthMinusRadius * radius) * 0.5f;
+
+                MainVertices[VerticesIndex++] = new(leftEdge - Main.screenPosition, color, new(completionRatio, 1f), 1f);
+                MainVertices[VerticesIndex++] = new(rightEdge - Main.screenPosition, color, new(nextSideCompletionRatio, 1f), 1f);
+                MainVertices[VerticesIndex++] = new(center - Main.screenPosition, color, new(nextSideCompletionRatio, 0f), 1f);
+                MainVertices[VerticesIndex++] = new(center - Main.screenPosition, color, new(completionRatio, 0f), 1f);
+
+                MainIndices[IndicesIndex++] = (short)(i * 4);
+                MainIndices[IndicesIndex++] = (short)(i * 4 + 1);
+                MainIndices[IndicesIndex++] = (short)(i * 4 + 2);
+                MainIndices[IndicesIndex++] = (short)(i * 4);
+                MainIndices[IndicesIndex++] = (short)(i * 4 + 2);
+                MainIndices[IndicesIndex++] = (short)(i * 4 + 3);
+            }
+
+            Matrix view;
+            Matrix projection;
+            int width = MainSettings.ProjectionAreaWidth ?? Main.screenWidth;
+            int height = MainSettings.ProjectionAreaHeight ?? Main.screenHeight;
+            if (MainSettings.Pixelate || MainSettings.UseUnscaledMatrix)
+                CalculateUnscaledMatrices(width, height, out view, out projection);
+            else
+                CalculatePrimitiveMatrices(width, height, out view, out projection);
+
+            var shaderToUse = MainSettings.Shader ?? ShaderManager.GetShader("Luminance.StandardPrimitiveShader");
+            shaderToUse.TrySetParameter("uWorldViewProjection", view * projection);
+            shaderToUse.Apply();
+
+            VertexBuffer.SetData(MainVertices, 0, VerticesIndex, SetDataOptions.Discard);
+            IndexBuffer.SetData(MainIndices, 0, IndicesIndex, SetDataOptions.Discard);
+
+            Main.instance.GraphicsDevice.SetVertexBuffer(VertexBuffer);
+            Main.instance.GraphicsDevice.Indices = IndexBuffer;
+            Main.instance.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, VerticesIndex, 0, sideCount * 2);
+        }
+        #endregion
+
+        #region Circle Edge Renderer
+        public static void RenderCircleEdge(Vector2 center, PrimitiveSettings settings, int totalPoints = 200)
+        {
+            if (totalPoints <= 0)
+                return;
+
+            PerformPixelationSafetyChecks(settings);
+            MainSettings = settings;
+            totalPoints = Math.Min(totalPoints, MaxCirclePositions);
+
+            VerticesIndex = 0;
+            for (int i = 0; i <= totalPoints; i++)
+            {
+                float interpolant = i / (float)totalPoints;
+                float currentWidth = settings.WidthFunction(interpolant);
+                Color color = settings.ColorFunction(interpolant);
+                float radius = settings.OffsetFunction(interpolant).X;
+
+                Vector2 innerPosition = center - Main.screenPosition + (i * TwoPi / totalPoints).ToRotationVector2() * radius;
+                Vector2 outerPosition = center - Main.screenPosition + (i * TwoPi / totalPoints).ToRotationVector2() * (radius + currentWidth);
+
+                MainVertices[VerticesIndex++] = new(innerPosition, color, new(interpolant, 0f), 1f);
+                MainVertices[VerticesIndex++] = new(outerPosition, color, new(interpolant, 1f), 1f);
+            }
+
+            Matrix view;
+            Matrix projection;
+            int width = MainSettings.ProjectionAreaWidth ?? Main.screenWidth;
+            int height = MainSettings.ProjectionAreaHeight ?? Main.screenHeight;
+            if (MainSettings.Pixelate || MainSettings.UseUnscaledMatrix)
+                CalculateUnscaledMatrices(width, height, out view, out projection);
+            else
+                CalculatePrimitiveMatrices(width, height, out view, out projection);
+
+            var shaderToUse = MainSettings.Shader ?? ShaderManager.GetShader("Luminance.StandardPrimitiveShader");
+            shaderToUse.TrySetParameter("uWorldViewProjection", view * projection);
+            shaderToUse.Apply();
+
+            VertexBuffer.SetData(MainVertices, 0, VerticesIndex, SetDataOptions.Discard);
+            Main.instance.GraphicsDevice.SetVertexBuffer(VertexBuffer);
+            Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, VerticesIndex - 2);
         }
         #endregion
     }

@@ -20,7 +20,7 @@ namespace Luminance.Core.Graphics
 
         private static ManagedRenderTarget PixelationTarget_AfterProjectiles;
 
-        private static readonly Dictionary<PixelationPrimitiveLayer, Queue<Action>> CustomDrawActionsByLayer = new();
+        private static readonly Dictionary<PixelationPrimitiveLayer, Queue<Action>> CustomDrawActionsByLayer = [];
 
         private static RenderTarget2D CreatePixelTarget(int width, int height) => new(Main.instance.GraphicsDevice, width / 2, height / 2);
 
