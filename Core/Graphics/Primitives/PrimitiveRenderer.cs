@@ -310,9 +310,29 @@ namespace Luminance.Core.Graphics
         #endregion
 
         #region Quad Rendering
+        /// <summary>
+        /// Renders a primitive quad from a texture. Useful for using with rotation matrices.
+        /// </summary>
+        /// <param name="texture">The texture to use as the base.</param>
+        /// <param name="center">The world position to render the quad at.</param>
+        /// <param name="scale">The scale to apply.</param>
+        /// <param name="rotation">The rotation to apply.</param>
+        /// <param name="color">The color to draw with. Defaults to the lighting color at <paramref name="center"/>.</param>
+        /// <param name="shader">The shader to use. Defaults to "Luminance.QuadRenderer".</param>
+        /// <param name="rotationQuarternion">The rotation quarternion to use. Defaults to null.</param>
         public static void RenderQuad(Texture2D texture, Vector2 center, float scale, float rotation, Color? color = null, ManagedShader shader = null, Quaternion? rotationQuarternion = null)
             => RenderQuad(texture, center, new Vector2(scale), rotation, color, shader, rotationQuarternion);
 
+        /// <summary>
+        /// Renders a primitive quad from a texture. Useful for using with rotation matrices.
+        /// </summary>
+        /// <param name="texture">The texture to use as the base.</param>
+        /// <param name="center">The world position to render the quad at.</param>
+        /// <param name="scale">The scale to apply.</param>
+        /// <param name="rotation">The rotation to apply.</param>
+        /// <param name="color">The color to draw with. Defaults to the lighting color at <paramref name="center"/>.</param>
+        /// <param name="shader">The shader to use. Defaults to "Luminance.QuadRenderer".</param>
+        /// <param name="rotationQuarternion">The rotation quarternion to use. Defaults to null.</param>
         public static void RenderQuad(Texture2D texture, Vector2 center, Vector2 scale, float rotation, Color? color = null, ManagedShader shader = null, Quaternion? rotationQuarternion = null)
         {
             var rotationMatrix = rotationQuarternion is null ? Matrix.CreateRotationZ(rotation) : Matrix.CreateFromQuaternion(rotationQuarternion.Value) * Matrix.CreateRotationZ(rotation);
@@ -351,6 +371,12 @@ namespace Luminance.Core.Graphics
         #endregion
 
         #region Circle Rendering
+        /// <summary>
+        /// Renders a circle made up of primitives.
+        /// </summary>
+        /// <param name="center">The world position to render the circle at.</param>
+        /// <param name="settings">The settings to use.</param>
+        /// <param name="sideCount">The amount of triangles to use in the circle. Higher = smoother edge but more costly.</param>
         public static void RenderCircle(Vector2 center, PrimitiveSettingsCircle settings, int sideCount = 512)
         {
             if (sideCount <= 0)
@@ -414,6 +440,12 @@ namespace Luminance.Core.Graphics
         #endregion
 
         #region Circle Edge Renderer
+        /// <summary>
+        /// Renders the edge of a circle made up of primitives.
+        /// </summary>
+        /// <param name="center">The world position to render the circle at.</param>
+        /// <param name="settings">The settings to use.</param>
+        /// <param name="totalPoints">The amount of triangles to use in the circle. Higher = smoother edge but more costly.</param>
         public static void RenderCircleEdge(Vector2 center, PrimitiveSettingsCircleEdge settings, int totalPoints = 200)
         {
             if (totalPoints <= 0)
