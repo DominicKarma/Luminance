@@ -1662,6 +1662,106 @@
             <param name="settings">The primitive draw settings to use.</param>
             <param name="pointsToCreate">The amount of points to use. More is higher detailed, but less performant. By default, is the number of positions provided. <b>Going above 100 is NOT recommended.</b></param>
         </member>
+        <member name="M:Luminance.Core.Graphics.PrimitiveRenderer.RenderQuad(Microsoft.Xna.Framework.Graphics.Texture2D,Microsoft.Xna.Framework.Vector2,System.Single,System.Single,System.Nullable{Microsoft.Xna.Framework.Color},Luminance.Core.Graphics.ManagedShader,System.Nullable{Microsoft.Xna.Framework.Quaternion})">
+            <summary>
+            Renders a primitive quad from a texture. Useful for using with rotation matrices.
+            </summary>
+            <param name="texture">The texture to use as the base.</param>
+            <param name="center">The world position to render the quad at.</param>
+            <param name="scale">The scale to apply.</param>
+            <param name="rotation">The rotation to apply.</param>
+            <param name="color">The color to draw with. Defaults to the lighting color at <paramref name="center"/>.</param>
+            <param name="shader">The shader to use. Defaults to "Luminance.QuadRenderer".</param>
+            <param name="rotationQuarternion">The rotation quarternion to use. Defaults to null.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.PrimitiveRenderer.RenderQuad(Microsoft.Xna.Framework.Graphics.Texture2D,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,System.Single,System.Nullable{Microsoft.Xna.Framework.Color},Luminance.Core.Graphics.ManagedShader,System.Nullable{Microsoft.Xna.Framework.Quaternion})">
+            <summary>
+            Renders a primitive quad from a texture. Useful for using with rotation matrices.
+            </summary>
+            <param name="texture">The texture to use as the base.</param>
+            <param name="center">The world position to render the quad at.</param>
+            <param name="scale">The scale to apply.</param>
+            <param name="rotation">The rotation to apply.</param>
+            <param name="color">The color to draw with. Defaults to the lighting color at <paramref name="center"/>.</param>
+            <param name="shader">The shader to use. Defaults to "Luminance.QuadRenderer".</param>
+            <param name="rotationQuarternion">The rotation quarternion to use. Defaults to null.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.PrimitiveRenderer.RenderCircle(Microsoft.Xna.Framework.Vector2,Luminance.Core.Graphics.PrimitiveSettingsCircle,System.Int32)">
+            <summary>
+            Renders a circle made up of primitives.
+            </summary>
+            <param name="center">The world position to render the circle at.</param>
+            <param name="settings">The settings to use.</param>
+            <param name="sideCount">The amount of triangles to use in the circle. Higher = smoother edge but more costly.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.PrimitiveRenderer.RenderCircleEdge(Microsoft.Xna.Framework.Vector2,Luminance.Core.Graphics.PrimitiveSettingsCircleEdge,System.Int32)">
+            <summary>
+            Renders the edge of a circle made up of primitives.
+            </summary>
+            <param name="center">The world position to render the circle at.</param>
+            <param name="settings">The settings to use.</param>
+            <param name="totalPoints">The amount of triangles to use in the circle. Higher = smoother edge but more costly.</param>
+        </member>
+        <member name="T:Luminance.Core.Graphics.PrimitiveSettings">
+            <summary>
+            Configurable settings for a primitive trail.
+            </summary>
+            <param name="WidthFunction">Determines the width of the trail.</param>
+            <param name="ColorFunction">Determines the color of the trail.</param>
+            <param name="OffsetFunction">Determines the offset of the trail.</param>
+            <param name="Smoothen">Whether to smoothen the positions of the trail.</param>
+            <param name="Pixelate">Whether to pixelate the trail. <b>MUST be used with <see cref="T:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer"/> or <see cref="M:Luminance.Core.Graphics.PrimitivePixelationSystem.RenderToPrimsNextFrame(System.Action,Luminance.Core.Graphics.PixelationPrimitiveLayer)"/></b></param>
+            <param name="Shader">The shader to use when rendering.</param>
+            <param name="ProjectionAreaWidth">The width of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenWidth"/>.</param>
+            <param name="ProjectionAreaHeight">The height of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenHeight"/>.</param>
+            <param name="UseUnscaledMatrix">Whether to use an unscaled matrix when rendering.</param>
+            <param name="InitialVertexPositionsOverride">Optional tuple to replace the first vertex positions.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.PrimitiveSettings.#ctor(Luminance.Core.Graphics.PrimitiveSettings.VertexWidthFunction,Luminance.Core.Graphics.PrimitiveSettings.VertexColorFunction,Luminance.Core.Graphics.PrimitiveSettings.VertexOffsetFunction,System.Boolean,System.Boolean,Luminance.Core.Graphics.ManagedShader,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Nullable{System.ValueTuple{Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2}})">
+            <summary>
+            Configurable settings for a primitive trail.
+            </summary>
+            <param name="WidthFunction">Determines the width of the trail.</param>
+            <param name="ColorFunction">Determines the color of the trail.</param>
+            <param name="OffsetFunction">Determines the offset of the trail.</param>
+            <param name="Smoothen">Whether to smoothen the positions of the trail.</param>
+            <param name="Pixelate">Whether to pixelate the trail. <b>MUST be used with <see cref="T:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer"/> or <see cref="M:Luminance.Core.Graphics.PrimitivePixelationSystem.RenderToPrimsNextFrame(System.Action,Luminance.Core.Graphics.PixelationPrimitiveLayer)"/></b></param>
+            <param name="Shader">The shader to use when rendering.</param>
+            <param name="ProjectionAreaWidth">The width of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenWidth"/>.</param>
+            <param name="ProjectionAreaHeight">The height of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenHeight"/>.</param>
+            <param name="UseUnscaledMatrix">Whether to use an unscaled matrix when rendering.</param>
+            <param name="InitialVertexPositionsOverride">Optional tuple to replace the first vertex positions.</param>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettings.WidthFunction">
+            <summary>Determines the width of the trail.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettings.ColorFunction">
+            <summary>Determines the color of the trail.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettings.OffsetFunction">
+            <summary>Determines the offset of the trail.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettings.Smoothen">
+            <summary>Whether to smoothen the positions of the trail.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettings.Pixelate">
+            <summary>Whether to pixelate the trail. <b>MUST be used with <see cref="T:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer"/> or <see cref="M:Luminance.Core.Graphics.PrimitivePixelationSystem.RenderToPrimsNextFrame(System.Action,Luminance.Core.Graphics.PixelationPrimitiveLayer)"/></b></summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettings.Shader">
+            <summary>The shader to use when rendering.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettings.ProjectionAreaWidth">
+            <summary>The width of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenWidth"/>.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettings.ProjectionAreaHeight">
+            <summary>The height of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenHeight"/>.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettings.UseUnscaledMatrix">
+            <summary>Whether to use an unscaled matrix when rendering.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettings.InitialVertexPositionsOverride">
+            <summary>Optional tuple to replace the first vertex positions.</summary>
+        </member>
         <member name="T:Luminance.Core.Graphics.PrimitiveSettings.VertexWidthFunction">
             <summary>
             A delegate to dynamically determine the width of the trail at each position.
@@ -1682,6 +1782,101 @@
             </summary>
             <param name="trailLengthInterpolant">The current position along the trail as a 0-1 interpolant value.</param>
             <returns>The offset for the current point.</returns>
+        </member>
+        <member name="T:Luminance.Core.Graphics.PrimitiveSettingsCircle">
+            <summary>
+            Configurable settings for a primitive circle.
+            </summary>
+            <param name="RadiusFunction">Determines the radius of the circle.</param>
+            <param name="ColorFunction">Determines the color of the circle.</param>
+            <param name="Pixelate">Whether to pixelate the circle. <b>MUST be used with <see cref="T:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer"/> or <see cref="M:Luminance.Core.Graphics.PrimitivePixelationSystem.RenderToPrimsNextFrame(System.Action,Luminance.Core.Graphics.PixelationPrimitiveLayer)"/></b></param>
+            <param name="Shader">The shader to use when rendering.</param>
+            <param name="ProjectionAreaWidth">The width of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenWidth"/>.</param>
+            <param name="ProjectionAreaHeight">The height of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenHeight"/>.</param>
+            <param name="UseUnscaledMatrix">Whether to use an unscaled matrix when rendering.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.PrimitiveSettingsCircle.#ctor(Luminance.Core.Graphics.PrimitiveSettings.VertexWidthFunction,Luminance.Core.Graphics.PrimitiveSettings.VertexColorFunction,System.Boolean,Luminance.Core.Graphics.ManagedShader,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean)">
+            <summary>
+            Configurable settings for a primitive circle.
+            </summary>
+            <param name="RadiusFunction">Determines the radius of the circle.</param>
+            <param name="ColorFunction">Determines the color of the circle.</param>
+            <param name="Pixelate">Whether to pixelate the circle. <b>MUST be used with <see cref="T:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer"/> or <see cref="M:Luminance.Core.Graphics.PrimitivePixelationSystem.RenderToPrimsNextFrame(System.Action,Luminance.Core.Graphics.PixelationPrimitiveLayer)"/></b></param>
+            <param name="Shader">The shader to use when rendering.</param>
+            <param name="ProjectionAreaWidth">The width of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenWidth"/>.</param>
+            <param name="ProjectionAreaHeight">The height of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenHeight"/>.</param>
+            <param name="UseUnscaledMatrix">Whether to use an unscaled matrix when rendering.</param>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircle.RadiusFunction">
+            <summary>Determines the radius of the circle.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircle.ColorFunction">
+            <summary>Determines the color of the circle.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircle.Pixelate">
+            <summary>Whether to pixelate the circle. <b>MUST be used with <see cref="T:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer"/> or <see cref="M:Luminance.Core.Graphics.PrimitivePixelationSystem.RenderToPrimsNextFrame(System.Action,Luminance.Core.Graphics.PixelationPrimitiveLayer)"/></b></summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircle.Shader">
+            <summary>The shader to use when rendering.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircle.ProjectionAreaWidth">
+            <summary>The width of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenWidth"/>.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircle.ProjectionAreaHeight">
+            <summary>The height of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenHeight"/>.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircle.UseUnscaledMatrix">
+            <summary>Whether to use an unscaled matrix when rendering.</summary>
+        </member>
+        <member name="T:Luminance.Core.Graphics.PrimitiveSettingsCircleEdge">
+            <summary>
+            Configurable settings for a primitive circle edge.
+            </summary>
+            <param name="EdgeWidthFunction">Determines the width of the circle edge.</param>
+            <param name="ColorFunction">Determines the color of the circle edge.</param>
+            <param name="RadiusFunction">Determines the radius of the circle edge.</param>
+            <param name="Pixelate">Whether to pixelate the circle edge. <b>MUST be used with <see cref="T:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer"/> or <see cref="M:Luminance.Core.Graphics.PrimitivePixelationSystem.RenderToPrimsNextFrame(System.Action,Luminance.Core.Graphics.PixelationPrimitiveLayer)"/></b></param>
+            <param name="Shader">The shader to use when rendering.</param>
+            <param name="ProjectionAreaWidth">The width of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenWidth"/>.</param>
+            <param name="ProjectionAreaHeight">The height of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenHeight"/>.</param>
+            <param name="UseUnscaledMatrix">Whether to use an unscaled matrix when rendering.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.PrimitiveSettingsCircleEdge.#ctor(Luminance.Core.Graphics.PrimitiveSettings.VertexWidthFunction,Luminance.Core.Graphics.PrimitiveSettings.VertexColorFunction,Luminance.Core.Graphics.PrimitiveSettings.VertexWidthFunction,System.Boolean,Luminance.Core.Graphics.ManagedShader,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean)">
+            <summary>
+            Configurable settings for a primitive circle edge.
+            </summary>
+            <param name="EdgeWidthFunction">Determines the width of the circle edge.</param>
+            <param name="ColorFunction">Determines the color of the circle edge.</param>
+            <param name="RadiusFunction">Determines the radius of the circle edge.</param>
+            <param name="Pixelate">Whether to pixelate the circle edge. <b>MUST be used with <see cref="T:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer"/> or <see cref="M:Luminance.Core.Graphics.PrimitivePixelationSystem.RenderToPrimsNextFrame(System.Action,Luminance.Core.Graphics.PixelationPrimitiveLayer)"/></b></param>
+            <param name="Shader">The shader to use when rendering.</param>
+            <param name="ProjectionAreaWidth">The width of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenWidth"/>.</param>
+            <param name="ProjectionAreaHeight">The height of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenHeight"/>.</param>
+            <param name="UseUnscaledMatrix">Whether to use an unscaled matrix when rendering.</param>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircleEdge.EdgeWidthFunction">
+            <summary>Determines the width of the circle edge.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircleEdge.ColorFunction">
+            <summary>Determines the color of the circle edge.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircleEdge.RadiusFunction">
+            <summary>Determines the radius of the circle edge.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircleEdge.Pixelate">
+            <summary>Whether to pixelate the circle edge. <b>MUST be used with <see cref="T:Luminance.Core.Graphics.IPixelatedPrimitiveRenderer"/> or <see cref="M:Luminance.Core.Graphics.PrimitivePixelationSystem.RenderToPrimsNextFrame(System.Action,Luminance.Core.Graphics.PixelationPrimitiveLayer)"/></b></summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircleEdge.Shader">
+            <summary>The shader to use when rendering.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircleEdge.ProjectionAreaWidth">
+            <summary>The width of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenWidth"/>.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircleEdge.ProjectionAreaHeight">
+            <summary>The height of the projection matrix area. Defaults to <see cref="F:Terraria.Main.screenHeight"/>.</summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.PrimitiveSettingsCircleEdge.UseUnscaledMatrix">
+            <summary>Whether to use an unscaled matrix when rendering.</summary>
         </member>
         <member name="T:Luminance.Core.Graphics.VertexPosition2DColorTexture">
             <summary>
