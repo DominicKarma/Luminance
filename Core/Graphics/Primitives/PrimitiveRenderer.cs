@@ -16,7 +16,7 @@ namespace Luminance.Core.Graphics
 
         private static DynamicIndexBuffer IndexBuffer;
 
-        private static PrimitiveSettings MainSettings;
+        private static IPrimitiveSettings MainSettings;
 
         private static Vector2[] MainPositions;
 
@@ -79,7 +79,7 @@ namespace Luminance.Core.Graphics
             });
         }
 
-        private static void PerformPixelationSafetyChecks(PrimitiveSettings settings)
+        private static void PerformPixelationSafetyChecks(IPrimitiveSettings settings)
         {
             // Don't allow accidental screw ups with these.
             if (settings.Pixelate && !PrimitivePixelationSystem.CurrentlyRendering)
@@ -117,7 +117,7 @@ namespace Luminance.Core.Graphics
 
             MainSettings = settings;
 
-            AssignVerticesRectangleTrail();
+            AssignVerticesRectangleTrail(settings);
             AssignIndicesRectangleTrail();
 
             PrivateRender();
@@ -245,14 +245,14 @@ namespace Luminance.Core.Graphics
             return true;
         }
 
-        private static void AssignVerticesRectangleTrail()
+        private static void AssignVerticesRectangleTrail(PrimitiveSettings settings)
         {
             VerticesIndex = 0;
             for (int i = 0; i < PositionsIndex; i++)
             {
                 float completionRatio = i / (float)(PositionsIndex - 1);
-                float widthAtVertex = MainSettings.WidthFunction(completionRatio);
-                Color vertexColor = MainSettings.ColorFunction(completionRatio);
+                float widthAtVertex = settings.WidthFunction(completionRatio);
+                Color vertexColor = settings.ColorFunction(completionRatio);
                 Vector2 currentPosition = MainPositions[i];
                 Vector2 directionToAhead = i == PositionsIndex - 1 ? (MainPositions[i] - MainPositions[i - 1]).SafeNormalize(Vector2.Zero) : (MainPositions[i + 1] - MainPositions[i]).SafeNormalize(Vector2.Zero);
 
@@ -267,10 +267,10 @@ namespace Luminance.Core.Graphics
                 Vector2 right = currentPosition + sideDirection * widthAtVertex;
 
                 // Override the initial vertex positions if requested.
-                if (i == 0 && MainSettings.InitialVertexPositionsOverride.HasValue && MainSettings.InitialVertexPositionsOverride.Value.Left != Vector2.Zero && MainSettings.InitialVertexPositionsOverride.Value.Right != Vector2.Zero)
+                if (i == 0 && settings.InitialVertexPositionsOverride.HasValue && settings.InitialVertexPositionsOverride.Value.Left != Vector2.Zero && settings.InitialVertexPositionsOverride.Value.Right != Vector2.Zero)
                 {
-                    left = MainSettings.InitialVertexPositionsOverride.Value.Left;
-                    right = MainSettings.InitialVertexPositionsOverride.Value.Right;
+                    left = settings.InitialVertexPositionsOverride.Value.Left;
+                    right = settings.InitialVertexPositionsOverride.Value.Right;
                 }
 
                 // What this is doing, at its core, is defining a rectangle based on two triangles.
@@ -351,7 +351,7 @@ namespace Luminance.Core.Graphics
         #endregion
 
         #region Circle Rendering
-        public static void RenderCircle(Vector2 center, PrimitiveSettings settings, int sideCount = 512)
+        public static void RenderCircle(Vector2 center, PrimitiveSettingsCircle settings, int sideCount = 512)
         {
             if (sideCount <= 0)
                 return;
@@ -414,7 +414,7 @@ namespace Luminance.Core.Graphics
         #endregion
 
         #region Circle Edge Renderer
-        public static void RenderCircleEdge(Vector2 center, PrimitiveSettings settings, int totalPoints = 200)
+        public static void RenderCircleEdge(Vector2 center, PrimitiveSettingsCircleEdge settings, int totalPoints = 200)
         {
             if (totalPoints <= 0)
                 return;
@@ -429,7 +429,7 @@ namespace Luminance.Core.Graphics
                 float interpolant = i / (float)totalPoints;
                 float currentWidth = settings.WidthFunction(interpolant);
                 Color color = settings.ColorFunction(interpolant);
-                float radius = settings.OffsetFunction(interpolant).X;
+                float radius = settings.RadiusFunction(interpolant);
 
                 Vector2 innerPosition = center - Main.screenPosition + (i * TwoPi / totalPoints).ToRotationVector2() * radius;
                 Vector2 outerPosition = center - Main.screenPosition + (i * TwoPi / totalPoints).ToRotationVector2() * (radius + currentWidth);

@@ -1649,6 +1649,11 @@
             <param name="renderAction">The render action to perform.</param>
             <param name="layer">The layer to draw to.</param>
         </member>
+        <member name="F:Luminance.Core.Graphics.PrimitiveRenderer.MaxCirclePositions">
+            <summary>
+            Must be lower than <see cref="F:Luminance.Core.Graphics.PrimitiveRenderer.MaxTrailPositions"/>, less than 1/4 of <see cref="F:Luminance.Core.Graphics.PrimitiveRenderer.MaxVertices"/> and less than 1/6 of <see cref="F:Luminance.Core.Graphics.PrimitiveRenderer.MaxIndices"/>.
+            </summary>
+        </member>
         <member name="M:Luminance.Core.Graphics.PrimitiveRenderer.RenderTrail(System.Collections.Generic.IEnumerable{Microsoft.Xna.Framework.Vector2},Luminance.Core.Graphics.PrimitiveSettings,System.Nullable{System.Int32})">
             <summary>
             Renders a primitive trail.
