@@ -1,20 +1,19 @@
-sampler streakTexture : register(s1);
+﻿sampler image : register(s1);
 
-float globalTime;
 matrix uWorldViewProjection;
 
 struct VertexShaderInput
 {
     float4 Position : POSITION0;
     float4 Color : COLOR0;
-    float2 TextureCoordinates : TEXCOORD0;
+    float3 TextureCoordinates : TEXCOORD0;
 };
 
 struct VertexShaderOutput
 {
     float4 Position : SV_POSITION;
     float4 Color : COLOR0;
-    float2 TextureCoordinates : TEXCOORD0;
+    float3 TextureCoordinates : TEXCOORD0;
 };
 
 VertexShaderOutput VertexShaderFunction(in VertexShaderInput input)
@@ -25,20 +24,20 @@ VertexShaderOutput VertexShaderFunction(in VertexShaderInput input)
     
     output.Color = input.Color;
     output.TextureCoordinates = input.TextureCoordinates;
-
+    output.TextureCoordinates.y = (output.TextureCoordinates.y - 0.5) / input.TextureCoordinates.z + 0.5;
     return output;
 }
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
-    return input.Color;
+    return input.Color * tex2D(image, input.TextureCoordinates.xy);
 }
 
 technique Technique1
 {
     pass AutoloadPass
     {
-        VertexShader = compile vs_2_0 VertexShaderFunction();
-        PixelShader = compile ps_2_0 PixelShaderFunction();
+        VertexShader = compile vs_3_0 VertexShaderFunction();
+        PixelShader = compile ps_3_0 PixelShaderFunction();
     }
 }

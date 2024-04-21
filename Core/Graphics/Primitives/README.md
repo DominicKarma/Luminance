@@ -3,7 +3,7 @@
 Luminance provides a simple and centralized class for handling rendering primitives directly, for things such as trails etc. You do not need to worry about the behind the scenes goings on to use them.
 
 ## How to use
-Drawing primitives using it is done via a single method call, ``PrimitiveRenderer.RenderTrail``.
+Drawing trails using it is done via a single method call, ``PrimitiveRenderer.RenderTrail``.
 
 ```c#
 private void DrawTrail()
@@ -12,7 +12,17 @@ private void DrawTrail()
     PrimitiveRenderer.RenderTrail(NPC.oldPos, new(_ => 20f, _ => Color.Aqua, _ => positionToCenterOffset), 20);
 }
 ```
->  An example of using this to draw a very simple centered trail behind an NPC using its oldpos array.
+>  An example of drawing a very simple centered trail behind an NPC using its oldpos array.
+
+There are also additional methods for drawing other shapes.
+
+```c#
+private void DrawCircle()
+{
+    PrimitiveRenderer.RenderCircle(NPC.Center, new(_ => 100f, _ => Color.White), 512);
+}
+```
+> An example of drawing a white circle with a radius of 100 pixels.
 
 ## Pixelated Primitives
 Luminance provides an interface to draw primitives in for NPCS/Projectiles with pixelation applied to them. To use, make your ModNPC/ModProjectile implement ``IPixelatedPrimitiveRenderer`` and use the same render trail call as above, setting ``Pixelate`` to true in the ``PrimitiveSettings`` constructor.
