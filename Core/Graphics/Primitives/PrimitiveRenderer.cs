@@ -361,16 +361,16 @@ namespace Luminance.Core.Graphics
             sideCount = Math.Min(sideCount, MaxCirclePositions - 1);
 
             float sideAngle = TwoPi / sideCount;
-            float sideLengthMinusRadius = Sqrt(2f - Cos(sideAngle));
+            float sideLengthMinusRadius = Sqrt(2f - Cos(sideAngle) * 2f);
 
             VerticesIndex = 0;
             IndicesIndex = 0;
 
             for (int i = 0; i < sideCount; i++)
             {
-                float completionRatio = i / (float)(sideCount - 1f);
-                float nextSideCompletionRatio = (i + 1f) / (float)(sideCount - 1f);
-                float radius = settings.WidthFunction(completionRatio);
+                float completionRatio = i / (float)sideCount;
+                float nextSideCompletionRatio = (i + 1f) / sideCount;
+                float radius = settings.RadiusFunction(completionRatio);
                 Color color = settings.ColorFunction(completionRatio);
 
                 Vector2 orthogonal = (TwoPi * completionRatio + PiOver2).ToRotationVector2();
@@ -427,7 +427,7 @@ namespace Luminance.Core.Graphics
             for (int i = 0; i <= totalPoints; i++)
             {
                 float interpolant = i / (float)totalPoints;
-                float currentWidth = settings.WidthFunction(interpolant);
+                float currentWidth = settings.EdgeWidthFunction(interpolant);
                 Color color = settings.ColorFunction(interpolant);
                 float radius = settings.RadiusFunction(interpolant);
 
