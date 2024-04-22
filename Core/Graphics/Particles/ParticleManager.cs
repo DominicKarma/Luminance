@@ -90,7 +90,7 @@ namespace Luminance.Core.Graphics
 
         internal static void AddToDrawList(Particle particle)
         {
-            // Guarenteed to be registered here unless manually drawn is set by reflection or smth (do not do that).
+            // Guaranteed to be registered here unless manually drawn is set by reflection or smth (do not do that).
             if (particle.ManuallyDrawn)
                 ManualRenderers[particle.GetType()].AddParticle(particle);
             else

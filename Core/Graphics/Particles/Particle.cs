@@ -26,7 +26,11 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// Whether the particle is manually drawn.
         /// </summary>
-        internal bool ManuallyDrawn;
+        internal bool ManuallyDrawn
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
         /// The position of the particle.

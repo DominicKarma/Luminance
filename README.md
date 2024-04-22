@@ -1,5 +1,5 @@
 # Luminance
-Luminance is a library mod that provides a range of useful features to mods, primarily (but not limitied to) graphics systems.
+Luminance is a library mod that provides a range of useful features to mods.
 
 ---
 ## How to navigate the repository
@@ -20,6 +20,7 @@ Navigate to the folder to find out more about each feature listed.<br/>
 - Easings: Features for creating easing animations, or simply smoothening a value based on a range of easing curves.
 - State Machines: A system for handling complex behavior(AI) states for NPCs, Projectiles or anything really.
 - Utilities: Contains a wide range of utilities, ranging from mathematics to drawcode etc.
+- Verlet Intergration: Contains verlet simulations for creating realistic ropes etc.
 
 ### Core:
 - Balancing: Contains a centeralized balancing system that supports NPC HP, NPC projectile resistances, Item tweaking with conflict handling between different mods.
