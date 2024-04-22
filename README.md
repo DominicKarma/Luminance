@@ -26,6 +26,7 @@ Navigate to the folder to find out more about each feature listed.<br/>
 - Cutscenes: Contains a cutscene system that allows for mods to play out cutscene events with hooks for common aspects, but giving freedom in what happens during it.
 - Graphics: Provides a wide range of graphics features, such as particles, primitives, shaders, screenshake etc.
 - Hooking: Provides several interfaces for using detours, a wrapper class for managed IL edits and a helper class.
+- Menu Info UI: Contains a system that allows mods to add small icons to the player and world UI that show specific information based on the state of said player or world.
 - Mod Calls: Provides a system to split up and organise your mod calls while having automatic type safety and argument checks.
 - Sounds: Provides a system to properly loops sound instances.
 
