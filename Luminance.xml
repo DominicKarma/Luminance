@@ -2573,6 +2573,83 @@
             </summary>
             <param name="reason">The reason that the IL edit failed.</param>
         </member>
+        <member name="T:Luminance.Core.MenuInfoUI.InfoUIManager">
+            <summary>
+            A class to supply all information icons for your mod on loading.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.MenuInfoUI.InfoUIManager.GetPlayerInfoIcons">
+            <summary>
+            Return all player info icons here.<br/>
+            <b>Called automatically, do not call.</b>
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.MenuInfoUI.InfoUIManager.GetWorldInfoIcons">
+            <summary>
+            Return all world info icons here.<br/>
+            <b>Called automatically, do not call.</b>
+            </summary>
+        </member>
+        <member name="T:Luminance.Core.MenuInfoUI.PlayerInfoIcon">
+            <summary>
+            Represents an icon that shows up on the player selection UI to provide information about the player's state.
+            </summary>
+            <param name="TexturePath">The path to the texture of the icon, including the mod name.</param>
+            <param name="HoverTextKey">The localization key for the text that should be displayed when this icon is hovered.</param>
+            <param name="ShouldAppear">Whether this icon should appear for the provided player.</param>
+            <param name="Priority">The priority of this icon, this determines the ordering of the icon from low to high.</param>
+        </member>
+        <member name="M:Luminance.Core.MenuInfoUI.PlayerInfoIcon.#ctor(System.String,System.String,System.Func{Terraria.Player,System.Boolean},System.Byte)">
+            <summary>
+            Represents an icon that shows up on the player selection UI to provide information about the player's state.
+            </summary>
+            <param name="TexturePath">The path to the texture of the icon, including the mod name.</param>
+            <param name="HoverTextKey">The localization key for the text that should be displayed when this icon is hovered.</param>
+            <param name="ShouldAppear">Whether this icon should appear for the provided player.</param>
+            <param name="Priority">The priority of this icon, this determines the ordering of the icon from low to high.</param>
+        </member>
+        <member name="P:Luminance.Core.MenuInfoUI.PlayerInfoIcon.TexturePath">
+            <summary>The path to the texture of the icon, including the mod name.</summary>
+        </member>
+        <member name="P:Luminance.Core.MenuInfoUI.PlayerInfoIcon.HoverTextKey">
+            <summary>The localization key for the text that should be displayed when this icon is hovered.</summary>
+        </member>
+        <member name="P:Luminance.Core.MenuInfoUI.PlayerInfoIcon.ShouldAppear">
+            <summary>Whether this icon should appear for the provided player.</summary>
+        </member>
+        <member name="P:Luminance.Core.MenuInfoUI.PlayerInfoIcon.Priority">
+            <summary>The priority of this icon, this determines the ordering of the icon from low to high.</summary>
+        </member>
+        <member name="T:Luminance.Core.MenuInfoUI.WorldInfoIcon">
+            <summary>
+            Represents an icon that shows up on the world selection UI to provide information about the world's state.
+            </summary>
+            <param name="TexturePath">The path to the texture of the icon, including the mod name.</param>
+            <param name="HoverTextKey">The localization key for the text that should be displayed when this icon is hovered.</param>
+            <param name="ShouldAppear">Whether this icon should appear for the provided world. Store things in the world header and check them here.</param>
+            <param name="Priority">The priority of this icon, this determines the ordering of the icon from low to high.</param>
+        </member>
+        <member name="M:Luminance.Core.MenuInfoUI.WorldInfoIcon.#ctor(System.String,System.String,System.Func{Terraria.IO.WorldFileData,System.Boolean},System.Byte)">
+            <summary>
+            Represents an icon that shows up on the world selection UI to provide information about the world's state.
+            </summary>
+            <param name="TexturePath">The path to the texture of the icon, including the mod name.</param>
+            <param name="HoverTextKey">The localization key for the text that should be displayed when this icon is hovered.</param>
+            <param name="ShouldAppear">Whether this icon should appear for the provided world. Store things in the world header and check them here.</param>
+            <param name="Priority">The priority of this icon, this determines the ordering of the icon from low to high.</param>
+        </member>
+        <member name="P:Luminance.Core.MenuInfoUI.WorldInfoIcon.TexturePath">
+            <summary>The path to the texture of the icon, including the mod name.</summary>
+        </member>
+        <member name="P:Luminance.Core.MenuInfoUI.WorldInfoIcon.HoverTextKey">
+            <summary>The localization key for the text that should be displayed when this icon is hovered.</summary>
+        </member>
+        <member name="P:Luminance.Core.MenuInfoUI.WorldInfoIcon.ShouldAppear">
+            <summary>Whether this icon should appear for the provided world. Store things in the world header and check them here.</summary>
+        </member>
+        <member name="P:Luminance.Core.MenuInfoUI.WorldInfoIcon.Priority">
+            <summary>The priority of this icon, this determines the ordering of the icon from low to high.</summary>
+        </member>
         <member name="M:Luminance.Core.ModCalls.ModCall.ProcessInternal(System.Object[])">
             <summary>
             Processes the modcall, checking that all the parameters match and throws if not.

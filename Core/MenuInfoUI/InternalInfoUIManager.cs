@@ -14,6 +14,7 @@ using Terraria.UI.Chat;
 using Terraria.GameContent.UI.States;
 using System.Linq;
 using Terraria.UI;
+using Terraria.Localization;
 
 namespace Luminance.Core.MenuInfoUI
 {
@@ -174,7 +175,7 @@ namespace Luminance.Core.MenuInfoUI
         {
             var panelDrawPosition = new Vector2(elementInnerDimensions.X + currentX - 13f, elementInnerDimensions.Y + elementInnerDimensions.Height - 25);
 
-            DrawPanel(spriteBatch, panelDrawPosition, (maxToDraw + (count > maxToDraw ? 1 : 0)) * 25f + 5f);
+            DrawPanel(spriteBatch, panelDrawPosition, (maxToDraw + (count > maxToDraw ? 1 : 0)) * (idealIconSize + iconPadding) + iconPadding);
 
             int totalDrawn = 0;
             int totalNotDrawn = 0;
@@ -193,7 +194,7 @@ namespace Luminance.Core.MenuInfoUI
 
                     if (hitbox.Contains(Main.MouseScreen.ToPoint()))
                     {
-                        currentMouseText = icon.HoverText;
+                        currentMouseText = icon.HoverTextKey;
                         textShouldShow = true;
                         int backglowAmount = 8;
                         for (int i = 0; i < backglowAmount; i++)
@@ -219,21 +220,21 @@ namespace Luminance.Core.MenuInfoUI
                 else
                 {
                     totalNotDrawn++;
-                    textsToAppend.Add(icon.HoverText);
+                    textsToAppend.Add(icon.HoverTextKey);
                 }
             }
 
-            if (totalNotDrawn > 0)
-            {
-                string text = $"+{totalNotDrawn}";
-                Vector2 textDrawPosition = new(elementInnerDimensions.X + currentX, elementInnerDimensions.Y + elementInnerDimensions.Height - 7f);
-                Vector2 origin = FontAssets.MouseText.Value.MeasureString(text) * 0.5f;
-                ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, textDrawPosition, Color.White, 0f, origin, Vector2.One * 0.8f);
+            if (totalNotDrawn <= 0)
+                return;
+            
+            string text = $"+{totalNotDrawn}";
+            Vector2 textDrawPosition = new(elementInnerDimensions.X + currentX, elementInnerDimensions.Y + elementInnerDimensions.Height - 7f);
+            Vector2 origin = FontAssets.MouseText.Value.MeasureString(text) * 0.5f;
+            ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, textDrawPosition, Color.White, 0f, origin, Vector2.One * 0.8f);
 
-                Rectangle area = new((int)(textDrawPosition.X - origin.X * 0.8f), (int)(textDrawPosition.Y - origin.Y * 0.8f), (int)(origin.X * 2.1f * 0.8f), (int)(origin.Y * 1.5f * 0.8f));
-                if (area.Contains(Main.MouseScreen.ToPoint()))
-                    ExtraTextToAppend = textsToAppend;
-            }
+            Rectangle area = new((int)(textDrawPosition.X - origin.X * 0.8f), (int)(textDrawPosition.Y - origin.Y * 0.8f), (int)(origin.X * 2.1f * 0.8f), (int)(origin.Y * 1.5f * 0.8f));
+            if (area.Contains(Main.MouseScreen.ToPoint()))
+                ExtraTextToAppend = textsToAppend;
         }
 
         private void DrawHoverText(On_UICharacterSelect.orig_Draw orig, UICharacterSelect self, SpriteBatch spriteBatch)
@@ -247,18 +248,19 @@ namespace Luminance.Core.MenuInfoUI
                 textShouldShow = false;
                 int X = Main.mouseX + 14;
                 int Y = Main.mouseY + 14;
-                ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, currentMouseText, new Vector2(X, Y), Color.White, 0f, Vector2.Zero, Vector2.One);
+                ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, Language.GetTextValue(currentMouseText), new Vector2(X, Y), Color.White, 0f, Vector2.Zero, Vector2.One);
                 currentMouseText = string.Empty;
             }
             else if (ExtraTextToAppend.Any())
             {
                 int X = Main.mouseX + 14;
                 int Y = Main.mouseY + 14;
-                foreach (var text in ExtraTextToAppend)
+                foreach (var key in ExtraTextToAppend)
                 {
                     // This looks ugly, but you have bigger problems than that if you have enough to show this (and aren't Russian).
-                    ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, new Vector2(X, Y), Color.White, 0f, Vector2.Zero, Vector2.One);
-                    Y += (int)FontAssets.MouseText.Value.MeasureString(text).Y;
+                    var locacalizedText = Language.GetTextValue(key);
+                    ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, locacalizedText, new Vector2(X, Y), Color.White, 0f, Vector2.Zero, Vector2.One);
+                    Y += (int)FontAssets.MouseText.Value.MeasureString(locacalizedText).Y;
                 }
             }
         }

@@ -4,7 +4,7 @@
     {
         string TexturePath { get; init; }
 
-        string HoverText { get; init; }
+        string HoverTextKey { get; init; }
 
         byte Priority { get; init; }
     }

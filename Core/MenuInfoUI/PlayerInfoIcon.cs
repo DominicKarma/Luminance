@@ -3,5 +3,12 @@ using Terraria;
 
 namespace Luminance.Core.MenuInfoUI
 {
-    public record PlayerInfoIcon(string TexturePath, string HoverText, Func<Player, bool> ShouldAppear, byte Priority) : IInfoIcon;
+    /// <summary>
+    /// Represents an icon that shows up on the player selection UI to provide information about the player's state.
+    /// </summary>
+    /// <param name="TexturePath">The path to the texture of the icon, including the mod name.</param>
+    /// <param name="HoverTextKey">The localization key for the text that should be displayed when this icon is hovered.</param>
+    /// <param name="ShouldAppear">Whether this icon should appear for the provided player.</param>
+    /// <param name="Priority">The priority of this icon, this determines the ordering of the icon from low to high.</param>
+    public record PlayerInfoIcon(string TexturePath, string HoverTextKey, Func<Player, bool> ShouldAppear, byte Priority) : IInfoIcon;
 }
