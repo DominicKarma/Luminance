@@ -32,12 +32,13 @@ You will notice that they've also been placed into the canvas in the center. The
 - You must name it something unique, and relevant to its contents.
 - You must remove the file extension.
 - You shouldn't prepend the folder name in most cases, unless there are duplicate subtexture names which that solves.
+- The width and height can go up to a max of 4096x4096.
 - Rotation must not be allowed.
 - Trimming with a mode of trim is fine and advisable.
 - Detect identical should be enabled, it will remove duplicate textures and make the duplicate ones all point to the single one left, saving texture and file size.
 - It can be packed however you like, but I recommend either Optimal Packer (works best in most cases) or Max Rects Packer with Smart method.
 
-![image](https://github.com/toasty599/Luminance/assets/74939552/7bb61319-2a0e-4186-9c1e-8a9f9d3ec00a)
+![image](https://github.com/DominicKarma/Luminance/assets/74939552/5b01d0b1-ebb6-4bf1-ad74-5bcceb635ad8)
 
 ### Saving the atlas:
 - Select the save path, and pick somewhere in ``YourModDirectory/Assets/Atlases/``.
