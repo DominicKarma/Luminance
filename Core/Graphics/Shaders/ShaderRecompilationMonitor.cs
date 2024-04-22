@@ -5,9 +5,12 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
+using Terraria.Initializers;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Assets;
 
 namespace Luminance.Core.Graphics
 {
@@ -31,7 +34,7 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// The path to the central mod compiler.
         /// </summary>
-        public static string CompilerDirectory => Path.Combine(Main.SavePath, "EasyXNB");
+        public static string CompilerDirectory => Path.Combine(Main.SavePath, "FXC");
 
         /// <summary>
         /// Represents a watcher that looks over a given directory with .fx files.
@@ -92,12 +95,6 @@ namespace Luminance.Core.Graphics
             {
                 byte[] fileData = Mod.GetFileBytes(compilerFileName);
                 string copyFileName = Path.Combine(CompilerDirectory, Path.GetFileName(compilerFileName));
-
-                // This is super scuffed but the mod for reasons unknown doesn't load files of extension .exe.config
-                // However, EasyXNB refuses to load if the configuration file is not loaded with that exact formatting.
-                // To get around this, it's just stored as .execonfig in the mod's file data and renamed after the fact when exported.
-                copyFileName = copyFileName.Replace(".execonfig", ".exe.config");
-
                 File.WriteAllBytes(copyFileName, fileData);
             }
         }
@@ -139,7 +136,7 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        /// Clears all .fx and .xnb files in the compiler directory.
+        /// Clears all .fx, .xnb, and .fxc files in the compiler directory.
         /// </summary>
         private static void ClearCompilationDirectory()
         {
@@ -150,6 +147,8 @@ namespace Luminance.Core.Graphics
                 File.Delete(fxFile);
             foreach (string xnbFile in Directory.GetFiles(CompilerDirectory, "*.xnb"))
                 File.Delete(xnbFile);
+            foreach (string fxcFile in Directory.GetFiles(CompilerDirectory, "*.fxc"))
+                File.Delete(fxcFile);
         }
 
         /// <summary>
@@ -195,38 +194,45 @@ namespace Luminance.Core.Graphics
             if (compiledFiles.Count <= 0)
                 return;
 
-            StartCompilerProcess();
-
             for (int i = 0; i < compiledFiles.Count; i++)
+            {
+                StartCompilerProcess(compiledFiles[i].FilePath);
                 ProcessCompiledFile(compiledFiles[i], watcher, compilerDirectory);
+            }
         }
 
         /// <summary>
-        /// Starts EasyXNB.
+        /// Starts the fxc compiler and runs it for a given .fx file.
         /// </summary>
-        private static void StartCompilerProcess()
+        /// <param name="fxPath">The path to the .fx file.</param>
+        private static void StartCompilerProcess(string fxPath)
         {
-            Process easyXnb = new()
+            fxPath = Path.GetFileName(fxPath);
+
+            string outputPath = fxPath.Replace(".fx", ".fxc");
+            string compilationCommand = $"/T fx_2_0 {fxPath} /Fo {outputPath}";
+            Process fxcCompiler = new()
             {
-                StartInfo = new()
+                StartInfo = new($"{CompilerDirectory}\\fxc.exe")
                 {
-                    FileName = CompilerDirectory + "\\EasyXnb.exe",
-                    WorkingDirectory = CompilerDirectory + "//",
+                    WorkingDirectory = CompilerDirectory,
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
-                    RedirectStandardError = true
+                    RedirectStandardError = true,
+                    Arguments = compilationCommand
                 }
             };
-            easyXnb.Start();
-            if (!easyXnb.WaitForExit(3000))
+            fxcCompiler.Start();
+            string error = fxcCompiler.StandardError.ReadToEnd();
+            if (!fxcCompiler.WaitForExit(2500))
             {
                 Main.NewText("Shader compiler timed out. Likely error.", Color.OrangeRed);
-                easyXnb.Kill();
+                fxcCompiler.Kill();
                 return;
             }
 
-            easyXnb.Kill();
+            fxcCompiler.Kill();
         }
 
         /// <summary>
@@ -240,17 +246,17 @@ namespace Luminance.Core.Graphics
             bool compileAsFilter = file.CompileAsFilter;
             string shaderPath = file.FilePath;
             string modName = $"{watcher.ModName}.";
-            string compiledXnbPath = CompilerDirectory + "\\" + Path.GetFileNameWithoutExtension(shaderPath) + ".xnb";
-            string originalXnbPath = shaderPath.Replace(".fx", ".xnb");
+            string compiledFxcPath = CompilerDirectory + "\\" + Path.GetFileNameWithoutExtension(shaderPath) + ".fxc";
+            string originalFxcPath = shaderPath.Replace(".fx", ".fxc");
             string shaderPathInCompilerDirectory = compilerDirectory + Path.DirectorySeparatorChar + Path.GetFileName(shaderPath);
 
-            if (File.Exists(originalXnbPath))
-                File.Delete(originalXnbPath);
+            if (File.Exists(originalFxcPath))
+                File.Delete(originalFxcPath);
 
             // Copy over the XNB from the compiler, and delete the copy in the Compiler folder.
             try
             {
-                File.Copy(compiledXnbPath, originalXnbPath);
+                File.Copy(compiledFxcPath, originalFxcPath);
             }
             catch
             {
@@ -258,17 +264,19 @@ namespace Luminance.Core.Graphics
             }
             finally
             {
-                File.Delete(compiledXnbPath);
+                File.Delete(compiledFxcPath);
                 File.Delete(shaderPathInCompilerDirectory);
             }
 
             // Finally, load the new XNB's shader data into the game's managed wrappers that reference it.
             Main.QueueMainThreadAction(() =>
             {
-                string assetName = Path.GetFileNameWithoutExtension(originalXnbPath);
-                string shaderIdentifier = modName + Path.GetFileNameWithoutExtension(compiledXnbPath);
-                ContentManager tempManager = new(Main.instance.Content.ServiceProvider, Path.GetDirectoryName(originalXnbPath));
-                Ref<Effect> refEffect = new(tempManager.Load<Effect>(assetName));
+                string shaderIdentifier = modName + Path.GetFileNameWithoutExtension(compiledFxcPath);
+                using FileStream shaderFileData = new(originalFxcPath, FileMode.Open);
+                using MemoryStream shaderData = new();
+                shaderFileData.CopyTo(shaderData);
+
+                Ref<Effect> refEffect = new(new(Main.instance.GraphicsDevice, shaderData.ToArray()));
 
                 if (compileAsFilter)
                 {
@@ -289,7 +297,7 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        /// Moves a given compiling file to the compilation directory so that EasyXNB can run on it and acquire a new compiled shader.
+        /// Moves a given compiling file to the compilation directory so that the compiler can run on it and acquire a new compiled shader.
         /// </summary>
         /// <param name="file">The file to move.</param>
         private static void MoveFileToCompilingFolder(CompilingFile file)

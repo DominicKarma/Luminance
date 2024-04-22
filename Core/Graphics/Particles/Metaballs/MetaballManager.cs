@@ -35,6 +35,9 @@ namespace Luminance.Core.Graphics
 
         private void PrepareMetaballTargets()
         {
+            if (Main.gameMenu)
+                return;
+
             var activeTypes = MetaballTypes.Where(type => type.ShouldRender);
 
             if (!activeTypes.Any())

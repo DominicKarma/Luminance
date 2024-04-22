@@ -2276,7 +2276,7 @@
         </member>
         <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.ClearCompilationDirectory">
             <summary>
-            Clears all .fx and .xnb files in the compiler directory.
+            Clears all .fx, .xnb, and .fxc files in the compiler directory.
             </summary>
         </member>
         <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.TryToWatchPath(Terraria.ModLoader.Mod,System.String)">
@@ -2292,10 +2292,11 @@
             </summary>
             <param name="watcher">The shader watcher to process</param>
         </member>
-        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.StartCompilerProcess">
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.StartCompilerProcess(System.String)">
             <summary>
-            Starts EasyXNB.
+            Starts the fxc compiler and runs it for a given .fx file.
             </summary>
+            <param name="fxPath">The path to the .fx file.</param>
         </member>
         <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.ProcessCompiledFile(Luminance.Core.Graphics.ShaderRecompilationMonitor.CompilingFile,Luminance.Core.Graphics.ShaderRecompilationMonitor.ShaderWatcher,System.String)">
             <summary>
@@ -2307,7 +2308,7 @@
         </member>
         <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.MoveFileToCompilingFolder(Luminance.Core.Graphics.ShaderRecompilationMonitor.CompilingFile)">
             <summary>
-            Moves a given compiling file to the compilation directory so that EasyXNB can run on it and acquire a new compiled shader.
+            Moves a given compiling file to the compilation directory so that the compiler can run on it and acquire a new compiled shader.
             </summary>
             <param name="file">The file to move.</param>
         </member>
