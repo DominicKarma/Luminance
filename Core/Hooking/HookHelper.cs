@@ -6,7 +6,6 @@ using System.Runtime.Serialization;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using Terraria.Achievements;
 using Terraria.ModLoader;
 
 namespace Luminance.Core.Hooking

@@ -26,7 +26,7 @@ namespace Luminance.Core.Balancing
         /// </summary>
         public virtual IEnumerable<NPCHPBalancingChange> GetNPCHPBalancingChanges() => [];
 
-        protected override void Register()
+        protected sealed override void Register()
         {
             ModTypeLookup<BalancingManager>.Register(this);
             InternalBalancingManager.RegisterManager(this);
