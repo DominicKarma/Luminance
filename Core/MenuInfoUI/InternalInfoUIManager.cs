@@ -80,8 +80,9 @@ namespace Luminance.Core.MenuInfoUI
             worldRightTextField = typeof(UIWorldListItem).GetField("_deleteButtonLabel", UniversalBindingFlags);
             ExtraTextToAppend = [];
             On_UICharacterListItem.DrawSelf += DrawInfoIcons_Player;
-            On_UICharacterSelect.Draw += DrawHoverText;
+            On_UICharacterSelect.Draw += DrawHoverText_Player;
             On_UIWorldListItem.DrawSelf += DrawInfoIcons_World;
+            On_UIWorldSelect.Draw += DrawHoverText_World;
         }
 
         void IExistingDetourProvider.Unsubscribe()
@@ -96,8 +97,9 @@ namespace Luminance.Core.MenuInfoUI
             infoManagers = null;
             ExtraTextToAppend = null;
             On_UICharacterListItem.DrawSelf -= DrawInfoIcons_Player;
-            On_UICharacterSelect.Draw -= DrawHoverText;
+            On_UICharacterSelect.Draw -= DrawHoverText_Player;
             On_UIWorldListItem.DrawSelf -= DrawInfoIcons_World;
+            On_UIWorldSelect.Draw -= DrawHoverText_World;
         }
         #endregion
 
@@ -120,6 +122,15 @@ namespace Luminance.Core.MenuInfoUI
 
             DrawIcons(spriteBatch, elementInnerDimensions, currentX, maxToDraw, count, idealIconSize, iconPadding, activeIcons);
         }
+
+        private void DrawHoverText_Player(On_UICharacterSelect.orig_Draw orig, UICharacterSelect self, SpriteBatch spriteBatch)
+        {
+            textShouldShow = false;
+            ExtraTextToAppend.Clear();
+            orig(self, spriteBatch);
+
+            DrawHoverText();
+        }
         #endregion
 
         #region World Screen
@@ -138,6 +149,15 @@ namespace Luminance.Core.MenuInfoUI
             CalcuateMaxIcons(self, count, idealIconSize + iconPadding, 140, worldLeftTextField, worldRightTextField, out var currentX, out var maxToDraw);
             var elementInnerDimensions = self.GetInnerDimensions();
             DrawIcons(spriteBatch, elementInnerDimensions, currentX, maxToDraw, count, idealIconSize, iconPadding, activeIcons);
+        }
+
+        private void DrawHoverText_World(On_UIWorldSelect.orig_Draw orig, UIWorldSelect self, SpriteBatch spriteBatch)
+        {
+            textShouldShow = false;
+            ExtraTextToAppend.Clear();
+            orig(self, spriteBatch);
+
+            DrawHoverText();
         }
         #endregion
 
@@ -175,7 +195,7 @@ namespace Luminance.Core.MenuInfoUI
         {
             var panelDrawPosition = new Vector2(elementInnerDimensions.X + currentX - 13f, elementInnerDimensions.Y + elementInnerDimensions.Height - 25);
 
-            DrawPanel(spriteBatch, panelDrawPosition, (maxToDraw + (count > maxToDraw ? 1 : 0)) * (idealIconSize + iconPadding) + iconPadding);
+            DrawPanel(spriteBatch, panelDrawPosition, (maxToDraw + (count > maxToDraw ? 1 : 0)) * (idealIconSize + iconPadding) + 2f);
 
             int totalDrawn = 0;
             int totalNotDrawn = 0;
@@ -186,7 +206,7 @@ namespace Luminance.Core.MenuInfoUI
                 if (totalDrawn < maxToDraw)
                 {
                     var iconTexture = ModContent.Request<Texture2D>(icon.TexturePath, AssetRequestMode.ImmediateLoad).Value;
-                    Vector2 iconDrawPosition = new(elementInnerDimensions.X + currentX, elementInnerDimensions.Y + elementInnerDimensions.Height - 11f);
+                    Vector2 iconDrawPosition = new(elementInnerDimensions.X + currentX, elementInnerDimensions.Y + elementInnerDimensions.Height - 11.5f);
 
                     float iconScale = idealIconSize / (MathF.Max(float.Epsilon, MathF.Max(iconTexture.Width, iconTexture.Height)));
                     var hitbox = new Rectangle((int)(iconDrawPosition.X - iconTexture.Width * iconScale * 0.5f), (int)(iconDrawPosition.Y - iconTexture.Height * iconScale * 0.5f),
@@ -205,8 +225,8 @@ namespace Luminance.Core.MenuInfoUI
 
                         for (int i = 0; i < backglowAmount; i++)
                         {
-                            Vector2 drawOffset = (Tau * i / backglowAmount).ToRotationVector2() * 1.5f;
-                            spriteBatch.Draw(iconTexture, iconDrawPosition + drawOffset, null, Color.White with { A = 0 } * 0.9f, 0f, iconTexture.Size() * 0.5f, iconScale, SpriteEffects.None, 0f);
+                            Vector2 drawOffset = (Tau * i / backglowAmount).ToRotationVector2() * 1.25f;
+                            spriteBatch.Draw(iconTexture, iconDrawPosition + drawOffset, null, Color.White with { A = 0 } * 0.59f, 0f, iconTexture.Size() * 0.5f, iconScale, SpriteEffects.None, 0f);
                         }
                     }
 
@@ -237,12 +257,8 @@ namespace Luminance.Core.MenuInfoUI
                 ExtraTextToAppend = textsToAppend;
         }
 
-        private void DrawHoverText(On_UICharacterSelect.orig_Draw orig, UICharacterSelect self, SpriteBatch spriteBatch)
+        private static void DrawHoverText()
         {
-            textShouldShow = false;
-            ExtraTextToAppend.Clear();
-            orig(self, spriteBatch);
-
             if (textShouldShow)
             {
                 textShouldShow = false;

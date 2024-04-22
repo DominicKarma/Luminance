@@ -991,6 +991,83 @@
                 Colors a message with the provided color using chat tags.
             </summary>
         </member>
+        <member name="T:Luminance.Common.VerletIntergration.VerletSegment">
+            <summary>
+            Represents a verlet segment, for use in verlet simulatons.
+            </summary>
+            <param name="position">The position of this segment.</param>
+            <param name="velocity">The velocity of this segment.</param>
+            <param name="locked">Whether the segment is locked in place. If true, its position will not update via simulations.</param>
+        </member>
+        <member name="M:Luminance.Common.VerletIntergration.VerletSegment.#ctor(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,System.Boolean)">
+            <summary>
+            Represents a verlet segment, for use in verlet simulatons.
+            </summary>
+            <param name="position">The position of this segment.</param>
+            <param name="velocity">The velocity of this segment.</param>
+            <param name="locked">Whether the segment is locked in place. If true, its position will not update via simulations.</param>
+        </member>
+        <member name="T:Luminance.Common.VerletIntergration.VerletSettings">
+            <summary>
+            Configurable settings for verlet simulations.
+            </summary>
+            <param name="TileCollision">Whether the segments should collide with tiles.</param>
+            <param name="SlowInWater">Whether the segments should move slower through water.<br/><b>Does nothing if <paramref name="Gravity"/> is 0.</b></param>
+            <param name="Gravity">The gravity strength to apply to the segments.</param>
+            <param name="MaxFallSpeed">The maximum speed the segments should fall due to gravity.</param>
+            <param name="ConserveEnergy">Whether an additional calcuation should be performed to conserve the energy of the segments.<br/>This results in them bouncing around a lot more before settling down.</param>
+        </member>
+        <member name="M:Luminance.Common.VerletIntergration.VerletSettings.#ctor(System.Boolean,System.Boolean,System.Single,System.Single,System.Boolean)">
+            <summary>
+            Configurable settings for verlet simulations.
+            </summary>
+            <param name="TileCollision">Whether the segments should collide with tiles.</param>
+            <param name="SlowInWater">Whether the segments should move slower through water.<br/><b>Does nothing if <paramref name="Gravity"/> is 0.</b></param>
+            <param name="Gravity">The gravity strength to apply to the segments.</param>
+            <param name="MaxFallSpeed">The maximum speed the segments should fall due to gravity.</param>
+            <param name="ConserveEnergy">Whether an additional calcuation should be performed to conserve the energy of the segments.<br/>This results in them bouncing around a lot more before settling down.</param>
+        </member>
+        <member name="P:Luminance.Common.VerletIntergration.VerletSettings.TileCollision">
+            <summary>Whether the segments should collide with tiles.</summary>
+        </member>
+        <member name="P:Luminance.Common.VerletIntergration.VerletSettings.SlowInWater">
+            <summary>Whether the segments should move slower through water.<br/><b>Does nothing if <paramref name="Gravity"/> is 0.</b></summary>
+        </member>
+        <member name="P:Luminance.Common.VerletIntergration.VerletSettings.Gravity">
+            <summary>The gravity strength to apply to the segments.</summary>
+        </member>
+        <member name="P:Luminance.Common.VerletIntergration.VerletSettings.MaxFallSpeed">
+            <summary>The maximum speed the segments should fall due to gravity.</summary>
+        </member>
+        <member name="P:Luminance.Common.VerletIntergration.VerletSettings.ConserveEnergy">
+            <summary>Whether an additional calcuation should be performed to conserve the energy of the segments.<br/>This results in them bouncing around a lot more before settling down.</summary>
+        </member>
+        <member name="T:Luminance.Common.VerletIntergration.VerletSimulations">
+            <summary>
+            Contains various simulations for verlet chains.
+            </summary>
+        </member>
+        <member name="M:Luminance.Common.VerletIntergration.VerletSimulations.VerletSimulation(System.Collections.Generic.List{Luminance.Common.VerletIntergration.VerletSegment},System.Single,Luminance.Common.VerletIntergration.VerletSettings,System.Int32)">
+            <summary>
+            Performs a verlet simulation, configure specific details with <paramref name="settings"/>.
+            </summary>
+            <param name="segments">The segments to run through the simulaion.</param>
+            <param name="segmentDistance">The ideal distance between each segment.</param>
+            <param name="settings">The settings for the simulation.</param>
+            <param name="loops">The number of loops to perform to calculate the final positions. More is more precise, but more costly.</param>
+            <returns>The segments post simulation.</returns>
+        </member>
+        <member name="M:Luminance.Common.VerletIntergration.VerletSimulations.RopeVerletSimulation(System.Collections.Generic.List{Luminance.Common.VerletIntergration.VerletSegment},Microsoft.Xna.Framework.Vector2,System.Single,Luminance.Common.VerletIntergration.VerletSettings,System.Nullable{Microsoft.Xna.Framework.Vector2})">
+            <summary>
+            Performs a verlet simulation for a rope with a fixed end(s), configure specific details with <paramref name="settings"/>.
+            </summary>
+            <param name="segments">The segments to run through the simulaion.</param>
+            <param name="topPosition">The fixed postion of the start of the rope.</param>
+            <param name="idealRopeLength">The ideal length of the rope.</param>
+            <param name="settings">The settings for the simulation.</param>
+            <param name="endPosition">The optional, fixed position of the end of the rope.</param>
+            <returns>The segments post simulation.</returns>
+        </member>
         <member name="T:Luminance.Core.Balancing.BalancePriority">
             <summary>
             Defines what priority a balance change should have in case of conflicts. Only the change with the highest priority will occur.
@@ -1516,7 +1593,7 @@
             The texture name of this particle on the particle atlas. Should be prefixed with "YourModName."
             </summary>
         </member>
-        <member name="F:Luminance.Core.Graphics.Particle.ManuallyDrawn">
+        <member name="P:Luminance.Core.Graphics.Particle.ManuallyDrawn">
             <summary>
             Whether the particle is manually drawn.
             </summary>
