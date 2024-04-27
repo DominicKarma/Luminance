@@ -19,12 +19,12 @@ namespace Luminance.Core.Graphics
         /// <summary>
         /// The layer of cutscenes in the modifiers.
         /// </summary>
-        public const byte CutsceneLayer = 125;
+        public const byte CutsceneLayer = 100;
 
         /// <summary>
         /// The layer of screen filters in the modifiers.
         /// </summary>
-        public const byte FilterLayer = 255;
+        public const byte FilterLayer = 200;
 
         public override void Load()
         {
