@@ -8,6 +8,9 @@ namespace Luminance.Core.Graphics
 {
     public class ScreenShakeSystem : ModSystem
     {
+        /// <summary>
+        /// Represents a screenshake instance.
+        /// </summary>
         public class ShakeInfo
         {
             /// <summary>
@@ -30,6 +33,11 @@ namespace Luminance.Core.Graphics
             /// </summary>
             public float ShakeStrengthDissipationIncrement;
 
+            /// <summary>
+            /// A default-object ShakeInfo that does nothing.
+            /// </summary>
+            public static ShakeInfo None => new();
+
             public void Apply()
             {
                 float shakeOffset = ShakeStrength;
@@ -41,10 +49,23 @@ namespace Luminance.Core.Graphics
 
         private static readonly List<ShakeInfo> shakes = [];
 
+        /// <summary>
+        /// The overall intensity of every shake currently active.
+        /// </summary>
         public static float OverallShakeIntensity => shakes.Sum(s => s.ShakeStrength);
 
+        /// <summary>
+        /// Creates a general screenshake.
+        /// </summary>
+        /// <param name="strength">The strength of the screenshake.</param>
+        /// <param name="angularVariance">The size of the angle to randomly offset the screenshake direction by.</param>
+        /// <param name="shakeDirection">The direction of the screenshake. Is <see cref="Vector2.Zero"/> by default.</param>
+        /// <param name="shakeStrengthDissipationIncrement">The amount to decrease the screenshake strength by each frame.</param>
         public static ShakeInfo StartShake(float strength, float angularVariance = TwoPi, Vector2? shakeDirection = null, float shakeStrengthDissipationIncrement = 0.2f)
         {
+            if (Main.dedServ)
+                return ShakeInfo.None;
+
             ShakeInfo shake = new()
             {
                 ShakeStrength = strength,
@@ -53,12 +74,26 @@ namespace Luminance.Core.Graphics
                 ShakeStrengthDissipationIncrement = shakeStrengthDissipationIncrement
             };
 
-            shakes.Add(shake);
+            if (shake != ShakeInfo.None)
+                shakes.Add(shake);
             return shake;
         }
 
+        /// <summary>
+        /// Creates a screenshake at a specific point.
+        /// </summary>
+        /// <param name="shakeCenter">The position of the screenshake.</param>
+        /// <param name="strength">The strength of the screenshake.</param>
+        /// <param name="angularVariance">The size of the angle to randomly offset the screenshake direction by.</param>
+        /// <param name="shakeDirection">The direction of the screenshake. Is <see cref="Vector2.Zero"/> by default.</param>
+        /// <param name="shakeStrengthDissipationIncrement">The amount to decrease the screenshake strength by each frame.</param>
+        /// <param name="intensityTaperEndDistance">The distance where beyond this, the player should not be affected by the screenshake.</param>
+        /// <param name="intensityTaperStartDistance">The starting distance for the screenshake intensity to fall off for the player.</param>
         public static ShakeInfo StartShakeAtPoint(Vector2 shakeCenter, float strength, float angularVariance = TwoPi, Vector2? shakeDirection = null, float shakeStrengthDissipationIncrement = 0.2f, float intensityTaperEndDistance = 2300f, float intensityTaperStartDistance = 1476f)
         {
+            if (Main.dedServ)
+                return ShakeInfo.None;
+
             // Calculate the shake strength based on how far away the player is from the shake center.
             float distanceToShakeCenter = Main.LocalPlayer.Distance(shakeCenter);
             float desiredScreenShakeStrength = InverseLerp(intensityTaperEndDistance, intensityTaperStartDistance, distanceToShakeCenter) * strength;
@@ -67,8 +102,17 @@ namespace Luminance.Core.Graphics
             return StartShake(desiredScreenShakeStrength, angularVariance, shakeDirection, shakeStrengthDissipationIncrement);
         }
 
+        /// <summary>
+        /// Sets a global screenshake for this frame.
+        /// </summary>
+        /// <param name="strength">The strength of the screenshake.</param>
+        /// <param name="angularVariance">The size of the angle to randomly offset the screenshake direction by.</param>
+        /// <param name="shakeDirection">The direction of the screenshake. Is <see cref="Vector2.Zero"/> by default.</param>
         public static void SetUniversalRumble(float strength, float angularVariance = TwoPi, Vector2? shakeDirection = null)
         {
+            if (Main.dedServ)
+                return;
+
             universalRumble = new()
             {
                 ShakeStrength = strength,
