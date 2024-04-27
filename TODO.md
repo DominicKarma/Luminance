@@ -6,7 +6,6 @@
 - Cutscenes.
 - Metaballs.
 - Shaders, including the auto-recompilation feature.
-- All the specific effect managers.
 - The hooking features.
 - Looped sounds.
 - Verlets
