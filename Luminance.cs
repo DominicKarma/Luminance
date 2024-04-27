@@ -23,6 +23,8 @@ namespace Luminance
         /// </summary>
         public override void PostSetupContent()
         {
+            ShaderManager.HasFinishedLoading = false;
+
             foreach (Mod mod in ModLoader.Mods)
             {
                 HookHelper.LoadHookInterfaces(mod);
@@ -32,7 +34,6 @@ namespace Luminance
                 ParticleManager.InitializeManualRenderers(mod);
             }
 
-            // Mark loading operations as finished.
             ShaderManager.HasFinishedLoading = true;
         }
     }
