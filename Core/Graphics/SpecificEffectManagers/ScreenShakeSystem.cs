@@ -38,7 +38,7 @@ namespace Luminance.Core.Graphics
             /// </summary>
             public static ShakeInfo None => new();
 
-            public void Apply()
+            internal void Apply()
             {
                 float shakeOffset = ShakeStrength;
                 Main.screenPosition += BaseDirection.RotatedByRandom(AngularVariance) * shakeOffset * (ModContent.GetInstance<Config>().ScreenshakeModifier * 0.01f);
