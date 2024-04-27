@@ -108,10 +108,10 @@ namespace Luminance.Core.Graphics
         /// <param name="strength">The strength of the screenshake.</param>
         /// <param name="angularVariance">The size of the angle to randomly offset the screenshake direction by.</param>
         /// <param name="shakeDirection">The direction of the screenshake. Is <see cref="Vector2.Zero"/> by default.</param>
-        public static void SetUniversalRumble(float strength, float angularVariance = TwoPi, Vector2? shakeDirection = null)
+        public static ShakeInfo SetUniversalRumble(float strength, float angularVariance = TwoPi, Vector2? shakeDirection = null)
         {
             if (Main.dedServ)
-                return;
+                return ShakeInfo.None;
 
             universalRumble = new()
             {
@@ -119,6 +119,7 @@ namespace Luminance.Core.Graphics
                 AngularVariance = angularVariance,
                 BaseDirection = (shakeDirection ?? Vector2.Zero).SafeNormalize(Vector2.UnitX)
             };
+            return universalRumble;
         }
 
         public override void ModifyScreenPosition()
