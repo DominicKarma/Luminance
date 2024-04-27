@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -45,7 +46,7 @@ namespace Luminance.Core.Graphics
             }
         }
 
-        private static ShakeInfo universalRumble;
+        private static ShakeInfo universalRumble = ShakeInfo.None;
 
         private static readonly List<ShakeInfo> shakes = [];
 
@@ -71,7 +72,7 @@ namespace Luminance.Core.Graphics
                 ShakeStrength = strength,
                 AngularVariance = angularVariance,
                 BaseDirection = (shakeDirection ?? Vector2.Zero).SafeNormalize(Vector2.UnitX),
-                ShakeStrengthDissipationIncrement = shakeStrengthDissipationIncrement
+                ShakeStrengthDissipationIncrement = MathF.Max(0.01f, shakeStrengthDissipationIncrement)
             };
 
             if (shake != ShakeInfo.None)
@@ -103,12 +104,13 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
-        /// Sets a global screenshake for this frame.
+        /// Sets the universal screenshake. Only one of these exists at a time, and setting another while one is active will override the existing one.
         /// </summary>
         /// <param name="strength">The strength of the screenshake.</param>
         /// <param name="angularVariance">The size of the angle to randomly offset the screenshake direction by.</param>
         /// <param name="shakeDirection">The direction of the screenshake. Is <see cref="Vector2.Zero"/> by default.</param>
-        public static ShakeInfo SetUniversalRumble(float strength, float angularVariance = TwoPi, Vector2? shakeDirection = null)
+        /// <param name="shakeStrengthDissipationIncrement">The amount to decrease the screenshake strength by each frame.</param>
+        public static ShakeInfo SetUniversalRumble(float strength, float angularVariance = TwoPi, Vector2? shakeDirection = null, float shakeStrengthDissipationIncrement = 0.2f)
         {
             if (Main.dedServ)
                 return ShakeInfo.None;
@@ -117,7 +119,8 @@ namespace Luminance.Core.Graphics
             {
                 ShakeStrength = strength,
                 AngularVariance = angularVariance,
-                BaseDirection = (shakeDirection ?? Vector2.Zero).SafeNormalize(Vector2.UnitX)
+                BaseDirection = (shakeDirection ?? Vector2.Zero).SafeNormalize(Vector2.UnitX),
+                ShakeStrengthDissipationIncrement = MathF.Max(0.01f, shakeStrengthDissipationIncrement)
             };
             return universalRumble;
         }
@@ -137,14 +140,15 @@ namespace Luminance.Core.Graphics
             }
 
             // Apply the universal rumble if necessary.
-            if (universalRumble is not null && OverallShakeIntensity < universalRumble.ShakeStrength)
+            if (universalRumble != ShakeInfo.None && OverallShakeIntensity < universalRumble.ShakeStrength)
             {
                 universalRumble.Apply();
                 shakes.Clear();
-            }
+                universalRumble.ShakeStrength = Clamp(universalRumble.ShakeStrength - universalRumble.ShakeStrengthDissipationIncrement, 0f, 50f);
 
-            // Clear the universal rumble once it has dissipated.
-            universalRumble = null;
+                if (universalRumble.ShakeStrength <= 0f)
+                    universalRumble = ShakeInfo.None;
+            }
         }
     }
 }
