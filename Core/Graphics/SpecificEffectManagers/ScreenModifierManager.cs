@@ -3,6 +3,7 @@ using System.Linq;
 using Luminance.Core.Cutscenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 
@@ -45,6 +46,9 @@ namespace Luminance.Core.Graphics
         /// </summary>
         public static void RegisterScreenModifier(ScreenTargetModifierDelegate screenTargetModifierDelegate, byte layer)
         {
+            if (Main.dedServ)
+                return;
+
             screenModifiers.Add(new(screenTargetModifierDelegate, layer));
 
             if (screenModifiers.Count > 1)
