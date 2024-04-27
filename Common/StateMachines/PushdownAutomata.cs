@@ -53,7 +53,7 @@ namespace Luminance.Common.StateMachines
         /// <summary>
         ///     The current state of the automaton.
         /// </summary>
-        public TStateWrapper CurrentState => StateStack.Peek();
+        public TStateWrapper CurrentState => StateStack.TryPeek(out var state) ? state : null;
 
         /// <summary>
         ///     The set of actions that should occur when a state is popped.
@@ -64,6 +64,11 @@ namespace Luminance.Common.StateMachines
         ///     The set of actions that should occur when a state transition occurs.
         /// </summary>
         public event OnStateTransitionDelegate OnStateTransition;
+
+        /// <summary>
+        ///     The set of actions that should occur when the stack is out of items.
+        /// </summary>
+        public event Action OnStackEmpty;
 
         public void AddTransitionStateHijack(Func<TStateIdentifier?, TStateIdentifier?> hijackSelection, Action<TStateIdentifier?> hijackAction = null)
         {
@@ -78,7 +83,13 @@ namespace Luminance.Common.StateMachines
 
         public void PerformStateTransitionCheck()
         {
-            if (!StateStack.Any() || !transitionTable.TryGetValue(CurrentState.Identifier, out List<TransitionInfo> value))
+            if (!StateStack.Any())
+            {
+                OnStackEmpty?.Invoke();
+                return;
+            }
+
+            if (!transitionTable.TryGetValue(CurrentState.Identifier, out List<TransitionInfo> value))
                 return;
 
             List<TransitionInfo> potentialStates = value ?? [];
