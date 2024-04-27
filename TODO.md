@@ -8,6 +8,5 @@
 - Shaders, including the auto-recompilation feature.
 - All the specific effect managers.
 - The hooking features.
-- Mod calls.
 - Looped sounds.
 - Verlets
