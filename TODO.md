@@ -4,7 +4,6 @@
 - Utilities? Theres a lot of these, so maybe just descriptions of which each files contain?
 - Balancing.
 - Cutscenes.
-- Manual particle rendering + more detail for particles.
 - Metaballs.
 - Shaders, including the auto-recompilation feature.
 - All the specific effect managers.
