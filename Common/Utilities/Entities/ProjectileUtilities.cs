@@ -68,6 +68,8 @@ namespace Luminance.Common.Utilities
         /// <param name="desiredTypes">The projectile type to check for.</param>
         public static IEnumerable<Projectile> AllProjectilesByID(params int[] desiredTypes)
         {
+            // NOTE: Cannot use Main.ActiveProjectiles here; this is a state
+            // machine.
             for (int i = 0; i < Main.maxProjectiles; i++)
             {
                 if (Main.projectile[i].active && desiredTypes.Contains(Main.projectile[i].type))
@@ -87,9 +89,9 @@ namespace Luminance.Common.Utilities
         /// <param name="projectileID">The projectile ID to check for.</param>
         public static bool AnyProjectiles(int projectileID)
         {
-            for (int i = 0; i < Main.maxProjectiles; i++)
+            foreach (Projectile p in Main.ActiveProjectiles)
             {
-                if (Main.projectile[i].active && Main.projectile[i].type == projectileID)
+                if (p.type == projectileID)
                     return true;
             }
             return false;
@@ -102,9 +104,13 @@ namespace Luminance.Common.Utilities
         public static int CountProjectiles(params int[] desiredTypes)
         {
             int projectileCount = 0;
-            for (int i = 0; i < Main.maxProjectiles; i++)
+            foreach (Projectile p in Main.ActiveProjectiles)
             {
-                if (Main.projectile[i].active && desiredTypes.Contains(Main.projectile[i].type))
+                // Can be optimized to be branchless at the cost of readability,
+                // have not benchmarked:
+                // bool val = desiredTypes.Contains(p.type);
+                // projectileCount += Unsafe.As<bool, int>(ref val);
+                if (desiredTypes.Contains(p.type))
                     projectileCount++;
             }
 
@@ -154,12 +160,12 @@ namespace Luminance.Common.Utilities
             if (Main.netMode == NetmodeID.SinglePlayer)
                 return Main.projectile[identity];
 
-            for (int i = 0; i < Main.maxProjectiles; i++)
+            foreach (Projectile p in Main.ActiveProjectiles)
             {
-                if (Main.projectile[i].identity != identity || Main.projectile[i].owner != ownerIndex || !Main.projectile[i].active)
+                if (p.identity != identity || p.owner != ownerIndex)
                     continue;
 
-                return Main.projectile[i];
+                return p;
             }
             return null;
         }
