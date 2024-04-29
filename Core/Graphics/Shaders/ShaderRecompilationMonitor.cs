@@ -3,14 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
 using Terraria;
 using Terraria.ID;
-using Terraria.Initializers;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Assets;
 
 namespace Luminance.Core.Graphics
 {
@@ -224,7 +220,6 @@ namespace Luminance.Core.Graphics
                 }
             };
             fxcCompiler.Start();
-            string error = fxcCompiler.StandardError.ReadToEnd();
             if (!fxcCompiler.WaitForExit(2500))
             {
                 Main.NewText("Shader compiler timed out. Likely error.", Color.OrangeRed);
