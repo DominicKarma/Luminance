@@ -90,7 +90,9 @@ namespace Luminance.Core.Graphics
                         PixelationPrimitiveLayer.BeforeProjectiles => beforeProjectiles,
                         _ => afterProjectiles
                     };
+
                     listToUse.Add(pixelPrimitiveProjectile);
+                }
             }
 
             // Check every active NPC.
