@@ -23,7 +23,7 @@ public sealed class ExampleInfoUIManager : InfoUIManager
         "Mods.MyModName.InfoIcons.CustomWorldIcon1",
         worldData =>
         {
-            if (!worldData.TryGetHeaderData<MyModSystem>(out var tagData)
+            if (!worldData.TryGetHeaderData<MyModSystem>(out var tagData))
                 return false;
 
             return tagData.ContainsKey("MyCustomState") && tag.GetBool("MyCustomState");
