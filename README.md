@@ -38,4 +38,4 @@ Thanks to anyone and everyone who has contributed to Luminance in any form!
 - <b>moonburn:</b> Proper mod icon.
 - <b>JavyzTaken:</b> Various optimizations and minor additions.
 - <b>madamamada, riz30n014, definatly_a_human, ritsukicat, myawk, lgl_fish:</b> Translations.
-- <b>ScalarVector:</b> Independent bases for a handful of features within the library.
+- <b>ScalarVector and ProjectStarlight:</b> Independent bases for a handful of features within the library.
