@@ -305,6 +305,11 @@
                 The set of actions that should occur when a state transition occurs.
             </summary>
         </member>
+        <member name="E:Luminance.Common.StateMachines.PushdownAutomata`2.OnStackEmpty">
+            <summary>
+                The set of actions that should occur when the stack is out of items.
+            </summary>
+        </member>
         <member name="M:Luminance.Common.StateMachines.PushdownAutomata`2.RegisterState(`0)">
             <summary>
             Registers a state in the registry.
@@ -2505,6 +2510,11 @@
             Call to register a screen modifier delegate at the provided layer. Each registered modifier is ran in ascending layer order.
             </summary>
         </member>
+        <member name="T:Luminance.Core.Graphics.ScreenShakeSystem.ShakeInfo">
+            <summary>
+            Represents a screenshake instance.
+            </summary>
+        </member>
         <member name="F:Luminance.Core.Graphics.ScreenShakeSystem.ShakeInfo.AngularVariance">
             <summary>
             This indicates the maximum amount BaseDirection can be rotated by when a shake occurs. At sufficiently high values there is effectively no shake direction and it's equivalent to NextVector2Circular.
@@ -2524,6 +2534,46 @@
             <summary>
             This indicates how much the shake should dissipate every frame.
             </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ScreenShakeSystem.ShakeInfo.None">
+            <summary>
+            A default-object ShakeInfo that does nothing.
+            </summary>
+        </member>
+        <member name="P:Luminance.Core.Graphics.ScreenShakeSystem.OverallShakeIntensity">
+            <summary>
+            The overall intensity of every shake currently active.
+            </summary>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ScreenShakeSystem.StartShake(System.Single,System.Single,System.Nullable{Microsoft.Xna.Framework.Vector2},System.Single)">
+            <summary>
+            Creates a general screenshake.
+            </summary>
+            <param name="strength">The strength of the screenshake.</param>
+            <param name="angularVariance">The size of the angle to randomly offset the screenshake direction by.</param>
+            <param name="shakeDirection">The direction of the screenshake. Is <see cref="P:Microsoft.Xna.Framework.Vector2.Zero"/> by default.</param>
+            <param name="shakeStrengthDissipationIncrement">The amount to decrease the screenshake strength by each frame.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ScreenShakeSystem.StartShakeAtPoint(Microsoft.Xna.Framework.Vector2,System.Single,System.Single,System.Nullable{Microsoft.Xna.Framework.Vector2},System.Single,System.Single,System.Single)">
+            <summary>
+            Creates a screenshake at a specific point.
+            </summary>
+            <param name="shakeCenter">The position of the screenshake.</param>
+            <param name="strength">The strength of the screenshake.</param>
+            <param name="angularVariance">The size of the angle to randomly offset the screenshake direction by.</param>
+            <param name="shakeDirection">The direction of the screenshake. Is <see cref="P:Microsoft.Xna.Framework.Vector2.Zero"/> by default.</param>
+            <param name="shakeStrengthDissipationIncrement">The amount to decrease the screenshake strength by each frame.</param>
+            <param name="intensityTaperEndDistance">The distance where beyond this, the player should not be affected by the screenshake.</param>
+            <param name="intensityTaperStartDistance">The starting distance for the screenshake intensity to fall off for the player.</param>
+        </member>
+        <member name="M:Luminance.Core.Graphics.ScreenShakeSystem.SetUniversalRumble(System.Single,System.Single,System.Nullable{Microsoft.Xna.Framework.Vector2},System.Single)">
+            <summary>
+            Sets the universal screenshake. Only one of these exists at a time, and setting another while one is active will override the existing one.
+            </summary>
+            <param name="strength">The strength of the screenshake.</param>
+            <param name="angularVariance">The size of the angle to randomly offset the screenshake direction by.</param>
+            <param name="shakeDirection">The direction of the screenshake. Is <see cref="P:Microsoft.Xna.Framework.Vector2.Zero"/> by default.</param>
+            <param name="shakeStrengthDissipationIncrement">The amount to decrease the screenshake strength by each frame.</param>
         </member>
         <member name="T:Luminance.Core.Hooking.HookHelper">
             <summary>
