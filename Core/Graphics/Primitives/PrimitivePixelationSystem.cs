@@ -96,8 +96,8 @@ namespace Luminance.Core.Graphics
             // Check every active NPC.
             foreach (NPC npc in Main.ActiveNPCs)
             {
-                // If the NPC is active, a mod NPC, and uses the interface, add it to the list of primitives to draw this frame.
-                if (npc.active && npc.ModNPC != null && npc.ModNPC is IPixelatedPrimitiveRenderer pixelPrimitiveNPC)
+                // If the NPC is a mod NPC and uses the interface, add it to the list of primitives to draw this frame.
+                if (npc.ModNPC is IPixelatedPrimitiveRenderer pixelPrimitiveNPC)
                 {
                     var listToUse = pixelPrimitiveNPC.LayerToRenderTo switch
                     {
