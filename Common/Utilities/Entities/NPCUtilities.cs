@@ -70,12 +70,8 @@ namespace Luminance.Common.Utilities
             if (BossIsActiveThisFrame.HasValue)
                 return BossIsActiveThisFrame.Value;
 
-            for (int i = 0; i < Main.maxNPCs; i++)
+            foreach (NPC npc in Main.ActiveNPCs)
             {
-                if (Main.npc[i] is null || !Main.npc[i].active)
-                    continue;
-
-                NPC npc = Main.npc[i];
                 bool isEaterOfWorlds = npc.type == NPCID.EaterofWorldsBody || npc.type == NPCID.EaterofWorldsHead || npc.type == NPCID.EaterofWorldsTail;
                 if (npc.boss || isEaterOfWorlds)
                 {
@@ -83,6 +79,7 @@ namespace Luminance.Common.Utilities
                     return BossIsActiveThisFrame.Value;
                 }
             }
+            
             BossIsActiveThisFrame = false;
             return BossIsActiveThisFrame.Value;
         }
