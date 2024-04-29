@@ -9,16 +9,15 @@ namespace Luminance.Common.DataStructures
 
         public static void KillAll()
         {
-            for (int i = 0; i < Main.maxProjectiles; i++)
+            foreach (Projectile p in Main.ActiveProjectiles)
             {
-                Projectile p = Main.projectile[i];
-                if (p.active && p.ModProjectile is IProjOwnedByBoss<T> ownedBy)
-                {
-                    if (!ownedBy.SetActiveFalseInsteadOfKill)
-                        p.Kill();
-                    else
-                        p.active = false;
-                }
+                if (p.ModProjectile is not IProjOwnedByBoss<T> ownedBy)
+                    continue;
+
+                if (ownedBy.SetActiveFalseInsteadOfKill)
+                    p.active = false;
+                else
+                    p.Kill();
             }
         }
     }
