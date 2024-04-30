@@ -13,3 +13,4 @@
 ## Mark following changes as obsolete next release:
 - public static void SetUniversalRumble(float strength, float angularVariance = TwoPi, Vector2? shakeDirection = null)
    -> public static ShakeInfo SetUniversalRumble(float strength, float angularVariance = TwoPi, Vector2? shakeDirection = null, float shakeStrengthDissipationIncrement = 0.2f).
+- IDrawAdditive has skipped this stage due to already having a warning in the documentation, and unintentionally being taken from SLR.
