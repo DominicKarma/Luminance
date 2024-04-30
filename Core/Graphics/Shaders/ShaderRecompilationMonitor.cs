@@ -252,6 +252,11 @@ namespace Luminance.Core.Graphics
             try
             {
                 File.Copy(compiledFxcPath, originalFxcPath);
+
+                // If the old .xnb file format existed at compilation time, delete it, so that there aren't ambiguities between it and the new .fxc file.
+                string oldXnbPath = shaderPath.Replace(".fx", ".xnb");
+                if (File.Exists(oldXnbPath))
+                    File.Delete(oldXnbPath);
             }
             catch
             {
