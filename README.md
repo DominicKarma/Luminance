@@ -9,7 +9,7 @@ Each folder contains (or will contain) a txt file providing documentation for ea
 To make your mod use Luminance, add ``modReferences = Luminance`` in your mod's ``build.txt``. In order to be able to reference the mod when programming, download ``Luminance.dll``, ``Luminance.pdb`` and ``Luminance.xml`` from the latest github release, or extract the mod in-game and take the files from there. Add the dll as a project reference, or directly add it into your mod's .csproj. Ensure you reference the latest mod version to avoid things breaking. The .pdb and .xml files ensure you can view the documentation from your mod directly. It's recommended to add these 3 files to the ``buildIgnore`` in ``build.txt`` to avoid unnecessarily packaging them with your mod.
 
 ## API breakage policy
-To prevent mod breakage from updates to Luminance as much as possible, changes to exsting methods etc will attempt to obsolete the old versions while also adding the new versions for a wait period of 2 weeks, to allow mods to update safely to the newer version without suddenly breaking. After the wait time has passed, the old versions will be removed.
+To prevent mod breakage from updates to Luminance as much as possible, changes to exsting methods etc will attempt to obsolete the old versions while also adding the new versions for a wait period of 2 weeks at minimum, to allow mods to update safely to the newer version without suddenly breaking. After the wait time has passed, the old versions will be removed.
 You can keep track of any current or upcoming breakage by checking [here](https://github.com/DominicKarma/Luminance/blob/main/CHANGELOGS.md) each time Luminance updates.
 
 ## Feature list
