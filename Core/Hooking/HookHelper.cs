@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -29,14 +30,14 @@ namespace Luminance.Core.Hooking
             existingDetourProviders ??= [];
             foreach (var type in existingDetourProvidersColection)
             {
-                var detour = (IExistingDetourProvider)FormatterServices.GetUninitializedObject(type);
+                var detour = (IExistingDetourProvider)RuntimeHelpers.GetUninitializedObject(type);
                 detour.Subscribe();
                 existingDetourProviders.Add(detour);
             }
 
             foreach (var type in customDetourProvidersCollection)
             {
-                var detour = (ICustomDetourProvider)FormatterServices.GetUninitializedObject(type);
+                var detour = (ICustomDetourProvider)RuntimeHelpers.GetUninitializedObject(type);
                 detour.ModifyMethods();
             }
         }
