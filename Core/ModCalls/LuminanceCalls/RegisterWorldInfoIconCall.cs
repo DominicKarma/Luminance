@@ -37,6 +37,7 @@ namespace Luminance.Core.ModCalls.LuminanceCalls
             byte priority = (byte)argsWithoutCommand[3];
             
             ModCallInfoUIManager.AddWorldInfoIcon(new WorldInfoIcon(texturePath, hoverTextKey, shouldAppear, priority));
+            return ModCallManager.DefaultObject;
         }
     }
 }
