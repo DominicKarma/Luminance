@@ -125,6 +125,10 @@ namespace Luminance.Core.Graphics
             return universalRumble;
         }
 
+        [Obsolete("This is obsolete, use 'SetUniversalRumble(float strength, float angularVariance = TwoPi, Vector2? shakeDirection = null, float shakeStrengthDissipationIncrement = 0.2f)' instead.", false)]
+        public static void SetUniversalRumble(float strength, float angularVariance = TwoPi, Vector2? shakeDirection = null)
+            => SetUniversalRumble(strength, angularVariance, shakeDirection, 0.2f);
+
         public override void ModifyScreenPosition()
         {
             // Clear all shakes that are no longer in use.
