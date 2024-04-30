@@ -4,6 +4,7 @@ global using static Luminance.Common.Utilities.Utilities;
 global using static Microsoft.Xna.Framework.MathHelper;
 using Luminance.Core.Graphics;
 using Luminance.Core.Hooking;
+using Luminance.Core.ModCalls;
 using Terraria.ModLoader;
 
 namespace Luminance
@@ -36,5 +37,7 @@ namespace Luminance
 
             ShaderManager.HasFinishedLoading = true;
         }
+
+        public override object Call(params object[] args) => ModCallManager.ProcessAllModCalls(this, args);
     }
 }
