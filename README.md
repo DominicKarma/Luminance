@@ -3,7 +3,7 @@ Luminance is a library mod that provides a range of useful features to mods.
 
 ---
 ## How to navigate the repository
-Each folder contains (or will contain) a txt file providing documentation for each feature contained in the folder. If something is unclear, or could be worded better, feel free to create an issue or PR that improves it (only do this for documentation NOT in TODO.md please). A full list of features can be found at the bottom of this file.
+Note that the ``main`` branch will potentially include changes *not* in any released version yet. To view the current release, you should switch to the ``release`` branch. Each folder contains (or will contain) a txt file providing documentation for each feature contained in the folder. If something is unclear, or could be worded better, feel free to create an issue or PR that improves it (only do this for documentation NOT in TODO.md please). A full list of features can be found at the bottom of this file.
 
 ## How to use Luminance
 To make your mod use Luminance, add ``modReferences = Luminance`` in your mod's ``build.txt``. In order to be able to reference the mod when programming, download ``Luminance.dll``, ``Luminance.pdb`` and ``Luminance.xml`` from the latest github release, or extract the mod in-game and take the files from there. Add the dll as a project reference, or directly add it into your mod's .csproj. Ensure you reference the latest mod version to avoid things breaking. The .pdb and .xml files ensure you can view the documentation from your mod directly. It's recommended to add these 3 files to the ``buildIgnore`` in ``build.txt`` to avoid unnecessarily packaging them with your mod.
