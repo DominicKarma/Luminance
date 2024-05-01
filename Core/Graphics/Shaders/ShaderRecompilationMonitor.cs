@@ -178,7 +178,7 @@ namespace Luminance.Core.Graphics
             string compilerDirectory = CompilerDirectory;
             while (CompilingFiles.TryPeek(out CompilingFile file))
             {
-                if (!file.FilePath.Contains(watcher.ModName) || file.FilePath.Contains(".fxc"))
+                if (!file.FilePath.Contains(watcher.ModName))
                     return;
 
                 MoveFileToCompilingFolder(file);
@@ -326,9 +326,6 @@ namespace Luminance.Core.Graphics
 
             // Prevent compiling files from being listed twice.
             if (CompilingFiles.Any(f => f.FilePath == e.FullPath))
-                return;
-
-            if (e.FullPath.Contains(".fxc"))
                 return;
 
             if (e.FullPath.Contains("Luminance"))
