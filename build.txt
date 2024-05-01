@@ -1,6 +1,6 @@
 displayName = Luminance
 author = Dominic Karma, Toasty
-version = 1.0.3
+version = 1.0.4
 homepage = https://github.com/DominicKarma/Luminance
 buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, .git\*, .github\*, LICENSE, README.md, .editorconfig, .gitignore, .gitattributes, TODO.md
 hideCode = false
