@@ -2326,6 +2326,11 @@
             Processes all shader watchers, checking if anything needs to be compiled.
             </summary>
         </member>
+        <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.PostSetupContent">
+            <summary>
+            Fixes an odd bug where the compiling files are filled during mod loading.
+            </summary>
+        </member>
         <member name="M:Luminance.Core.Graphics.ShaderRecompilationMonitor.OnModLoad">
             <summary>
             Handles on-mod-load effects for the library, ensuring that the compiler directory is unpacked.

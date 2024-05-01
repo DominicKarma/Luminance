@@ -57,6 +57,14 @@ namespace Luminance.Core.Graphics
         }
 
         /// <summary>
+        /// Fixes an odd bug where the compiling files are filled during mod loading.
+        /// </summary>
+        public override void PostSetupContent()
+        {
+            CompilingFiles.Clear();
+        }
+
+        /// <summary>
         /// Handles on-mod-load effects for the library, ensuring that the compiler directory is unpacked.
         /// </summary>
         public override void OnModLoad()
@@ -320,6 +328,9 @@ namespace Luminance.Core.Graphics
         /// <param name="e">The event arguments that specify file data.</param>
         private static void MarkFileAsNeedingCompilation(object sender, FileSystemEventArgs e)
         {
+            if (Main.gameMenu)
+                return;
+
             // Prevent the shader watcher from looking in the compiler folder.
             if (e.FullPath.Contains("\\Compiler"))
                 return;
