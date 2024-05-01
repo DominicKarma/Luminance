@@ -92,10 +92,10 @@ namespace Luminance.Core.Graphics
                 return;
 
             #region Shaders
-            var shaderXnbPaths = fileNames.Where(path => path.Contains(AutoloadDirectoryShaders) && !path.Contains("Compiler/") && path.Contains(".xnb"));
-            var shaderFxPathsToCompile = fileNames.Where(path => path.Contains(AutoloadDirectoryShaders) && !path.Contains("Compiler/") && path.Contains(".fx") && !shaderXnbPaths.Contains(path.Replace(".fx", ".xnb")));
+            var shaderLoadPaths = fileNames.Where(path => path.Contains(AutoloadDirectoryShaders) && !path.Contains("Compiler/") && (path.Contains(".xnb") || path.Contains(".fxc")));
+            var shaderFxPathsToCompile = fileNames.Where(path => path.Contains(AutoloadDirectoryShaders) && !path.Contains("Compiler/") && path.Contains(".fx") && !shaderLoadPaths.Contains(path.Replace(".fx", ".xnb")));
 
-            foreach (var path in shaderXnbPaths)
+            foreach (var path in shaderLoadPaths)
             {
                 string shaderName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
                 string clearedPath = Path.Combine(Path.GetDirectoryName(path), shaderName).Replace(@"\", @"/").Replace($"{mod.Name}.", string.Empty);
@@ -111,10 +111,10 @@ namespace Luminance.Core.Graphics
             #endregion
 
             #region Filters
-            var filterXnbPaths = fileNames.Where(path => path.Contains(AutoloadDirectoryFilters) && !path.Contains("Compiler/") && path.Contains(".xnb"));
-            var filterFxPathsToCompile = fileNames.Where(path => path.Contains(AutoloadDirectoryFilters) && !path.Contains("Compiler/") && path.Contains(".fx") && !filterXnbPaths.Contains(path.Replace(".fx", ".xnb")));
+            var filterLoadPaths = fileNames.Where(path => path.Contains(AutoloadDirectoryFilters) && !path.Contains("Compiler/") && (path.Contains(".xnb") || path.Contains(".fxc")));
+            var filterFxPathsToCompile = fileNames.Where(path => path.Contains(AutoloadDirectoryFilters) && !path.Contains("Compiler/") && path.Contains(".fx") && !filterLoadPaths.Contains(path.Replace(".fx", ".xnb")));
 
-            foreach (var path in filterXnbPaths)
+            foreach (var path in filterLoadPaths)
             {
                 string filterName = mod.Name + '.' + Path.GetFileNameWithoutExtension(path);
                 string clearedPath = Path.Combine(Path.GetDirectoryName(path), filterName).Replace(@"\", @"/").Replace($"{mod.Name}.", string.Empty);
