@@ -212,9 +212,9 @@ namespace Luminance.Core.Graphics
         private static void StartCompilerProcess(string fxPath)
         {
             fxPath = Path.GetFileName(fxPath);
-
             string outputPath = fxPath.Replace(".fx", ".fxc");
             string compilationCommand = $"/T fx_2_0 {fxPath} /Fo {outputPath}";
+
             Process fxcCompiler = new()
             {
                 StartInfo = new($"{CompilerDirectory}\\fxc.exe")
@@ -253,12 +253,12 @@ namespace Luminance.Core.Graphics
             string originalFxcPath = shaderPath.Replace(".fx", ".fxc");
             string shaderPathInCompilerDirectory = compilerDirectory + Path.DirectorySeparatorChar + Path.GetFileName(shaderPath);
 
-            if (File.Exists(originalFxcPath))
-                File.Delete(originalFxcPath);
-
             // Copy over the XNB from the compiler, and delete the copy in the Compiler folder.
             try
             {
+                if (File.Exists(originalFxcPath))
+                    File.Delete(originalFxcPath);
+
                 File.Copy(compiledFxcPath, originalFxcPath);
 
                 // If the old .xnb file format existed at compilation time, delete it, so that there aren't ambiguities between it and the new .fxc file.
