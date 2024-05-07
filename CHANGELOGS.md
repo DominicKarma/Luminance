@@ -3,6 +3,12 @@ This file will contain each version of the mod published, along with all of the 
 
 ---
 
+## V1.0.4
+- Fixed problems regarding .fxc file loading.
+- HookHelpers now internally uses RuntimeHelpers instead of FormatterServices.
+
+---
+
 ## V1.0.3
 - Added more shapes to the Primitive Renderer.
 - Added a system for adding icons to the player and world selection UI. This also has an accompanying mod call.
