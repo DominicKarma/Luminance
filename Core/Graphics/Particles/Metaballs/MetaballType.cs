@@ -12,7 +12,7 @@ namespace Luminance.Core.Graphics
     public abstract class MetaballType : ModType
     {
         #region Fields/Properties
-        internal List<MetaballInstance> Particles = new();
+        protected internal List<MetaballInstance> Particles = new();
 
         public int ActiveParticleCount => Particles.Count;
 
@@ -63,16 +63,6 @@ namespace Luminance.Core.Graphics
             });
 
             Particles.RemoveAll(ShouldKillParticle);
-        }
-
-        public void DrawInstances()
-        {
-            var texture = AtlasManager.GetTexture(MetaballAtlasTextureToUse);
-
-            foreach (var particle in Particles)
-                Main.spriteBatch.Draw(texture, particle.Center - Main.screenPosition, null, Color.White, 0f, null, new Vector2(particle.Size) / texture.Frame.Size(), SpriteEffects.None);
-
-            ExtraDrawing();
         }
 
         protected sealed override void Register()
@@ -148,6 +138,19 @@ namespace Luminance.Core.Graphics
         /// <param name="spriteBatch"></param>
         /// <returns></returns>
         public virtual bool PerformCustomSpritebatchBegin(SpriteBatch spriteBatch) => false;
+
+        /// <summary>
+        /// Draws all metaball instances and performs extra draw steps via <see cref="ExtraDrawing"/>.
+        /// </summary>
+        public virtual void DrawInstances()
+        {
+            var texture = AtlasManager.GetTexture(MetaballAtlasTextureToUse);
+
+            foreach (var particle in Particles)
+                Main.spriteBatch.Draw(texture, particle.Center - Main.screenPosition, null, Color.White, 0f, null, new Vector2(particle.Size) / texture.Frame.Size(), SpriteEffects.None);
+
+            ExtraDrawing();
+        }
 
         /// <summary>
         /// Whether a given particle in the <see cref="Particles"/> list should be killed or not.

@@ -1565,6 +1565,11 @@
             <param name="spriteBatch"></param>
             <returns></returns>
         </member>
+        <member name="M:Luminance.Core.Graphics.MetaballType.DrawInstances">
+            <summary>
+            Draws all metaball instances and performs extra draw steps via <see cref="M:Luminance.Core.Graphics.MetaballType.ExtraDrawing"/>.
+            </summary>
+        </member>
         <member name="M:Luminance.Core.Graphics.MetaballType.ShouldKillParticle(Luminance.Core.Graphics.MetaballInstance)">
             <summary>
             Whether a given particle in the <see cref="F:Luminance.Core.Graphics.MetaballType.Particles"/> list should be killed or not.
