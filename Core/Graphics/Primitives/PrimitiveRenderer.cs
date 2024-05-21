@@ -335,15 +335,17 @@ namespace Luminance.Core.Graphics
         /// <param name="rotationQuarternion">The rotation quarternion to use. Defaults to null.</param>
         public static void RenderQuad(Texture2D texture, Vector2 center, Vector2 scale, float rotation, Color? color = null, ManagedShader shader = null, Quaternion? rotationQuarternion = null)
         {
+            Vector2 quadArea = texture.Size();
+            float maxDimension = MathF.Max(quadArea.X, quadArea.Y);
+
             var rotationMatrix = rotationQuarternion is null ? Matrix.CreateRotationZ(rotation) : Matrix.CreateFromQuaternion(rotationQuarternion.Value) * Matrix.CreateRotationZ(rotation);
             var scaleMatrix = Matrix.CreateScale(scale.X, scale.Y, 1f);
             var viewMatrix = Matrix.CreateTranslation(new Vector3(center.X - Main.screenPosition.X, center.Y - Main.screenPosition.Y, 0f))
                 * Main.GameViewMatrix.TransformationMatrix
-                * Matrix.CreateOrthographicOffCenter(0f, Main.screenWidth, Main.screenHeight, 0f, -150f, 150f);
+                * Matrix.CreateOrthographicOffCenter(0f, Main.screenWidth, Main.screenHeight, 0f, -maxDimension - 1f, maxDimension + 1f);
 
             QuadVertexMatrix = rotationMatrix * scaleMatrix * viewMatrix;
 
-            Vector2 quadArea = texture.Size();
             color ??= Lighting.GetColor(center.ToTileCoordinates());
 
             MainVertices[0] = new(new(0f, -quadArea.Y), color.Value, Vector2.One * 0.01f, 1f);
