@@ -3,6 +3,13 @@ This file will contain each version of the mod published, along with all of the 
 
 ---
 
+## V1.0.5
+- Made the DrawInstances method for MetaballType instances virtual.
+- Made the RenderQuad method use a dynamic clipping range for its underlying OrthographicOffCenter matrix, to prevent larger textures from being clipped incorrectly.
+- Shader recompilations now display any detailed errors that occurred.
+
+---
+
 ## V1.0.4
 - Fixed problems regarding .fxc file loading.
 - HookHelpers now internally uses RuntimeHelpers instead of FormatterServices.
