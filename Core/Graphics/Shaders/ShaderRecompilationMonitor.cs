@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -233,6 +234,23 @@ namespace Luminance.Core.Graphics
                 Main.NewText("Shader compiler timed out. Likely error.", Color.OrangeRed);
                 fxcCompiler.Kill();
                 return;
+            }
+
+            string error = fxcCompiler.StandardError.ReadToEnd();
+            if (!string.IsNullOrEmpty(error))
+            {
+                string[] errorLines = error.Split(Environment.NewLine);
+                foreach (string errorLine in errorLines)
+                {
+                    if (errorLine.Contains("implicit truncation"))
+                        continue;
+                    if (errorLine.Contains("Effects deprecated"))
+                        continue;
+                    if (string.IsNullOrEmpty(errorLine))
+                        continue;
+
+                    Main.NewText(errorLine, Color.OrangeRed);
+                }
             }
 
             fxcCompiler.Kill();
