@@ -1483,12 +1483,6 @@
                 Evaluates all active render targets, checking if they need to be reset or disposed of.
             </summary>
         </member>
-        <member name="M:Luminance.Core.Graphics.RenderTargetManager.PerformTargetResetCheck(Luminance.Core.Graphics.ManagedRenderTarget)">
-            <summary>
-                Checks a render target for whether it needs to be reset for any reason. If so, the reset is scheduled on the main thread for the next frame.
-            </summary>
-            <param name="target">The render target to check.</param>
-        </member>
         <member name="T:Luminance.Core.Graphics.ManualParticleRenderer`1">
             <summary>
             Provides direct access to the associated particle's draw collection, allowing for more control about how they are rendered.

@@ -47,6 +47,7 @@ namespace Luminance.Core.Graphics
         {
             // Prepare update functionalities.
             Main.OnPreDraw += HandleTargetUpdateLoop;
+            On_Main.SetDisplayMode += ResizeScreenSizedTargets;
         }
 
         public override void OnModUnload()
@@ -75,9 +76,7 @@ namespace Luminance.Core.Graphics
             // negligible compared to the unmanaged texture data that the RenderTarget2D itself stores when not disposed.
             for (int i = 0; i < ManagedTargets.Count; i++)
             {
-                // Check if the render target needs to be reset.
                 ManagedRenderTarget target = ManagedTargets[i];
-                PerformTargetResetCheck(target);
 
                 // Determine whether the target is eligible to be automatically disposed.
                 if (!target.SubjectToGarbageCollection || target.IsUninitialized)
@@ -89,23 +88,26 @@ namespace Luminance.Core.Graphics
             }
         }
 
-        /// <summary>
-        ///     Checks a render target for whether it needs to be reset for any reason. If so, the reset is scheduled on the main thread for the next frame.
-        /// </summary>
-        /// <param name="target">The render target to check.</param>
-        private static void PerformTargetResetCheck(ManagedRenderTarget target)
+        private void ResizeScreenSizedTargets(On_Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
         {
-            // Don't attempt to recreate targets that are already initialized or shouldn't be recreated.
-            int width = Main.screenWidth;
-            int height = Main.screenHeight;
-            bool incorrectSize = (width != target.Width || height != target.Height) && target.ShouldResetUponScreenResize;
-            if (target is null || (!target.IsDisposed && !incorrectSize) || target.WaitingForFirstInitialization)
+            int oldScreenWidth = Main.screenWidth;
+            int oldScreenHeight = Main.screenHeight;
+            orig(width, height, fullscreen);
+
+            if (Main.screenWidth == oldScreenWidth && Main.screenHeight == oldScreenHeight)
                 return;
 
-            Main.QueueMainThreadAction(() =>
+            for (int i = 0; i < ManagedTargets.Count; i++)
             {
-                target.Recreate(width, height);
-            });
+                ManagedRenderTarget target = ManagedTargets[i];
+                if (target is null || target.WaitingForFirstInitialization)
+                    continue;
+
+                Main.QueueMainThreadAction(() =>
+                {
+                    target.Recreate(Main.screenWidth, Main.screenHeight);
+                });
+            }
         }
     }
 }
