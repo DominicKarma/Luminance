@@ -3,6 +3,12 @@ This file will contain each version of the mod published, along with all of the 
 
 ---
 
+## V1.0.6
+- Improved French translations.
+- Fixed automatic resizing logic with managed render targets.
+
+---
+
 ## V1.0.5
 - Made the DrawInstances method for MetaballType instances virtual.
 - Made the RenderQuad method use a dynamic clipping range for its underlying OrthographicOffCenter matrix, to prevent larger textures from being clipped incorrectly.
