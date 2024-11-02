@@ -34,7 +34,7 @@ Navigate to the folder to find out more about each feature listed.<br/>
 ## Contributors
 Thanks to anyone and everyone who has contributed to Luminance in any form!
 - <b>Dominic Karma:</b> Initial mod features, feature contributor.
-- <b>Toasty:</b> Feature contributor.
+- <b>Imogen:</b> Feature contributor.
 - <b>moonburn:</b> Proper mod icon.
 - <b>JavyzTaken, tomat:</b> Various optimizations and minor additions.
 - <b>madamamada, riz30n014, definatly_a_human, ritsukicat, myawk, lgl_fish, Chik3r, tomat, LoLXD8783, Blockaroz:</b> Translations.
