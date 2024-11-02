@@ -164,7 +164,8 @@ namespace Luminance.Core.Graphics
                 target2 = AuxiliaryTarget;
             }
 
-            foreach (var filter in filters.Values.Where(filter => filter.Opacity > 0))
+            List<ManagedScreenFilter> activeFilters = filters.Values.Where(filter => filter.Opacity > 0).ToList();
+            foreach (var filter in activeFilters)
             {
                 target1 = (target2 != MainTarget.Target) ? MainTarget : AuxiliaryTarget;
                 Main.instance.GraphicsDevice.SetRenderTarget(target1);
