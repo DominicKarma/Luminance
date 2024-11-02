@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Luminance.Core.Graphics
@@ -108,8 +109,11 @@ namespace Luminance.Core.Graphics
         /// <returns></returns>
         public Particle Spawn()
         {
+            if (Main.netMode == NetmodeID.Server)
+                return this;
+
             // Initialize the life timer.
-            Time = new();
+            Time = 0;
 
             if (ParticleManager.ActiveParticles.Count > ModContent.GetInstance<Config>().MaxParticles)
                 ParticleManager.ActiveParticles.First().Kill();
